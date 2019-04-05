@@ -84,15 +84,19 @@ For each `MAIL_n` in `MAILS`:
   - from `DS` extract:
     - digest id
 
-
   - for each signed DNS answer extract from RRSIG:
     - max* time to signature expiration (in seconds) // *max applies if there are multiple signatures
+
+  - enrich each IP address (`WEB4`, `WEB4_www`,`WEB6`, `WEB6_www`, resolved names: `MAIL`, `NS`) with geoIP data:
+    - ASN
+    - country code
 
   - for each certificate extract:
 	- vendor
 	- key length
-	- algorithm
-		 
+	- key algorithm
+	- expiration date
+
   - verify all collected TLSA RRs with coresponding certificates
    
   
