@@ -1,0 +1,9 @@
+[flake8]
+max-line-length = 120
+
+exclude =
+  .vscode
+  .git,
+  *.pyc,
+  .venv,
+  __pycache__
