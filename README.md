@@ -148,7 +148,37 @@ Just tell the workers to connect to the shared Redis on the main server, eg.:
 $ python workers.py 24 192.168.0.2:6379
 ```
 
-### Notes
+## Monitoring
+
+### Command line
+
+```
+$ rq info
+default      |████████████████████ 219458
+1 queues, 219458 jobs total
+
+0 workers, 1 queues
+```
+
+### Web interface
+
+```
+$ pip install rq-dashboard
+$ rq-dashboard
+RQ Dashboard version 0.4.0                                                 
+ * Serving Flask app "rq_dashboard.cli" (lazy loading)                            
+ * Environment: production                                                
+   WARNING: Do not use the development server in a production environment. 
+   Use a production WSGI server instead.                                          
+ * Debug mode: off                            
+ * Running on http://0.0.0.0:9181/ (Press CTRL+C to quit)
+ ```
+
+ ![RQ Dashboard screenshot](https://i.vgy.me/sk7zWa.png)
+
+ ![RQ Dashboard screenshot](https://i.vgy.me/4y5Zee.png)
+
+## Notes
 
 - the free GeoIP DBs (GeoLite2) are used at the moment:
     - `/usr/share/GeoIP/GeoLite2-ASN.mmdb`

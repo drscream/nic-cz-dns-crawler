@@ -17,8 +17,16 @@ local_resolver.timeout = local_resolver.lifetime = DNS_TIMEOUT
 
 
 def get_geoip(ip):
-    country = geoip_country.country(ip).country
-    asn = geoip_asn.asn(ip)
+    try:
+        country = geoip_country.country(ip).country
+        asn = geoip_asn.asn(ip)
+    except Exception as e:
+        return {
+            "country": None,
+            "asn": None,
+            "org": None,
+            "error": str(e)
+        }
     return {
         "country": country.iso_code,
         "asn": asn.autonomous_system_number,
