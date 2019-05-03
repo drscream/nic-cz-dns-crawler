@@ -127,3 +127,10 @@ Just tell the workers to connect to the shared Redis on the main server, eg.:
 $ python workers.py 24 192.168.0.2:6379
 ```
 
+### Notes
+
+- the free GeoIP DBs (GeoLite2) are used at the moment:
+    - `/usr/share/GeoIP/GeoLite2-ASN.mmdb`
+    - `/usr/share/GeoIP/GeoLite2-Country.mmdb`
+    - they seem to be a bit inaccurate, expecially for IPV6 (it places some CZ.NIC nameservers in Ukraine etc.)
+- it's possible to use a remote/shared DNS resolver for multiple worker machines (it's just hardcoded to localhost in `crawl.py:15` for the time being)
