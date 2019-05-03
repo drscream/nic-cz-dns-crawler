@@ -68,7 +68,27 @@ $ python workers.py 1
 11:48:19 default: Job OK (root.cz)
 ```
 
-Results are printed to the main process' stdout – JSON for every domain, separated by `\n`.
+Results are printed to the main process' stdout – JSON for every domain, separated by `\n`:
+
+```
+…
+[2019-05-03 11:48:17] 2/3                                                                                                                                        {"domain": "netmetr.cz", "DNS_LOCAL": {"DNS_AUTH": ["a.ns.nic.cz.", "b.ns.nic.cz.", "d.ns.nic.cz."], "MAIL": ["10 mail.nic.cz.", "15 mx.nic.cz.", "20 bh.nic.cz."], "WEB4": [{"ip": "217.31.192.130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB4_www": [{"ip": "217.31.192.130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB6": [{"ip": "2001:1488:ac15:ff90::130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB6_www": [{"ip": "2001:1488:ac15:ff90::130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB_TLSA": null, "WEB_TLSA_www": null, "MAIL_TLSA": null, "DS": ["54959 13 2 f378137545d35b2297be8ef5542e72763e0c47c520ef3a0ec894f39ad7679a0a"], "DNSKEY": ["256 3 13 36WIaijhhLkLtG77ecHTuA/rODUNy9kj J5c2QVUZYMtBsg/SDc3e+n+bxYZyTE3t wnXa/6hyAyIGjCx4nJQwQQ==", "257 3 13 KDAJfPGWgvNAEHUMzmmSa+c3gHfoGIsX nhIO1iAYGTAyVBo+CLTyIk3wxDtt4Yn3 eCrCiYsEAHBJgQvA3pwJ8w=="]}, "DNS_AUTH": [{"ns": "a.ns.nic.cz.", "ns_ipv4": [{"ip": "194.0.12.1", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "ns_ipv6": [{"ip": "2001:678:f::1", "geoip": {"country": "UA", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "HOSTNAMEBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "HOSTNAMEBIND6": {"value": null, "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"}}, {"ns": "b.ns.nic.cz.", "ns_ipv4": [{"ip": "194.0.13.1", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "ns_ipv6": [{"ip": "2001:678:10::1", "geoip": {"country": "UA", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "HOSTNAMEBIND4": {"value": null, "error": "The DNS resp
+onse does not contain an answer to the question: hostname.bind. CH TXT"}, "HOSTNAMEBIND6": {"value": null, "error": "All nameservers failed to answer the query h
+ostname.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer
+ to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:
+678:10::1 UDP port 53 answered REFUSED"}}, {"ns": "d.ns.nic.cz.", "ns_ipv4": [{"ip": "193.29.206.1", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s
+.p.o."}}], "ns_ipv6": [{"ip": "2001:678:1::1", "geoip": {"country": "UA", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "HOSTNAMEBIND4": {"value": null, "error": "
+All nameservers failed to answer the query hostname.bind. CH TXT: Server 193.29.206.1 UDP port 53 answered REFUSED"}, "HOSTNAMEBIND6": {"value": null, "error": "
+The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain
+ an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Se
+rver 2001:678:1::1 UDP port 53 answered REFUSED"}}], "WEB": {"WEB4_80_VENDOR": {"value": "nginx"}, "WEB4_80_www_VENDOR": {"value": "nginx"}, "WEB6_80_VENDOR": {"
+value": "nginx"}, "WEB6_80_www_VENDOR": {"value": "nginx"}}}
+…
+```
+
+The progress info with timestamp is printed to stderr, so you can save the output easily – `python main.py list.txt > result`.
+
+If you want formatted JSONs, just pipe the output through [jq](https://stedolan.github.io/jq/): `python main.py list.txt | jq`.
 
 ## Command line parameters
 
