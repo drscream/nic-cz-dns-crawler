@@ -6,8 +6,8 @@ import geoip2.database
 DNS_TIMEOUT = 2
 HTTP_TIMEOUT = 2
 
-geoip_country = geoip2.database.Reader("/usr/share/GeoIP/GeoLite2-Country.mmdb")
-geoip_asn = geoip2.database.Reader("/usr/share/GeoIP/GeoLite2-ASN.mmdb")
+geoip_country = geoip2.database.Reader("/usr/share/GeoIP/GeoIP2-Country.mmdb")
+geoip_isp = geoip2.database.Reader("/usr/share/GeoIP/GeoIP2-ISP.mmdb")
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -19,7 +19,7 @@ local_resolver.timeout = local_resolver.lifetime = DNS_TIMEOUT
 def get_geoip(ip):
     try:
         country = geoip_country.country(ip).country
-        asn = geoip_asn.asn(ip)
+        isp = geoip_isp.isp(ip)
     except Exception as e:
         return {
             "country": None,
@@ -29,8 +29,8 @@ def get_geoip(ip):
         }
     return {
         "country": country.iso_code,
-        "asn": asn.autonomous_system_number,
-        "org": asn.autonomous_system_organization
+        "isp": isp.autonomous_system_number,
+        "org": isp.autonomous_system_organization
     }
 
 
