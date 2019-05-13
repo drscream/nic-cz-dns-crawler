@@ -1,0 +1,11 @@
+from crawl import process_domain
+
+r = process_domain("nic.cz")
+
+assert r["DNS_LOCAL"]["DNS_AUTH"] == ["a.ns.nic.cz.", "b.ns.nic.cz.", "d.ns.nic.cz."]
+assert r["WEB"]["WEB4_80_VENDOR"] == {"value": "nginx"}
+assert r["DNS_LOCAL"]["WEB4"][0]["geoip"] == {
+    "country": "CZ",
+    "isp": 25192,
+    "org": "CZ.NIC, z.s.p.o.",
+}

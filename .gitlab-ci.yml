@@ -4,4 +4,10 @@ lint:
   before_script:
     - pip install flake8
   script:
-   - flake8 --config=.flake8 *py
+    - flake8 --config=.flake8 *py
+
+test:
+  script:
+    - cd test
+    - export PYTHONPATH="$(pwd)/.."
+    - python nic.cz.test.py
