@@ -1,4 +1,5 @@
 from redis import Redis
+import rq
 from rq import Queue, job
 from rq.registry import FinishedJobRegistry
 import sys
@@ -43,10 +44,13 @@ try:
             finished_count = finished_count + len(finished_domains)
             sys.stderr.write(f"{timestamp()} {finished_count}/{domain_count}\n")
             for domain in finished_domains:
-                finished_job = job.Job.fetch(domain, connection=redis)
-                result = finished_job.result
-                print(json.dumps(result))
-                finished_job.delete()
+                try:
+                    finished_job = job.Job.fetch(domain, connection=redis)
+                    result = finished_job.result
+                    print(json.dumps(result))
+                    finished_job.delete()
+                except rq.exceptions.NoSuchJobError:
+                    pass
             sleep(POLL_INTERVAL)
         queue.delete(delete_jobs=True)
         sys.exit(0)
