@@ -2,36 +2,53 @@ import requests
 import dns.resolver
 import urllib3
 import geoip2.database
+import yaml
+from os import path
 
-DNS_TIMEOUT = 2
-HTTP_TIMEOUT = 2
+pwd = path.dirname(__file__)
 
-geoip_country = geoip2.database.Reader("/usr/share/GeoIP/GeoIP2-Country.mmdb")
-geoip_isp = geoip2.database.Reader("/usr/share/GeoIP/GeoIP2-ISP.mmdb")
+with open(path.join(pwd, "config.yml"), "r") as conf_file:
+    config = yaml.load(conf_file, Loader=yaml.BaseLoader)
+
+geoip_country = None
+geoip_isp = None
+geoip_asn = None
+
+if "country" in config["geoip"]:
+    geoip_country = geoip2.database.Reader(path.join(pwd, config["geoip"]["country"]))
+
+if "isp" in config["geoip"]:
+    geoip_isp = geoip2.database.Reader(path.join(pwd, config["geoip"]["isp"]))
+
+if "asn" in config["geoip"]:
+    geoip_asn = geoip2.database.Reader(path.join(pwd, config["geoip"]["asn"]))
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+DNS_TIMEOUT = int(config["DNS_TIMEOUT"])
+HTTP_TIMEOUT = int(config["HTTP_TIMEOUT"])
+
 local_resolver = dns.resolver.Resolver(configure=False)
-local_resolver.nameservers = ["127.0.0.1"]
+local_resolver.nameservers = config["dns"]
 local_resolver.timeout = local_resolver.lifetime = DNS_TIMEOUT
 
 
 def get_geoip(ip):
     try:
-        country = geoip_country.country(ip).country
-        isp = geoip_isp.isp(ip)
+        result = {}
+        if geoip_country:
+            country = geoip_country.country(ip).country
+            result["country"] = country.iso_code
+        if geoip_isp:
+            isp = geoip_isp.isp(ip)
+        if geoip_asn and not geoip_isp:
+            isp = geoip_asn.asn(ip)
+        if geoip_asn or geoip_isp:
+            result["org"] = isp.autonomous_system_organization
+            result["asn"] = isp.autonomous_system_number
     except Exception as e:
-        return {
-            "country": None,
-            "asn": None,
-            "org": None,
-            "error": str(e)
-        }
-    return {
-        "country": country.iso_code,
-        "isp": isp.autonomous_system_number,
-        "org": isp.autonomous_system_organization
-    }
+        result["error"] = str(e)
+    return result
 
 
 def get_record(domain, record, geoip=False):
@@ -44,11 +61,13 @@ def get_record(domain, record, geoip=False):
             else:
                 ip = str(item)
                 results = results + [{"ip": ip, "geoip": get_geoip(ip)}]
-    except (dns.resolver.NoAnswer,
-            dns.rdatatype.UnknownRdatatype,
-            dns.resolver.NoNameservers,
-            dns.resolver.NXDOMAIN,
-            dns.exception.Timeout):
+    except (
+        dns.resolver.NoAnswer,
+        dns.rdatatype.UnknownRdatatype,
+        dns.resolver.NoNameservers,
+        dns.resolver.NXDOMAIN,
+        dns.exception.Timeout,
+    ):
         pass
     if len(results) > 0:
         return results
@@ -68,7 +87,7 @@ def get_dns_local(domain):
         "WEB_TLSA_www": get_record("_443._tcp.www." + domain, "TLSA"),
         "MAIL_TLSA": get_record("_25._tcp." + domain, "TLSA"),
         "DS": get_record(domain, "DS"),
-        "DNSKEY": get_record(domain, "DNSKEY")
+        "DNSKEY": get_record(domain, "DNSKEY"),
     }
 
 
@@ -79,7 +98,7 @@ def get_txtbind(nameserver, qname):
         resolver.nameservers = [nameserver]
         resolver.timeout = resolver.lifetime = DNS_TIMEOUT
         answers = resolver.query(qname, rdtype="TXT", rdclass="CHAOS")
-        result = {"value": str(answers[0]).replace("\"", "")}
+        result = {"value": str(answers[0]).replace('"', "")}
     except Exception as e:
         result = {"value": None, "error": str(e)}
     return result
@@ -99,7 +118,7 @@ def get_dns_auth(domain, nameservers):
             "HOSTNAMEBIND4": get_txtbind(ns_ipv4[0]["ip"], "hostname.bind") if ns_ipv4 else None,
             "HOSTNAMEBIND6": get_txtbind(ns_ipv6[0]["ip"], "hostname.bind") if ns_ipv6 else None,
             "VERSIONBIND4": get_txtbind(ns_ipv4[0]["ip"], "version.bind") if ns_ipv4 else None,
-            "VERSIONBIND6": get_txtbind(ns_ipv6[0]["ip"], "version.bind") if ns_ipv6 else None
+            "VERSIONBIND6": get_txtbind(ns_ipv6[0]["ip"], "version.bind") if ns_ipv6 else None,
         }
         results.append(result)
     return results
@@ -119,10 +138,12 @@ def get_vendor(domain, ips, ipv6=False, tls=False):
     else:
         host = f"[{ips[0]['ip']}]"
     try:
-        r_head = requests.head(f"{protocol}://{host}:{port}/",
-                               timeout=HTTP_TIMEOUT,
-                               headers={"Host": domain},
-                               verify=False)
+        r_head = requests.head(
+            f"{protocol}://{host}:{port}/",
+            timeout=HTTP_TIMEOUT,
+            headers={"Host": domain},
+            verify=False,
+        )
     except Exception as e:
         return {"value": None, "error": str(e)}
     if "server" in r_head.headers:
@@ -153,17 +174,10 @@ def get_web_status(domain, dns):
 
 
 def process_domain(domain):
-    result = {
-        "domain": domain
-    }
+    result = {"domain": domain}
     dns_local = get_dns_local(domain)
     dns_auth = get_dns_auth(domain, dns_local["DNS_AUTH"])
     web = get_web_status(domain, dns_local)
-    result = {
-        **result,
-        "DNS_LOCAL": dns_local,
-        "DNS_AUTH": dns_auth,
-        "WEB": web
-    }
+    result = {**result, "DNS_LOCAL": dns_local, "DNS_AUTH": dns_auth, "WEB": web}
 
     return result

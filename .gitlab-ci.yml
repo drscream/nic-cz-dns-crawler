@@ -7,7 +7,16 @@ lint:
     - flake8 --config=.flake8 *py
 
 test:
+  before_script:
+    - apt install wget
+    - wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz
+    - tar zxf GeoLite2-Country.tar.gz
+    - tar zxf GeoLite2-ASN.tar.gz
+    - pip install -r requirements.txt
+    - mv test/config.yml ./
+    - mv GeoLite2*/*mmdb ./test/
   script:
+    - ls -l test
     - cd test
     - export PYTHONPATH="$(pwd)/.."
     - python nic.cz.test.py

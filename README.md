@@ -12,8 +12,7 @@
 - [redis](https://redis.io/)
 - [requests](https://python-requests.org/)
 - [dnspython](http://www.dnspython.org/)
-- [geoip2](https://geoip2.readthedocs.io/en/latest/) + up-to-date Country and ISP databases (mmdb format)
-- local DNS resolver (tested with Knot Resolver only, but it shouldn't matter)
+- [geoip2](https://geoip2.readthedocs.io/en/latest/) + up-to-date Country and ISP (or ASN) databases (mmdb format)
 
 ### Redis confinguration
 
@@ -90,6 +89,40 @@ value": "nginx"}, "WEB6_80_www_VENDOR": {"value": "nginx"}}}
 The progress info with timestamp is printed to stderr, so you can save the output easily – `python main.py list.txt > result`.
 
 If you want formatted JSONs, just pipe the output through [jq](https://stedolan.github.io/jq/): `python main.py list.txt | jq`.
+
+## Config file
+
+GeoIP DB paths, DNS resolver IP(s), and timeouts are read from `config.yml`. The default values are:
+
+```yaml
+geoip:
+  country: /usr/share/GeoIP/GeoIP2-Country.mmdb
+  isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb
+dns:
+  - 127.0.0.1
+DNS_TIMEOUT: 2
+HTTP_TIMEOUT: 2
+```
+
+Using free (GeoLite2) Country and ASN DBs instead of commercial ones:
+
+```yaml
+geoip:
+  country: /usr/share/GeoIP/GeoLite2-Country.mmdb
+  asn: /usr/share/GeoIP/GeoLite2-ASN.mmdb
+```
+
+`ISP` (paid) database is preffered over `ASN` (free), if both are defined. The difference is described on Maxmind's website: https://dev.maxmind.com/faq/what-is-the-difference-between-the-geoip-isp-and-organization-databases/.
+
+The free `GeoLite2-Country` seems to be a bit inaccurate, expecially for IPv6 (it places some CZ.NIC nameservers in Ukraine etc.).
+
+Using [ODVR](https://blog.nic.cz/2019/04/30/spoustime-nove-odvr/) or other resolvers:
+
+```yaml
+dns:
+  - 193.17.47.1
+  - 185.43.135.1
+```
 
 ## Command line parameters
 
@@ -177,11 +210,3 @@ RQ Dashboard version 0.4.0
  ![RQ Dashboard screenshot](https://i.vgy.me/sk7zWa.png)
 
  ![RQ Dashboard screenshot](https://i.vgy.me/4y5Zee.png)
-
-## Notes
-
-- the free GeoIP DBs (GeoLite2) are used at the moment:
-    - `/usr/share/GeoIP/GeoLite2-ASN.mmdb`
-    - `/usr/share/GeoIP/GeoLite2-Country.mmdb`
-    - they seem to be a bit inaccurate, expecially for IPV6 (it places some CZ.NIC nameservers in Ukraine etc.)
-- it's possible to use a remote/shared DNS resolver for multiple worker machines (it's just hardcoded to localhost in `crawl.py:15` for the time being)
