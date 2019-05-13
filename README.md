@@ -114,7 +114,7 @@ geoip:
 
 `ISP` (paid) database is preffered over `ASN` (free), if both are defined. The difference is described on Maxmind's website: https://dev.maxmind.com/faq/what-is-the-difference-between-the-geoip-isp-and-organization-databases/.
 
-The free `GeoLite2-Country` seems to be a bit inaccurate, expecially for IPv6 (it places some CZ.NIC nameservers in Ukraine etc.).
+The free `GeoLite2-Country` seems to be a bit inaccurate, especially for IPv6 (it places some CZ.NIC nameservers in Ukraine etc.).
 
 Using [ODVR](https://blog.nic.cz/2019/04/30/spoustime-nove-odvr/) or other resolvers:
 
