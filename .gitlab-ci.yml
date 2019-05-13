@@ -1,0 +1,7 @@
+image: python:3.7
+
+lint:
+  before_script:
+    - pip install flake8
+  script:
+   - flake8 --config=.flake8 *py
