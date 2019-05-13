@@ -12,4 +12,3 @@ assert r["DNS_LOCAL"]["WEB4"][0]["geoip"] == {
     "asn": 25192,
     "org": "CZ.NIC, z.s.p.o.",
 }
-

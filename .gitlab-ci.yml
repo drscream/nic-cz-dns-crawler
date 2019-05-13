@@ -4,7 +4,7 @@ lint:
   before_script:
     - pip install flake8
   script:
-    - flake8 --config=.flake8 *py
+    - flake8 --config=.flake8
 
 test:
   before_script:
