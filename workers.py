@@ -37,7 +37,7 @@ if worker_count <= 0:
 if worker_count > 24 * cpu_count:
     sys.stderr.write((
         f"Whoa. You are trying to run {worker_count} workers on {cpu_count} CPU"
-        f"core{('s' if cpu_count > 1 else '')}.\n"
+        f" core{('s' if cpu_count > 1 else '')}.\n"
         f"Cancel now (Ctrl-C) or have a fire extinguisher ready.\n")
     )
     try:

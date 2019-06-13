@@ -14,7 +14,7 @@
 - [dnspython](http://www.dnspython.org/)
 - [geoip2](https://geoip2.readthedocs.io/en/latest/) + up-to-date Country and ISP (or ASN) databases (mmdb format)
 
-### Redis confinguration
+### Redis configuration
 
 No special config needed, but increase the memory limit if you have a lot of domains to process (`maxmemory 1G`). You can also disable disk snapshots to save some I/O time (comment out `save …` lines).
 
@@ -111,7 +111,7 @@ geoip:
   asn: /usr/share/GeoIP/GeoLite2-ASN.mmdb
 ```
 
-`ISP` (paid) database is preffered over `ASN` (free), if both are defined. The difference is described on Maxmind's website: https://dev.maxmind.com/faq/what-is-the-difference-between-the-geoip-isp-and-organization-databases/.
+`ISP` (paid) database is preferred over `ASN` (free), if both are defined. The difference is described on Maxmind's website: https://dev.maxmind.com/faq/what-is-the-difference-between-the-geoip-isp-and-organization-databases/.
 
 The free `GeoLite2-Country` seems to be a bit inaccurate, especially for IPv6 (it places some CZ.NIC nameservers in Ukraine etc.).
 
@@ -150,7 +150,7 @@ Trying to use more than 24 workers per CPU core will result in a warning:
 
 ```
 $ workers.py 999
-Whoa. You are trying to run 999 workers on 4 CPUcores.
+Whoa. You are trying to run 999 workers on 4 CPU cores.
 Cancel now (Ctrl-C) or have a fire extinguisher ready.
 5 - 4 - 3 -
 ```
