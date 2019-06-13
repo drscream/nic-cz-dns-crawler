@@ -16,7 +16,7 @@
 
 ### Redis confinguration
 
-No special config needed, but increase memory limit if you have a lot of domains to process (`maxmemory 1G`). You can also disable disk snapshots to save some I/O time (comment out `save …` lines).
+No special config needed, but increase the memory limit if you have a lot of domains to process (`maxmemory 1G`). You can also disable disk snapshots to save some I/O time (comment out `save …` lines).
 
 ### Installing Python deps in a virtualenv
 
@@ -144,6 +144,15 @@ Usage: workers.py [count] [redis]
 Examples: workers.py 8
           workers.py 24 192.168.0.22:4444
           workers.py 16 redis.foo.bar
+```
+
+Trying to use more than 24 workers per CPU core will result in a warning:
+
+```
+$ workers.py 999
+Whoa. You are trying to run 999 workers on 4 CPUcores.
+Cancel now (Ctrl-C) or have a fire extinguisher ready.
+5 - 4 - 3 -
 ```
 
 ## Running on multiple machines
