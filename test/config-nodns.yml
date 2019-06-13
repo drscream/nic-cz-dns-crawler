@@ -1,0 +1,8 @@
+geoip:
+  country: ./test/GeoLite2-Country.mmdb
+  asn: ./test/GeoLite2-ASN.mmdb
+dns:
+  - 193.17.47.1
+  - 185.43.135.1
+DNS_TIMEOUT: 2
+HTTP_TIMEOUT: 2

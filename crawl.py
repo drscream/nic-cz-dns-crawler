@@ -28,9 +28,12 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 DNS_TIMEOUT = int(config["DNS_TIMEOUT"])
 HTTP_TIMEOUT = int(config["HTTP_TIMEOUT"])
 
-local_resolver = dns.resolver.Resolver(configure=False)
-local_resolver.nameservers = config["dns"]
+use_custom_dns = "dns" in config and len(config["dns"]) > 0
+
+local_resolver = dns.resolver.Resolver(configure=(not use_custom_dns))
 local_resolver.timeout = local_resolver.lifetime = DNS_TIMEOUT
+if use_custom_dns:
+    local_resolver.nameservers = config["dns"]
 
 
 def get_geoip(ip):

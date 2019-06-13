@@ -13,10 +13,12 @@ test:
     - tar zxf GeoLite2-Country.tar.gz
     - tar zxf GeoLite2-ASN.tar.gz
     - pip install -r requirements.txt
-    - mv test/config.yml ./
+    - mv test/config.yml ./config.yml
     - mv GeoLite2*/*mmdb ./test/
-  script:
-    - ls -l test
+  script: 
     - cd test
+    - ls -l
     - export PYTHONPATH="$(pwd)/.."
+    - python nic.cz.test.py
+    - mv config-nodns.yml ../config.yml
     - python nic.cz.test.py

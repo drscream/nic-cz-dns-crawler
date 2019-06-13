@@ -16,8 +16,7 @@
 
 ### Redis confinguration
 
-- increase memory limit if you have a lot of domains to process (`maxmemory 1G`)
-- you can disable disk snapshots to save some I/O time (comment out `save …` lines)
+No special config needed, but increase memory limit if you have a lot of domains to process (`maxmemory 1G`). You can also disable disk snapshots to save some I/O time (comment out `save …` lines).
 
 ### Installing Python deps in a virtualenv
 
@@ -123,6 +122,8 @@ dns:
   - 193.17.47.1
   - 185.43.135.1
 ```
+
+If no resolvers are specified (`dns` is missing or empty in the config file), the crawler will attempt to use system settings (`/etc/resolv.conf` on Linux).
 
 ## Command line parameters
 
