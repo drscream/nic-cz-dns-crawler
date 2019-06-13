@@ -223,4 +223,4 @@ RQ Dashboard version 0.4.0
 
 ## Tests
 
-Some basic tests are in the `tests` directory in this repo. If you want to run them manually, take a look at the `test`  job in `.gitlab-ci.yml` – basically it just downloads free GeoIP DBs, tells the crawler to use them, and crawles some domains, checking values in JSON output.
+Some basic tests are in the `tests` directory in this repo. If you want to run them manually, take a look at the `test`  job in `.gitlab-ci.yml` – basically it just downloads free GeoIP DBs, tells the crawler to use them, and crawles some domains, checking values in JSON output. It runs the tests twice – first with the default DNS resolvers (ODVR) and then with system one(s).
