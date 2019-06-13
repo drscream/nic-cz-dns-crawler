@@ -210,3 +210,7 @@ RQ Dashboard version 0.4.0
  ![RQ Dashboard screenshot](https://i.vgy.me/sk7zWa.png)
 
  ![RQ Dashboard screenshot](https://i.vgy.me/4y5Zee.png)
+
+## Tests
+
+Some basic tests are in the `tests` directory in this repo. If you want to run them manually, take a look at the `test`  job in `.gitlab-ci.yml` – basically it just downloads free GeoIP DBs, tells the crawler to use them, and crawles some domains, checking values in JSON output.
