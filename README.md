@@ -1,6 +1,6 @@
 # `dns-crawler`
 
-> Crawler for getting info about a huge number of DNS domains
+> Crawler for getting info about *(possibly a huge number of)* DNS domains
 
 
 ## Installation
@@ -85,7 +85,7 @@ value": "nginx"}, "WEB6_80_www_VENDOR": {"value": "nginx"}}}
 …
 ```
 
-The progress info with timestamp is printed to stderr, so you can save the output easily – `python main.py list.txt > result`.
+The progress info with timestamp is printed to stderr, so you can save just the output easily – `python main.py list.txt > result`.
 
 If you want formatted JSONs, just pipe the output through [jq](https://stedolan.github.io/jq/): `python main.py list.txt | jq`.
 
@@ -123,7 +123,7 @@ dns:
   - 185.43.135.1
 ```
 
-If no resolvers are specified (`dns` is missing or empty in the config file), the crawler will attempt to use system settings (`/etc/resolv.conf` on Linux).
+If no resolvers are specified (`dns` is missing or empty in the config file), the crawler will attempt to use system settings (handled by `dnspython`, but it usually ends up with `/etc/resolv.conf` on Linux).
 
 ## Command line parameters
 
@@ -189,6 +189,8 @@ Just tell the workers to connect to the shared Redis on the main server, eg.:
 
 ```
 $ python workers.py 24 192.168.0.2:6379
+                    ^            ^
+                    24 threads   redis host
 ```
 
 ## Monitoring
@@ -224,3 +226,5 @@ RQ Dashboard version 0.4.0
 ## Tests
 
 Some basic tests are in the `tests` directory in this repo. If you want to run them manually, take a look at the `test`  job in `.gitlab-ci.yml` – basically it just downloads free GeoIP DBs, tells the crawler to use them, and crawles some domains, checking values in JSON output. It runs the tests twice – first with the default DNS resolvers (ODVR) and then with system one(s).
+
+If you're looking into writing some additional tests, be aware that some Docker containers used in GitLab CI don't have IPv6 configured (even if it's working on the host machine), so checking for eg. `WEB6_80_www_VENDOR` will fail.
