@@ -32,6 +32,7 @@ finished_registry = FinishedJobRegistry(connection=redis)
 
 try:
     with open(filename, "r") as file:
+        sys.stderr.write(f"{timestamp()} Reading domains from {filename}.\n")
         domain_count = 0
         finished_count = 0
         for line in file:
