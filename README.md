@@ -2,6 +2,19 @@
 
 > Crawler for getting info about *(possibly a huge number of)* DNS domains
 
+## Basic usage
+
+Feed domains into queue and wait for results:
+
+```
+$ python main.py domain-list.txt > result.json
+```
+
+(in another shell) Start workers which process the domains and return results to the main process:
+
+```
+$ python workers.py
+```
 
 ## Installation
 
@@ -39,7 +52,7 @@ $ echo "nic.cz\nnetmetr.cz\nroot.cz" > domains.txt
 Start the main process to create job for every domain:
 
 ```
-$ python ./main.py domains.txt
+$ python main.py domains.txt
 [2019-05-03 11:45:59] Created 3 jobs.
 [2019-05-03 11:45:59] 0/3
 [2019-05-03 11:46:01] 0/3
@@ -134,6 +147,10 @@ main.py <file>
        file - plaintext domain list, one domain per line (separated by \n)
 ```
 
+The main process uses threads (2 for each CPU core) to create the jobs faster.
+
+To cancel the process, just send a kill signal or hit `Ctrl-C` any time. The process will perform cleanup and exit.
+
 ### workers.py
 
 ```
@@ -155,19 +172,27 @@ Cancel now (Ctrl-C) or have a fire extinguisher ready.
 5 - 4 - 3 -
 ```
 
+Stopping works the same way as with the main process – `Ctrl-C` (or kill signal) will finish the current job(s) and exit.
+
+## Resuming work
+
+Stopping the workers won't delete the jobs from Redis. So, if you stop the `workers.py` process and then start a new one (perhaps to use different worker count…), it will pick up the unfinished jobs and continue.
+
+This can also be used to move the workers to another machine(s).
+
 ## Running on multiple machines
 
 Since all communication between the main process and workers is done through Redis, it's easy to scale the crawler to any number of machines:
 
 ```
-server-1                     server-2
+server-1                     server-1
 ┬──────────────────┐         ┬──────────────────┐
 │     main.py      │         │     workers.py   │
 │        +         │ ------- │        +         │
 │      redis       │         │    DNS resolver  │
 └──────────────────┘         └──────────────────┘
 
-                             server-3
+                             server-2
                              ┬──────────────────┐
                              │     workers.py   │
                      ------- │        +         │

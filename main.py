@@ -33,7 +33,6 @@ except IndexError:
 redis = Redis()
 queue = Queue(connection=redis)
 finished_registry = FinishedJobRegistry(connection=redis)
-# threads = []
 stop_threads = False
 
 
