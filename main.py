@@ -99,8 +99,8 @@ except KeyboardInterrupt:
     queue.delete(delete_jobs=True)
     while 0 < created_count:
         sleep(POLL_INTERVAL)
-        sys.stderr.write(f"{timestamp()} {created_count} jobs remaining.\n")
         created_count = queue.count
+        sys.stderr.write(f"{timestamp()} {created_count} jobs remaining.\n")
     sys.stderr.write(f"{timestamp()} All jobs deleted, exiting.\n")
     sys.exit(1)
 
