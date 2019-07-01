@@ -45,7 +45,7 @@ def create_jobs(domains, function, queue, should_stop):
 
 def create_job(domain, function, queue):
     domain = domain.strip()
-    queue.enqueue(function, domain, job_id=domain)
+    queue.enqueue(function, domain, job_id=domain, result_ttl=-1)
 
 
 try:
