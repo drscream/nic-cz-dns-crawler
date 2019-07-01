@@ -147,7 +147,7 @@ main.py <file>
        file - plaintext domain list, one domain per line (separated by \n)
 ```
 
-The main process uses threads (2 for each CPU core) to create the jobs faster.
+The main process uses threads (2 for each CPU core) to create the jobs faster. It's *much* faster on (more) modern machines – eg. i7-7600U in a laptop does about 4.2k jobs/s, while server with Xeon X3430 does just about 1.4k (using 8 threads, as they both appear as 4 core to the system).
 
 To cancel the process, just send a kill signal or hit `Ctrl-C` any time. The process will perform cleanup and exit.
 
