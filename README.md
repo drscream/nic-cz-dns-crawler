@@ -244,9 +244,12 @@ RQ Dashboard version 0.4.0
  * Running on http://0.0.0.0:9181/ (Press CTRL+C to quit)
  ```
 
- ![RQ Dashboard screenshot](https://i.vgy.me/sk7zWa.png)
-
- ![RQ Dashboard screenshot](https://i.vgy.me/4y5Zee.png)
+<a href="https://i.vgy.me/sk7zWa.png">
+<img alt="RQ Dashboard screenshot" src="https://i.vgy.me/sk7zWa.png" style="width: 40%; vertical-align: middle;">
+</a>
+<a href="https://i.vgy.me/4y5Zee.png">
+<img alt="RQ Dashboard screenshot" src="https://i.vgy.me/4y5Zee.png" style="width: 40%; vertical-align: middle;">
+</a>
 
 ## Tests
 
