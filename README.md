@@ -245,10 +245,10 @@ RQ Dashboard version 0.4.0
  ```
 
 <a href="https://i.vgy.me/sk7zWa.png">
-<img alt="RQ Dashboard screenshot" src="https://i.vgy.me/sk7zWa.png" style="width: 40%; vertical-align: middle;">
+<img alt="RQ Dashboard screenshot" src="https://i.vgy.me/sk7zWa.png" width="40%">
 </a>
 <a href="https://i.vgy.me/4y5Zee.png">
-<img alt="RQ Dashboard screenshot" src="https://i.vgy.me/4y5Zee.png" style="width: 40%; vertical-align: middle;">
+<img alt="RQ Dashboard screenshot" src="https://i.vgy.me/4y5Zee.png" width="40%">
 </a>
 
 ## Tests
