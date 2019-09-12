@@ -21,4 +21,7 @@ test:
     - export PYTHONPATH="$(pwd)/.."
     - python nic.cz.test.py
     - mv config-nodns.yml ../config.yml
-    - python nic.cz.test.py
+    - python nic.cz.test.py > nic.cz.json
+  artifacts:
+    paths:
+      - nic.cz.json
