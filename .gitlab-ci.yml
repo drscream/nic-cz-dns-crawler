@@ -19,9 +19,9 @@ test:
     - cd test
     - ls -l
     - export PYTHONPATH="$(pwd)/.."
-    - python nic.cz.test.py
-    - mv config-nodns.yml ../config.yml
     - python nic.cz.test.py > nic.cz.json
+    - mv config-nodns.yml ../config.yml
+    - python nic.cz.test.py > nic.cz-nodns.json
   artifacts:
     paths:
-      - nic.cz.json
+      - ./*.json
