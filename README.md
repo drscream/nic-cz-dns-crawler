@@ -29,14 +29,14 @@ $ python workers.py
 
 ### Redis configuration
 
-No special config needed, but increase the memory limit if you have a lot of domains to process (`maxmemory 1G`). You can also disable disk snapshots to save some I/O time (comment out `save …` lines).
+No special config needed, but increase the memory limit if you have a lot of domains to process (eg. `maxmemory 1G`). You can also disable disk snapshots to save some I/O time (comment out the `save …` lines).
 
 ### Installing Python deps in a virtualenv
 
 ```
 $ git clone https://gitlab.labs.nic.cz/adam/dns-crawler
 $ cd dns-crawler
-$ python3 -m venv .venv
+$ python3 -m venv .venv
 $ source .venv/bin/activate
 $ pip install -r requirements.txt 
 ```
@@ -46,7 +46,7 @@ $ pip install -r requirements.txt
 Create a short domain list (one 2nd level domain per line):
 
 ```
-$ echo "nic.cz\nnetmetr.cz\nroot.cz" > domains.txt
+$ echo "nic.cz\nnetmetr.cz\nroot.cz" > domains.txt
 ```
 
 Start the main process to create job for every domain:
@@ -79,28 +79,78 @@ $ python workers.py 1
 11:48:19 default: Job OK (root.cz)
 ```
 
+### Output formats
+
 Results are printed to the main process' stdout – JSON for every domain, separated by `\n`:
 
 ```
 …
 [2019-05-03 11:48:17] 2/3
-{"domain": "netmetr.cz", "DNS_LOCAL": {"DNS_AUTH": ["a.ns.nic.cz.", "b.ns.nic.cz.", "d.ns.nic.cz."], "MAIL": ["10 mail.nic.cz.", "15 mx.nic.cz.", "20 bh.nic.cz."], "WEB4": [{"ip": "217.31.192.130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB4_www": [{"ip": "217.31.192.130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB6": [{"ip": "2001:1488:ac15:ff90::130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB6_www": [{"ip": "2001:1488:ac15:ff90::130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB_TLSA": null, "WEB_TLSA_www": null, "MAIL_TLSA": null, "DS": ["54959 13 2 f378137545d35b2297be8ef5542e72763e0c47c520ef3a0ec894f39ad7679a0a"], "DNSKEY": ["256 3 13 36WIaijhhLkLtG77ecHTuA/rODUNy9kj J5c2QVUZYMtBsg/SDc3e+n+bxYZyTE3t wnXa/6hyAyIGjCx4nJQwQQ==", "257 3 13 KDAJfPGWgvNAEHUMzmmSa+c3gHfoGIsX nhIO1iAYGTAyVBo+CLTyIk3wxDtt4Yn3 eCrCiYsEAHBJgQvA3pwJ8w=="]}, "DNS_AUTH": [{"ns": "a.ns.nic.cz.", "ns_ipv4": [{"ip": "194.0.12.1", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "ns_ipv6": [{"ip": "2001:678:f::1", "geoip": {"country": "UA", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "HOSTNAMEBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "HOSTNAMEBIND6": {"value": null, "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"}}, {"ns": "b.ns.nic.cz.", "ns_ipv4": [{"ip": "194.0.13.1", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "ns_ipv6": [{"ip": "2001:678:10::1", "geoip": {"country": "UA", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "HOSTNAMEBIND4": {"value": null, "error": "The DNS resp
-onse does not contain an answer to the question: hostname.bind. CH TXT"}, "HOSTNAMEBIND6": {"value": null, "error": "All nameservers failed to answer the query h
-ostname.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer
- to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:
-678:10::1 UDP port 53 answered REFUSED"}}, {"ns": "d.ns.nic.cz.", "ns_ipv4": [{"ip": "193.29.206.1", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s
-.p.o."}}], "ns_ipv6": [{"ip": "2001:678:1::1", "geoip": {"country": "UA", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "HOSTNAMEBIND4": {"value": null, "error": "
-All nameservers failed to answer the query hostname.bind. CH TXT: Server 193.29.206.1 UDP port 53 answered REFUSED"}, "HOSTNAMEBIND6": {"value": null, "error": "
-The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain
- an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Se
-rver 2001:678:1::1 UDP port 53 answered REFUSED"}}], "WEB": {"WEB4_80_VENDOR": {"value": "nginx"}, "WEB4_80_www_VENDOR": {"value": "nginx"}, "WEB6_80_VENDOR": {"
-value": "nginx"}, "WEB6_80_www_VENDOR": {"value": "nginx"}}}
+{"domain": "netmetr.cz", "DNS_LOCAL": {"DNS_AUTH": ["a.ns.nic.cz.", "b.ns.nic.cz.", "d.ns.nic.cz."], "MAIL": ["10 mail.nic.cz.", "15 mx.nic.cz.", "20 bh.nic.cz."], "WEB4": [{"ip": "217.31.192.130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB4_www": [{"ip": "217.31.192.130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB6": [{"ip": "2001:1488:ac15:ff90::130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB6_www": [{"ip": "2001:1488:ac15:ff90::130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB_TLSA": null, "WEB_TLSA_www": null, "MAIL_TLSA": null, "DS": ["54959 13 2 f378137545d35b2297be8ef5542e72763e0c47c520ef3a0ec894f39ad7679a0a"], "DNSKEY": ["256 3 13 36WIaijhhLkLtG77ecHTuA/rODUNy9kj J5c2QVUZYMtBsg/SDc3e+n+bxYZyTE3t wnXa/6hyAyIGjCx4nJQwQQ==", "257 3 13 KDAJfPGWgvNAEHUMzmmSa+c3gHfoGIsX nhIO1iAYGTAyVBo+CLTyIk3wxDtt4Yn3 eCrCiYsEAHBJgQvA3pwJ8w=="]}, "DNS_AUTH": [{"ns": "a.ns.nic.cz.", "ns_ipv4": [{"ip": "194.0.12.1", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "ns_ipv6": [{"ip": "2001:678:f::1", "geoip": {"country": "UA", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "HOSTNAMEBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "HOSTNAMEBIND6": {"value": null, "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"}}, {"ns": "b.ns.nic.cz.", "ns_ipv4": [{"ip": "194.0.13.1", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "ns_ipv6": [{"ip": "2001:678:10::1", "geoip": {"country": "UA", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "HOSTNAMEBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "HOSTNAMEBIND6": {"value": null, "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"}}, {"ns": "d.ns.nic.cz.", "ns_ipv4": [{"ip": "193.29.206.1", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "ns_ipv6": [{"ip": "2001:678:1::1", "geoip": {"country": "UA", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "HOSTNAMEBIND4": {"value": null, "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 193.29.206.1 UDP port 53 answered REFUSED"}, "HOSTNAMEBIND6": {"value": null, "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:1::1 UDP port 53 answered REFUSED"}}], "WEB": {"WEB4_80_VENDOR": {"value": "nginx"}, "WEB4_80_www_VENDOR": {"value": "nginx"}, "WEB6_80_VENDOR": {"value": "nginx"}, "WEB6_80_www_VENDOR": {"value": "nginx"}}}
 …
 ```
 
-The progress info with timestamp is printed to stderr, so you can save just the output easily – `python main.py list.txt > result`.
+The progress info with timestamp is printed to stderr, so you can save just the output easily – `python main.py list.txt > results`.
+
+#### Formatting the JSON output
 
 If you want formatted JSONs, just pipe the output through [jq](https://stedolan.github.io/jq/): `python main.py list.txt | jq`.
+
+#### CSV output
+
+There's an util included to convert this to CSV format, just pipe the output into it:
+
+```
+$ python main.py list.txt | python output_csv.py > results.csv
+```
+
+#### SQL output
+
+Another util to create SQL `IMPORT`s from the crawler output is also included in this repo. You can even pipe it right into `psql` or another DB client:
+
+```
+$ python main.py list.txt | python output_sql.py | psql -d crawler_results …
+```
+
+It can also generate the table structure (`CREATE TABLE …`), taking the table name as a single argument:
+
+```
+$ python output_sql.py results
+CREATE TABLE results …;
+```
+
+The SQL output is tested only with PostgreSQL 11 and SQLite 3.2, but will probably work with any sane SQL DB.
+
+## Probing just a few domains (or a single one)
+
+It's possible to run just the crawl function without rq/redis/workers, which could come handy if you're interested in just a small number of domains. To run it, just import the `process_domain` function.
+
+Example:
+
+```
+$ python
+>>> from crawl import process_domain
+>>> result = process_domain("nic.cz")
+>>> result
+{'domain': 'nic.cz', 'timestamp': '2019-09-13T09:21:10.136303', 'results': { …
+>>>
+>>> result["results"]["DNS_LOCAL"]["DNS_AUTH"]
+[{'value': 'a.ns.nic.cz.'}, {'value': 'b.ns.nic.cz.'}, {'value': 'd.ns.nic.cz.'}]
+```
+
+Formatted output, inline python code:
+
+```
+$ python -c "from crawl import process_domain; import json; print(json.dumps(process_domain('nic.cz'), indent=2))"
+{
+  "domain": "nic.cz",
+  "timestamp": "2019-09-13T09:24:23.108941",
+  "results": {
+    "DNS_LOCAL": {
+      "DNS_AUTH": [
+        …
+```
+
 
 ## Config file
 
@@ -234,7 +284,7 @@ default      |████████████████████ 21945
 
 ```
 $ pip install rq-dashboard
-$ rq-dashboard
+$ rq-dashboard
 RQ Dashboard version 0.4.0                                                 
  * Serving Flask app "rq_dashboard.cli" (lazy loading)                            
  * Environment: production                                                
@@ -256,3 +306,7 @@ RQ Dashboard version 0.4.0
 Some basic tests are in the `tests` directory in this repo. If you want to run them manually, take a look at the `test`  job in `.gitlab-ci.yml` – basically it just downloads free GeoIP DBs, tells the crawler to use them, and crawles some domains, checking values in JSON output. It runs the tests twice – first with the default DNS resolvers (ODVR) and then with system one(s).
 
 If you're looking into writing some additional tests, be aware that some Docker containers used in GitLab CI don't have IPv6 configured (even if it's working on the host machine), so checking for eg. `WEB6_80_www_VENDOR` will fail.
+
+## Bug reporting
+
+Please create issues in [this Gitlab repo](https://gitlab.labs.nic.cz/adam/dns-crawler).

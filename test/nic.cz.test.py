@@ -5,9 +5,13 @@ r = process_domain("nic.cz")
 
 print(json.dumps(r))
 
-assert sorted(r["DNS_LOCAL"]["DNS_AUTH"]) == ["a.ns.nic.cz.", "b.ns.nic.cz.", "d.ns.nic.cz."]
-assert r["WEB"]["WEB4_80_VENDOR"] == {"value": "nginx"}
-assert r["DNS_LOCAL"]["WEB4"][0]["geoip"] == {
+assert r["results"]["DNS_LOCAL"]["DNS_AUTH"] == [
+    {"value": "a.ns.nic.cz."},
+    {"value": "b.ns.nic.cz."},
+    {"value": "d.ns.nic.cz."}
+]
+assert r["results"]["WEB"]["WEB4_80_VENDOR"][0]["value"] == "nginx"
+assert r["results"]["DNS_LOCAL"]["WEB4"][0]["geoip"] == {
     "country": "CZ",
     "asn": 25192,
     "org": "CZ.NIC, z.s.p.o.",
