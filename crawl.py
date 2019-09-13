@@ -35,8 +35,8 @@ def get_dns_auth(domain, nameservers):
         ns_ipv6 = get_record(ns, "AAAA", local_resolver)[0]["value"]
         result = {
             "ns": ns,
-            "ns_ipv4": ns_ipv4,
-            "ns_ipv6": ns_ipv6,
+            "ns_ipv4": annotate_geoip([{"value": ns_ipv4}], "value", geoip_dbs)[0],
+            "ns_ipv6": annotate_geoip([{"value": ns_ipv6}], "value", geoip_dbs)[0],
             "HOSTNAMEBIND4": get_txtbind(ns_ipv4, "hostname.bind") if ns_ipv4 else None,
             "HOSTNAMEBIND6": get_txtbind(ns_ipv6, "hostname.bind") if ns_ipv6 else None,
             "VERSIONBIND4": get_txtbind(ns_ipv4, "version.bind") if ns_ipv4 else None,
