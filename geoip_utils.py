@@ -22,21 +22,22 @@ def init_geoip(config):
 
 def annotate_geoip(items, key, dbs):
     geoip_country, geoip_isp, geoip_asn = dbs
-    for item in items:
-        ip = item[key]
-        try:
-            result = {}
-            if geoip_country:
-                country = geoip_country.country(ip).country
-                result["country"] = country.iso_code
-            if geoip_isp:
-                isp = geoip_isp.isp(ip)
-            if geoip_asn and not geoip_isp:
-                isp = geoip_asn.asn(ip)
-            if geoip_asn or geoip_isp:
-                result["org"] = isp.autonomous_system_organization
-                result["asn"] = isp.autonomous_system_number
-        except Exception as e:
-            result["error"] = str(e)
-        item["geoip"] = result
+    if items:
+        for item in items:
+            ip = item[key]
+            try:
+                result = {}
+                if geoip_country:
+                    country = geoip_country.country(ip).country
+                    result["country"] = country.iso_code
+                if geoip_isp:
+                    isp = geoip_isp.isp(ip)
+                if geoip_asn and not geoip_isp:
+                    isp = geoip_asn.asn(ip)
+                if geoip_asn or geoip_isp:
+                    result["org"] = isp.autonomous_system_organization
+                    result["asn"] = isp.autonomous_system_number
+            except Exception as e:
+                result["error"] = str(e)
+            item["geoip"] = result
     return items

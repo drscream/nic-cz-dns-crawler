@@ -1,4 +1,6 @@
 import dns.resolver
+import dns.name
+import dns.dnssec
 
 
 def get_local_resolver(config):
@@ -9,6 +11,47 @@ def get_local_resolver(config):
     if use_custom_dns:
         local_resolver.nameservers = config["dns"]
     return local_resolver
+
+
+def check_dnssec(domain, resolver):
+    sub = (dns.name.from_text(domain).split(depth=3))[1]
+    q = dns.message.make_query(sub, "DNSKEY", want_dnssec=True)
+    try:
+        response = dns.query.udp(q, resolver.nameservers[0], resolver.timeout)
+    except dns.message.Truncated:
+        response = dns.query.tcp(q, resolver.nameservers[0], resolver.timeout)
+
+    rcode = response.rcode()
+
+    if rcode != 0:  # NOERROR
+        return {"valid": None, "error": f"rcode {rcode}"}
+
+    answer = response.answer
+
+    if len(answer) != 2:  # no DNSSEC records
+        return {"valid": None}
+
+    if answer[0].rdtype == dns.rdatatype.RRSIG:
+        rrsig, rrset = answer
+    elif answer[1].rdtype == dns.rdatatype.RRSIG:
+        rrset, rrsig = answer
+    else:
+        return {"valid": None, "error": "something weird happened"}
+    keys = {sub: rrset}
+
+    try:
+        dns.dnssec.validate(rrset, rrsig, keys)
+    except Exception as e:
+        return {"valid": False, "message": e}
+    return {"valid": True, "rrsig": str(rrsig), "rrset": str(rrset)}
+
+
+def annotate_dns_algorithm(items, key, index):
+    if items:
+        for item in items:
+            alg_number = item[key].split()[index]
+            item["algorithm"] = dns.dnssec.algorithm_to_text(int(alg_number))
+    return items
 
 
 def get_txtbind(nameserver, qname, timeout=5):
