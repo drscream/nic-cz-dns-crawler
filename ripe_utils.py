@@ -21,7 +21,10 @@ def ripe_ip_info(ip):
         ripe_url = "https://rest.db.ripe.net/search?type-filter=inetnum"
     ripe_url = ripe_url + "&source=ripe&query-string="
     r = requests.get(ripe_url + ip, headers={"Accept": "application/json"}, timeout=5)
-    ripe_json = r.json()["objects"]["object"][0]["attributes"]["attribute"]
+    try:
+        ripe_json = r.json()["objects"]["object"][0]["attributes"]["attribute"]
+    except KeyError:
+        return None
     return {
         "netname": get_attr(ripe_json, "netname"),
         "inetnum": get_inetnum(ripe_json)

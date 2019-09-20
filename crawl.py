@@ -16,9 +16,7 @@ def get_dns_local(domain):
         "MAIL": get_record(domain, "MX", local_resolver),
         "WEB4": annotate_ripe(annotate_geoip(get_record(domain, "A", local_resolver), "value", geoip_dbs)),
         "WEB4_www": annotate_ripe(annotate_geoip(get_record("www." + domain, "A", local_resolver), "value", geoip_dbs)),
-        "WEB6": annotate_ripe(
-            annotate_geoip(get_record(domain, "AAAA", local_resolver), "value", geoip_dbs)
-        ),
+        "WEB6": annotate_ripe(annotate_geoip(get_record(domain, "AAAA", local_resolver), "value", geoip_dbs)),
         "WEB6_www": annotate_ripe(
             annotate_geoip(get_record("www." + domain, "AAAA", local_resolver), "value", geoip_dbs)
         ),
@@ -37,12 +35,18 @@ def get_dns_auth(domain, nameservers):
     results = []
     for item in nameservers:
         ns = item["value"]
-        ns_ipv4 = get_record(ns, "A", local_resolver)[0]["value"]
-        ns_ipv6 = get_record(ns, "AAAA", local_resolver)[0]["value"]
+        a = get_record(ns, "A", local_resolver)
+        aaaa = get_record(ns, "AAAA", local_resolver)
+        ns_ipv4 = a[0]["value"] if a else None
+        ns_ipv6 = aaaa[0]["value"] if aaaa else None
         result = {
             "ns": ns,
-            "ns_ipv4": annotate_ripe(annotate_geoip([{"value": ns_ipv4}], "value", geoip_dbs))[0],
-            "ns_ipv6": annotate_ripe(annotate_geoip([{"value": ns_ipv6}], "value", geoip_dbs))[0],
+            "ns_ipv4": annotate_ripe(annotate_geoip([{"value": ns_ipv4}], "value", geoip_dbs))[0]
+            if ns_ipv4
+            else ns_ipv4,
+            "ns_ipv6": annotate_ripe(annotate_geoip([{"value": ns_ipv6}], "value", geoip_dbs))[0]
+            if ns_ipv6
+            else ns_ipv6,
             "HOSTNAMEBIND4": get_txtbind(ns_ipv4, "hostname.bind") if ns_ipv4 else None,
             "HOSTNAMEBIND6": get_txtbind(ns_ipv6, "hostname.bind") if ns_ipv6 else None,
             "VERSIONBIND4": get_txtbind(ns_ipv4, "version.bind") if ns_ipv4 else None,
