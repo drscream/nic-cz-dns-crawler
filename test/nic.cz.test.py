@@ -5,8 +5,13 @@ r = process_domain("nic.cz")
 
 print(json.dumps(r))
 
-assert r["results"]["DNS_LOCAL"]["DNS_AUTH"] == sorted(
-    [{"value": "a.ns.nic.cz."}, {"value": "b.ns.nic.cz."}, {"value": "d.ns.nic.cz."}], key=lambda k: k["value"]
+
+def sort_by_value(list):
+    return sorted(list, key=lambda k: k["value"])
+
+
+assert sort_by_value(r["results"]["DNS_LOCAL"]["DNS_AUTH"]) == sort_by_value(
+    [{"value": "a.ns.nic.cz."}, {"value": "b.ns.nic.cz."}, {"value": "d.ns.nic.cz."}]
 )
 
 assert r["results"]["WEB"]["WEB4_80_VENDOR"][0]["value"] == "nginx"
