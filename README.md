@@ -101,7 +101,7 @@ If you want formatted JSONs, just pipe the output through [jq](https://stedolan.
 
 #### SQL output
 
-Another util to create SQL `IMPORT`s from the crawler output is also included in this repo. You can even pipe it right into `psql` or another DB client:
+An util to create SQL `IMPORT`s from the crawler output is included in this repo. You can even pipe it right into `psql` or another DB client:
 
 ```
 $ python main.py list.txt | python output_sql.py table_name | psql -d db_name …
@@ -114,7 +114,26 @@ $ python output_sql.py results
 CREATE TABLE results …;
 ```
 
-The SQL output is tested only with PostgreSQL 11 and SQLite 3.2, but will probably work with any sane SQL DB.
+The SQL output is tested only with PostgreSQL 11.
+
+#### Custom output formats
+
+Since the main process just spits out JSONs to stdout, it's pretty easy to process it with almost anything.
+
+A simple example for YAML output:
+
+```python
+import json
+import yaml
+import sys
+
+for line in sys.stdin:
+    print(yaml.dump(json.loads(line)))
+```
+
+(and then just `python main.py domains.txt | python yaml.py`)
+
+CSV is a different beast, since there's no obvious way to represent arrays…
 
 ## Probing just a few domains (or a single one)
 
