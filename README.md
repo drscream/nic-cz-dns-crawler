@@ -101,13 +101,21 @@ If you want formatted JSONs, just pipe the output through [jq](https://stedolan.
 
 #### SQL output
 
-An util to create SQL `IMPORT`s from the crawler output is included in this repo. You can even pipe it right into `psql` or another DB client:
+An util to create SQL `IMPORT`s from the crawler output is included in this repo.
+
+```
+$ python main.py list.txt | python output_sql.py table_name
+INSERT INTO table_name VALUES …;
+INSERT INTO table_name VALUES …;
+```
+
+You can even pipe it right into `psql` or another DB client:
 
 ```
 $ python main.py list.txt | python output_sql.py table_name | psql -d db_name …
 ```
 
-It can also generate the table structure (`CREATE TABLE …`), taking the table name as a single argument:
+It can also generate the table structure (`CREATE TABLE …`), taking the table name as a single argument (without piping anything to stdin):
 
 ```
 $ python output_sql.py results
