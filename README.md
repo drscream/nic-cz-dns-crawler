@@ -332,4 +332,4 @@ If you're looking into writing some additional tests, be aware that some Docker 
 
 ## Bug reporting
 
-Please create issues in [this Gitlab repo](https://gitlab.labs.nic.cz/adam/dns-crawler).
+Please create [issues in this Gitlab repo](https://gitlab.labs.nic.cz/adam/dns-crawler/issues).
