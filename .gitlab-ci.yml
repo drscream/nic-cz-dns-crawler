@@ -7,6 +7,7 @@ cache:
   paths:
     - .cache/pip
     - venv/
+    - ./test/*.mmdb
 
 stages:
   - lint
@@ -25,7 +26,7 @@ download_geoip:
   stage: setup
   script:
     - apt install wget
-    - wget -q https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz
+    - wget -cq https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz
     - tar zxf GeoLite2-Country.tar.gz
     - tar zxf GeoLite2-ASN.tar.gz
     - mv GeoLite2*/*.mmdb ./test/
