@@ -32,7 +32,7 @@ test_odvr:
   before_script:
     - pip install -q -r requirements.txt
   script: 
-    - export PYTHONPATH="$(pwd)/.."
+    - export PYTHONPATH="$(pwd)"
     - cd test
     - mv config.yml ../config.yml
     - python nic.cz.test.py > nic.cz.json
@@ -48,7 +48,7 @@ test_system_dns:
   before_script:
     - pip install -q -r requirements.txt
   script: 
-    - export PYTHONPATH="$(pwd)/.."
+    - export PYTHONPATH="$(pwd)"
     - cd test
     - mv config-nodns.yml ../config.yml
     - python nic.cz.test.py > nic.cz-nodns.json
