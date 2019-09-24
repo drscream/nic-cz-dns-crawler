@@ -39,7 +39,7 @@ test_odvr:
     - cat nic.cz.json
   artifacts:
     paths:
-      - nic.cz.json
+      - ./test/nic.cz.json
 
 test_system_dns:
   stage: test
@@ -55,4 +55,4 @@ test_system_dns:
     - cat nic.cz-nodns.json
   artifacts:
     paths:
-      -  nic.cz-nodns.json
+      - ./test/nic.cz-nodns.json
