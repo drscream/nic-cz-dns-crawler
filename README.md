@@ -25,18 +25,18 @@ $ python workers.py
 - [redis](https://redis.io/)
 - [requests](https://python-requests.org/)
 - [dnspython](http://www.dnspython.org/)
-- [geoip2](https://geoip2.readthedocs.io/en/latest/) + up-to-date Country and ISP (or ASN) databases (mmdb format)
+- [geoip2](https://geoip2.readthedocs.io/en/latest/) + up-to-date Country and ISP (or ASN) databases (mmdb format, works with both free and commercial ones)
 
 ### Redis configuration
 
-No special config needed, but increase the memory limit if you have a lot of domains to process (`maxmemory 1G`). You can also disable disk snapshots to save some I/O time (comment out `save …` lines).
+No special config needed, but increase the memory limit if you have a lot of domains to process (eg. `maxmemory 1G`). You can also disable disk snapshots to save some I/O time (comment out the `save …` lines).
 
 ### Installing Python deps in a virtualenv
 
 ```
 $ git clone https://gitlab.labs.nic.cz/adam/dns-crawler
 $ cd dns-crawler
-$ python3 -m venv .venv
+$ python3 -m venv .venv
 $ source .venv/bin/activate
 $ pip install -r requirements.txt 
 ```
@@ -46,61 +46,106 @@ $ pip install -r requirements.txt
 Create a short domain list (one 2nd level domain per line):
 
 ```
-$ echo "nic.cz\nnetmetr.cz\nroot.cz" > domains.txt
+$ echo "nic.cz\nnetmetr.cz\nroot.cz" > domains.txt
 ```
 
 Start the main process to create job for every domain:
 
 ```
 $ python main.py domains.txt
-[2019-05-03 11:45:59] Created 3 jobs.
-[2019-05-03 11:45:59] 0/3
-[2019-05-03 11:46:01] 0/3
+[2019-09-24 07:38:15] Reading domains from …/domains.txt.
+[2019-09-24 07:38:15] Creating job queue using 2 threads.
+[2019-09-24 07:38:15] 0/3 jobs created.
+[2019-09-24 07:38:16] 3/3 jobs created.
+[2019-09-24 07:38:16] Created 3 jobs. Waiting for workers…
+[2019-09-24 07:38:17] 0/3
 ```
 
 Now it waits for workers to take the jobs from redis. Run a worker in another shell:
 
 ```
 $ python workers.py 1
-11:48:17 RQ worker 'rq:worker:foo-2' started, version 1.0
-11:48:17 *** Listening on default...
-11:48:17 Cleaning registries for queue: default
-11:48:17 default: crawl.process_domain('nic.cz') (nic.cz)
-11:48:17 RQ worker 'rq:worker:foo-1' started, version 1.0
-11:48:17 RQ worker 'rq:worker:foo-3' started, version 1.0
-11:48:17 *** Listening on default...
-11:48:17 *** Listening on default...
-11:48:17 default: crawl.process_domain('netmetr.cz') (netmetr.cz)
-11:48:17 default: crawl.process_domain('root.cz') (root.cz)
-11:48:17 default: Job OK (netmetr.cz)
-11:48:17 default: Job OK (nic.cz)
-11:48:17 RQ worker 'rq:worker:foo-2' done, quitting
-11:48:17 RQ worker 'rq:worker:foo-3' done, quitting
-11:48:19 default: Job OK (root.cz)
+07:38:17 RQ worker 'rq:worker:foo-2' started, version 1.0
+07:38:17 *** Listening on default...
+07:38:17 Cleaning registries for queue: default
+07:38:17 default: crawl.process_domain('nic.cz') (nic.cz)
+07:38:17 RQ worker 'rq:worker:foo-1' started, version 1.0
+07:38:17 RQ worker 'rq:worker:foo-3' started, version 1.0
+07:38:17 *** Listening on default...
+07:38:17 *** Listening on default...
+07:38:17 default: crawl.process_domain('netmetr.cz') (netmetr.cz)
+07:38:17 default: crawl.process_domain('root.cz') (root.cz)
+07:38:17 default: Job OK (netmetr.cz)
+07:38:17 default: Job OK (nic.cz)
+07:38:17 RQ worker 'rq:worker:foo-2' done, quitting
+07:38:17 RQ worker 'rq:worker:foo-3' done, quitting
+07:38:19 default: Job OK (root.cz)
 ```
+
+### Output formats
 
 Results are printed to the main process' stdout – JSON for every domain, separated by `\n`:
 
 ```
 …
-[2019-05-03 11:48:17] 2/3
-{"domain": "netmetr.cz", "DNS_LOCAL": {"DNS_AUTH": ["a.ns.nic.cz.", "b.ns.nic.cz.", "d.ns.nic.cz."], "MAIL": ["10 mail.nic.cz.", "15 mx.nic.cz.", "20 bh.nic.cz."], "WEB4": [{"ip": "217.31.192.130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB4_www": [{"ip": "217.31.192.130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB6": [{"ip": "2001:1488:ac15:ff90::130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB6_www": [{"ip": "2001:1488:ac15:ff90::130", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "WEB_TLSA": null, "WEB_TLSA_www": null, "MAIL_TLSA": null, "DS": ["54959 13 2 f378137545d35b2297be8ef5542e72763e0c47c520ef3a0ec894f39ad7679a0a"], "DNSKEY": ["256 3 13 36WIaijhhLkLtG77ecHTuA/rODUNy9kj J5c2QVUZYMtBsg/SDc3e+n+bxYZyTE3t wnXa/6hyAyIGjCx4nJQwQQ==", "257 3 13 KDAJfPGWgvNAEHUMzmmSa+c3gHfoGIsX nhIO1iAYGTAyVBo+CLTyIk3wxDtt4Yn3 eCrCiYsEAHBJgQvA3pwJ8w=="]}, "DNS_AUTH": [{"ns": "a.ns.nic.cz.", "ns_ipv4": [{"ip": "194.0.12.1", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "ns_ipv6": [{"ip": "2001:678:f::1", "geoip": {"country": "UA", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "HOSTNAMEBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "HOSTNAMEBIND6": {"value": null, "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"}}, {"ns": "b.ns.nic.cz.", "ns_ipv4": [{"ip": "194.0.13.1", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "ns_ipv6": [{"ip": "2001:678:10::1", "geoip": {"country": "UA", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "HOSTNAMEBIND4": {"value": null, "error": "The DNS resp
-onse does not contain an answer to the question: hostname.bind. CH TXT"}, "HOSTNAMEBIND6": {"value": null, "error": "All nameservers failed to answer the query h
-ostname.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer
- to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:
-678:10::1 UDP port 53 answered REFUSED"}}, {"ns": "d.ns.nic.cz.", "ns_ipv4": [{"ip": "193.29.206.1", "geoip": {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s
-.p.o."}}], "ns_ipv6": [{"ip": "2001:678:1::1", "geoip": {"country": "UA", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}}], "HOSTNAMEBIND4": {"value": null, "error": "
-All nameservers failed to answer the query hostname.bind. CH TXT: Server 193.29.206.1 UDP port 53 answered REFUSED"}, "HOSTNAMEBIND6": {"value": null, "error": "
-The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain
- an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Se
-rver 2001:678:1::1 UDP port 53 answered REFUSED"}}], "WEB": {"WEB4_80_VENDOR": {"value": "nginx"}, "WEB4_80_www_VENDOR": {"value": "nginx"}, "WEB6_80_VENDOR": {"
-value": "nginx"}, "WEB6_80_www_VENDOR": {"value": "nginx"}}}
+[2019-05-03 07:38:17] 2/3
+{"domain": "nic.cz", "timestamp": "2019-09-24T05:28:06.536991", "results": {"DNS_LOCAL": {"DNS_AUTH": [{"value": "a.ns.nic.cz."}, {"value": "b.ns.nic.cz."}, {"value": "d.ns.nic.cz."}], "MAIL": [{"value": "10 mail.nic.cz."}, {"value": "20 mx.nic.cz."}, {"value": "30 bh.nic.cz."}], "WEB4": [{"value": "217.31.205.50", "geoip": {"country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "CZ-NIC-I", "inetnum": "217.31.205.0 - 217.31.206.255"}}], "WEB4_www": [{"value": "217.31.205.50", "geoip": {"country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "CZ-NIC-I", "inetnum": "217.31.205.0 - 217.31.206.255"}}], "WEB6": [{"value": "2001:1488:0:3::2", "geoip": {"country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "CZ-NIC-NET", "inetnum": "2001:1488::/48"}}], "WEB6_www": [{"value": "2001:1488:0:3::2", "geoip": {"country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "CZ-NIC-NET", "inetnum": "2001:1488::/48"}}], "WEB_TLSA": null, "WEB_TLSA_www": [{"value": "1 1 1 a1c442880eb3fdf5ea9978c3821b806520d39735cfa9fdfb0fc7b5c27c679db4"}], "MAIL_TLSA": null, "DS": [{"value": "61281 13 2 4104d40c8fe2030bf7a09a199fcf37b36f7ec8ddd16f5a84f2e61c248d3afd0f", "algorithm": "ECDSAP256SHA256"}], "DNSKEY": [{"value": "256 3 13 10TdB3LI+IdWr/LIV/0gntJWk14+7tzI L9Gpyvav3F8pjEhg0PB85k3ksXDfAZ/+ 9pxRXOou5nu68vUxkc0VbQ==", "algorithm": "ECDSAP256SHA256"}, {"value": "256 3 13 4BWL1uxEYld1r529eJRZ8vnCAWbbemDi A6QuJA5croqccrgSl11LpVl74RV66Tvx 4LqFpIuMD10oaTZDdHLbMg==", "algorithm": "ECDSAP256SHA256"}, {"value": "257 3 13 LM4zvjUgZi2XZKsYooDE0HFYGfWp242f KB+O8sLsuox8S6MJTowY8lBDjZD7JKbm aNot3+1H8zU9TrDzWmmHwQ==", "algorithm": "ECDSAP256SHA256"}], "DNSSEC": {"valid": true, "rrsig": "nic.cz. 260 IN RRSIG DNSKEY 13 2 1800 20191005212609 20190922054001 61281 nic.cz. Zdbi4HD79gLQ8fMX6aj2MqkavK30QFdy OhedI7zH/OZAund4ZnI/ri83S20fBeD0 uh1Gu2vKNY7y1KnegOJrfQ==\nnic.cz. 260 IN RRSIG DNSKEY 13 2 1800 20191005220333 20190922054001 41805 nic.cz. hqS71kiKr1tk0pl3rkh8WWmvBaOrbaZP PJm46gCf5jQkVfGwbBr9f337GNoWy8qZ ebBjEECssePwvhknOL6I4w==", "rrset": "nic.cz. 260 IN DNSKEY 256 3 13 10TdB3LI+IdWr/LIV/0gntJWk14+7tzI L9Gpyvav3F8pjEhg0PB85k3ksXDfAZ/+ 9pxRXOou5nu68vUxkc0VbQ==\nnic.cz. 260 IN DNSKEY 256 3 13 4BWL1uxEYld1r529eJRZ8vnCAWbbemDi A6QuJA5croqccrgSl11LpVl74RV66Tvx 4LqFpIuMD10oaTZDdHLbMg==\nnic.cz. 260 IN DNSKEY 257 3 13 LM4zvjUgZi2XZKsYooDE0HFYGfWp242f KB+O8sLsuox8S6MJTowY8lBDjZD7JKbm aNot3+1H8zU9TrDzWmmHwQ=="}}, "DNS_AUTH": [{"ns": "a.ns.nic.cz.", "ns_ipv4": {"value": "194.0.12.1", "geoip": {"country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "A-NS-NIC-CZ", "inetnum": "194.0.12.0 - 194.0.12.255"}}, "ns_ipv6": {"value": "2001:678:f::1", "geoip": {"country": "DE", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "A-NS-NIC-CZ", "inetnum": "2001:678:f::/48"}}, "HOSTNAMEBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "HOSTNAMEBIND6": {"value": null, "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"}}, {"ns": "b.ns.nic.cz.", "ns_ipv4": {"value": "194.0.13.1", "geoip": {"country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "B-NS-NIC-CZ", "inetnum": "194.0.13.0 - 194.0.13.255"}}, "ns_ipv6": {"value": "2001:678:10::1", "geoip": {"country": "DE", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "B-NS-NIC-CZ", "inetnum": "2001:678:10::/48"}}, "HOSTNAMEBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "HOSTNAMEBIND6": {"value": null, "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"}}, {"ns": "d.ns.nic.cz.", "ns_ipv4": {"value": "193.29.206.1", "geoip": {"country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "D-NS-NIC-CZ", "inetnum": "193.29.206.0 - 193.29.206.255"}}, "ns_ipv6": {"value": "2001:678:1::1", "geoip": {"country": "DE", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "D-NS-NIC-CZ", "inetnum": "2001:678:1::/48"}}, "HOSTNAMEBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "HOSTNAMEBIND6": {"value": null, "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"}}], "WEB": {"WEB4_80_VENDOR": [{"ip": "217.31.205.50", "value": "nginx"}], "WEB4_80_www_VENDOR": [{"ip": "217.31.205.50", "value": "nginx"}], "WEB4_443_VENDOR": [{"ip": "217.31.205.50", "value": "nginx"}], "WEB4_443_www_VENDOR": [{"ip": "217.31.205.50", "value": "nginx"}], "WEB6_80_VENDOR": [{"ip": "2001:1488:0:3::2", "value": "nginx"}], "WEB6_80_www_VENDOR": [{"ip": "2001:1488:0:3::2", "value": "nginx"}], "WEB6_443_VENDOR": [{"ip": "2001:1488:0:3::2", "value": "nginx"}], "WEB6_443_www_VENDOR": [{"ip": "2001:1488:0:3::2", "value": "nginx"}]}}}
 …
 ```
 
-The progress info with timestamp is printed to stderr, so you can save just the output easily – `python main.py list.txt > result`.
+The progress info with timestamp is printed to stderr, so you can save just the output easily – `python main.py list.txt > results`.
+
+#### Formatting the JSON output
 
 If you want formatted JSONs, just pipe the output through [jq](https://stedolan.github.io/jq/): `python main.py list.txt | jq`.
+
+#### SQL output
+
+Another util to create SQL `IMPORT`s from the crawler output is also included in this repo. You can even pipe it right into `psql` or another DB client:
+
+```
+$ python main.py list.txt | python output_sql.py table_name | psql -d db_name …
+```
+
+It can also generate the table structure (`CREATE TABLE …`), taking the table name as a single argument:
+
+```
+$ python output_sql.py results
+CREATE TABLE results …;
+```
+
+The SQL output is tested only with PostgreSQL 11 and SQLite 3.2, but will probably work with any sane SQL DB.
+
+## Probing just a few domains (or a single one)
+
+It's possible to run just the crawl function without the rq/redis/worker machinery, which could come handy if you're interested in just a small number of domains. To run it, just import the `process_domain` function.
+
+Example:
+
+```
+$ python
+>>> from crawl import process_domain
+>>> result = process_domain("nic.cz")
+>>> result
+{'domain': 'nic.cz', 'timestamp': '2019-09-13T09:21:10.136303', 'results': { …
+>>>
+>>> result["results"]["DNS_LOCAL"]["DNS_AUTH"]
+[{'value': 'a.ns.nic.cz.'}, {'value': 'b.ns.nic.cz.'}, {'value': 'd.ns.nic.cz.'}]
+```
+
+Formatted output, inline python code:
+
+```
+$ python -c "from crawl import process_domain; import json; print(json.dumps(process_domain('nic.cz'), indent=2))"
+{
+  "domain": "nic.cz",
+  "timestamp": "2019-09-13T09:24:23.108941",
+  "results": {
+    "DNS_LOCAL": {
+      "DNS_AUTH": [
+        …
+```
+
 
 ## Config file
 
@@ -163,7 +208,7 @@ Examples: workers.py 8
           workers.py 16 redis.foo.bar
 ```
 
-Trying to use more than 24 workers per CPU core will result in a warning:
+Trying to use more than 24 workers per CPU core will result in a warning (and countdown before it actually starts the workers):
 
 ```
 $ workers.py 999
@@ -234,7 +279,7 @@ default      |████████████████████ 21945
 
 ```
 $ pip install rq-dashboard
-$ rq-dashboard
+$ rq-dashboard
 RQ Dashboard version 0.4.0                                                 
  * Serving Flask app "rq_dashboard.cli" (lazy loading)                            
  * Environment: production                                                
@@ -256,3 +301,7 @@ RQ Dashboard version 0.4.0
 Some basic tests are in the `tests` directory in this repo. If you want to run them manually, take a look at the `test`  job in `.gitlab-ci.yml` – basically it just downloads free GeoIP DBs, tells the crawler to use them, and crawles some domains, checking values in JSON output. It runs the tests twice – first with the default DNS resolvers (ODVR) and then with system one(s).
 
 If you're looking into writing some additional tests, be aware that some Docker containers used in GitLab CI don't have IPv6 configured (even if it's working on the host machine), so checking for eg. `WEB6_80_www_VENDOR` will fail.
+
+## Bug reporting
+
+Please create issues in [this Gitlab repo](https://gitlab.labs.nic.cz/adam/dns-crawler).
