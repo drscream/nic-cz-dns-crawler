@@ -21,11 +21,12 @@ $ python workers.py
 ### Requirements
 
 - Python 3.6+
-- [rq](https://python-rq.org/)
-- [redis](https://redis.io/)
 - [requests](https://python-requests.org/)
-- [dnspython](http://www.dnspython.org/)
+- [pyaml](https://pyyaml.org/) (for config loading)
+- [dnspython](http://www.dnspython.org/) + [pycryptodome](https://pycryptodome.readthedocs.io/) & [python-ecdsa](https://github.com/warner/python-ecdsa) (for DNSSEC validation)
 - [geoip2](https://geoip2.readthedocs.io/en/latest/) + up-to-date Country and ISP (or ASN) databases (mmdb format, works with both free and commercial ones)
+- [rq](https://python-rq.org/) and [redis](https://redis.io/) if you want to process a huge number of domains and even run the crawler across multiple machines
+
 
 ### Redis configuration
 
@@ -101,7 +102,7 @@ If you want formatted JSONs, just pipe the output through [jq](https://stedolan.
 
 #### SQL output
 
-An util to create SQL `IMPORT`s from the crawler output is included in this repo.
+An util to create SQL `INSERT`s from the crawler output is included in this repo.
 
 ```
 $ python main.py list.txt | python output_sql.py table_name
