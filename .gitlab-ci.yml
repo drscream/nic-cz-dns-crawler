@@ -1,27 +1,58 @@
 image: python:3.7
 
+stages:
+  - lint
+  - setup
+  - test
+
 lint:
+  stage: lint
   before_script:
     - pip install flake8
   script:
     - flake8 --config=.flake8
 
-test:
-  before_script:
+
+download_geoip:
+  stage: setup
+  script:
     - apt install wget
-    - wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz
+    - wget -q https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz
     - tar zxf GeoLite2-Country.tar.gz
     - tar zxf GeoLite2-ASN.tar.gz
-    - pip install -r requirements.txt
-    - mv test/config.yml ./config.yml
-    - mv GeoLite2*/*mmdb ./test/
-  script: 
-    - cd test
-    - ls -l
-    - export PYTHONPATH="$(pwd)/.."
-    - python nic.cz.test.py > nic.cz.json
-    - mv config-nodns.yml ../config.yml
-    - python nic.cz.test.py > nic.cz-nodns.json
+    - mv GeoLite2*/*.mmdb ./test/
   artifacts:
     paths:
-      - ./*.json
+      - ./test/*.mmdb
+
+test_odvr:
+  stage: test
+  dependencies:
+    - download_geoip
+  before_script:
+    - pip install -q -r requirements.txt
+  script: 
+    - export PYTHONPATH="$(pwd)/.."
+    - cd test
+    - mv config.yml ../config.yml
+    - python nic.cz.test.py > nic.cz.json
+    - cat nic.cz.json
+  artifacts:
+    paths:
+      - nic.cz.json
+
+test_system_dns:
+  stage: test
+  dependencies:
+    - download_geoip
+  before_script:
+    - pip install -q -r requirements.txt
+  script: 
+    - export PYTHONPATH="$(pwd)/.."
+    - cd test
+    - mv config-nodns.yml ../config.yml
+    - python nic.cz.test.py > nic.cz-nodns.json
+    - cat nic.cz-nodns.json
+  artifacts:
+    paths:
+      -  nic.cz-nodns.json
