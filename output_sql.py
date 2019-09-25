@@ -16,7 +16,7 @@ except IndexError:
 
 
 if sys.stdin.isatty():
-    print(f"CREATE TABLE {table_name} (ID bigserial NOT NULL PRIMARY KEY, data json NOT NULL);")
+    print(f"CREATE TABLE {table_name} (ID bigserial NOT NULL PRIMARY KEY, data jsonb NOT NULL);")
 else:
     for line in sys.stdin:
         data = line.replace("\n", "").replace("'", "''")
