@@ -16,6 +16,12 @@ $ python main.py domain-list.txt > result.json
 $ python workers.py
 ```
 
+## How fast is it anyway?
+
+A single laptop on ~50Mbps connection can crawl the entire *.cz* zone overnight, give or take.
+
+Since the crawler is designed to be parallel, the actual speed depends almost entirely on the worker count. And it can scale accross multiple machines almost infinitely, so should you need a million domains crawled in a few minutes, you can always just throw more hardware at it.
+
 ## Installation
 
 ### Requirements
@@ -247,6 +253,8 @@ Cancel now (Ctrl-C) or have a fire extinguisher ready.
 
 Stopping works the same way as with the main process – `Ctrl-C` (or kill signal) will finish the current job(s) and exit.
 
+> The workers will shout at you that *"Result will never expire, clean up result key manually"*. This is perfectly fine, results are continually cleaned by the main process. Unfortunately there's no easy way to disable this message in `rq` without setting a fixed TTL.
+
 ## Resuming work
 
 Stopping the workers won't delete the jobs from Redis. So, if you stop the `workers.py` process and then start a new one (perhaps to use different worker count…), it will pick up the unfinished jobs and continue.
@@ -294,8 +302,6 @@ $ python workers.py 24 192.168.0.2:6379
                     ^            ^
                     24 threads   redis host
 ```
-
-The crawler can scale almost infinitely this way, so should you need a million domains crawled *really quick*, you can always just throw more hardware at it. 
 
 ## Monitoring
 
