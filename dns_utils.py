@@ -44,7 +44,7 @@ def check_dnssec(domain, resolver):
     try:
         dns.dnssec.validate(rrset, rrsig, keys)
     except Exception as e:
-        return {"valid": False, "message": e}
+        return {"valid": False, "message": str(e)}
     return {"valid": True, "rrsig": str(rrsig), "rrset": str(rrset)}
 
 
