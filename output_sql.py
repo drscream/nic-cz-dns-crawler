@@ -19,5 +19,5 @@ if sys.stdin.isatty():
     print(f"CREATE TABLE {table_name} (ID bigserial NOT NULL PRIMARY KEY, data json NOT NULL);")
 else:
     for line in sys.stdin:
-        data = line.replace("\n", "")
-        print(f"INSERT INTO {table_name} (data) VALUES ({data});")
+        data = line.replace("\n", "").replace("'", "\'")
+        print(f"INSERT INTO {table_name} (data) VALUES ('{data}');")
