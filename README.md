@@ -110,7 +110,7 @@ INSERT INTO table_name VALUES …;
 INSERT INTO table_name VALUES …;
 ```
 
-You can even pipe it right into `psql` or another DB client:
+You can even pipe it right into `psql` or another DB client, which will save the results into DB continually, as they come from the workers:
 
 ```
 $ python main.py list.txt | python output_sql.py table_name | psql -d db_name …
@@ -251,7 +251,11 @@ Stopping works the same way as with the main process – `Ctrl-C` (or kill signa
 
 Stopping the workers won't delete the jobs from Redis. So, if you stop the `workers.py` process and then start a new one (perhaps to use different worker count…), it will pick up the unfinished jobs and continue.
 
-This can also be used to move the workers to another machine(s).
+This can also be used change the worker count if it turns out to be too low or hight for your machine or network:
+
+- to reduce the worker count, just stop the `workers.py` process and start a new one with a new count
+- to increase the worker count, either use the same approach, or just start a second `workers.py` process in another shell, the worker count will just add up
+- scaling to multiple machines works the same way, see below
 
 ## Running on multiple machines
 
@@ -290,6 +294,8 @@ $ python workers.py 24 192.168.0.2:6379
                     ^            ^
                     24 threads   redis host
 ```
+
+The crawler can scale almost infinitely this way, so should you need a million domains crawled *really quick*, you can always just throw more hardware at it. 
 
 ## Monitoring
 
