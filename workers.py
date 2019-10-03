@@ -11,7 +11,6 @@ cpu_count = cpu_count()
 worker_count = cpu_count * 8
 hostname = gethostname()
 redis_host = "localhost:6379"
-redis = Redis(host=redis_host.split(":")[0], port=redis_host.split(":")[1])
 
 
 def print_help():
@@ -60,7 +59,7 @@ if worker_count > 24 * cpu_count:
 if len(sys.argv) > 2:
     redis_host = sys.argv[2]
 
-
+redis = Redis(host=redis_host.split(":")[0], port=redis_host.split(":")[1])
 commands = []
 
 for n in range(worker_count):
