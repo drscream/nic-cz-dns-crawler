@@ -53,7 +53,7 @@ $ pip install -r requirements.txt
 Create a short domain list (one 2nd level domain per line):
 
 ```
-$ echo "nic.cz\nnetmetr.cz\nroot.cz" > domains.txt
+$ echo -e "nic.cz\nnetmetr.cz\nroot.cz" > domains.txt
 ```
 
 Start the main process to create job for every domain:
