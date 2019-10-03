@@ -8,7 +8,7 @@ from time import sleep
 import json
 from multiprocessing import cpu_count
 import threading
-from datetime import datetime
+from timestamp import timestamp
 
 POLL_INTERVAL = 2
 
@@ -19,10 +19,6 @@ def print_help():
     sys.stderr.write(f"Usage: {sys.argv[0]} <file>\n")
     sys.stderr.write(f"       file - plaintext domain list, one domain per line (separated by \\n)\n")
     sys.exit(1)
-
-
-def timestamp():
-    return f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]"
 
 
 try:
