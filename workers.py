@@ -3,11 +3,15 @@ from multiprocessing import cpu_count
 import subprocess
 from socket import gethostname
 from time import sleep
+from redis import Redis
+from timestamp import timestamp
+
 
 cpu_count = cpu_count()
 worker_count = cpu_count * 8
 hostname = gethostname()
 redis_host = "localhost:6379"
+redis = Redis(host=redis_host.split(":")[0], port=redis_host.split(":")[1])
 
 
 def print_help():
@@ -61,6 +65,12 @@ commands = []
 
 for n in range(worker_count):
     commands += [["rq", "worker", "--burst", "-n", f"{hostname}-{n+1}", "-u", f"redis://{redis_host}"]]
+
+while redis.get("locked") == b"1":
+    sys.stderr.write(f"{timestamp()} Waiting for the main process to unlock the queue.\n")
+    sleep(5)
+
 procs = [subprocess.Popen(i) for i in commands]
+
 for p in procs:
     p.wait()

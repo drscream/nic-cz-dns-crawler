@@ -54,6 +54,7 @@ try:
         parts = cpu_count * 4
         domains_per_part = int(domain_count / parts)
         sys.stderr.write(f"{timestamp()} Creating job queue using {parts} threads.\n")
+        redis.set("locked", 1)
 
         for thread_num in range(parts):
             if thread_num == parts - 1:  # last one
@@ -69,7 +70,8 @@ try:
             created_count = queue.count
             sleep(POLL_INTERVAL)
 
-        sys.stderr.write(f"{timestamp()} Created {domain_count} jobs. Waiting for workers…\n")
+        sys.stderr.write(f"{timestamp()} Created {domain_count} jobs. Unlocking queue and waiting for workers…\n")
+        redis.set("locked", 0)
 
         while finished_count < domain_count:
             finished_domains = finished_registry.get_job_ids()
