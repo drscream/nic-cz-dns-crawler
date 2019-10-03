@@ -51,7 +51,7 @@ try:
         domain_count = len(domains)
         finished_count = 0
         created_count = 0
-        parts = cpu_count * 2
+        parts = cpu_count * 4
         domains_per_part = int(domain_count / parts)
         sys.stderr.write(f"{timestamp()} Creating job queue using {parts} threads.\n")
 
