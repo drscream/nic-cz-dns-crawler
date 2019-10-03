@@ -21,7 +21,10 @@ def check_dnssec(domain, resolver):
     except dns.exception.Timeout:
         return {"valid": None, "error": "timeout"}
     except dns.message.Truncated:
-        response = dns.query.tcp(q, resolver.nameservers[0], resolver.timeout)
+        try:
+            response = dns.query.tcp(q, resolver.nameservers[0], resolver.timeout)
+        except dns.exception.Timeout:
+            return {"valid": None, "error": "timeout"}
 
     rcode = response.rcode()
 
