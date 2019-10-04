@@ -17,7 +17,7 @@ def check_dnssec(domain, resolver):
     sub = (dns.name.from_text(domain).split(depth=3))[1]
     q = dns.message.make_query(sub, "DNSKEY", want_dnssec=True)
     try:
-        response = dns.query.udp(q, resolver.nameservers[0], resolver.timeout)
+        response = dns.query.udp(q, resolver.nameservers[0], resolver.timeout, ignore_unexpected=True)
     except dns.exception.Timeout:
         return {"valid": None, "error": "timeout"}
     except dns.message.Truncated:
