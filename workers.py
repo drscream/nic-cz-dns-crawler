@@ -71,5 +71,8 @@ while redis.get("locked") == b"1":
 
 procs = [subprocess.Popen(i) for i in commands]
 
-for p in procs:
-    p.wait()
+try:
+    for p in procs:
+        p.wait()
+except KeyboardInterrupt:
+    pass
