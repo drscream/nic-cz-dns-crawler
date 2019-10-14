@@ -1,6 +1,6 @@
-rq==1.0
-redis==3.2.1
-requests==2.21.0
+rq==1.1.0
+redis==3.3.11
+requests==2.22.0
 dnspython==1.16.0
 geoip2==2.9.0
 pyaml==19.4.1
