@@ -1,6 +1,7 @@
 import dns.resolver
 import dns.name
 import dns.dnssec
+import re
 
 
 def get_local_resolver(config):
@@ -72,12 +73,26 @@ def get_txtbind(nameserver, qname, timeout=5):
     return result
 
 
+def value_from_record(record, data):
+    if "CNAME" in data:
+        record = "CNAME"
+    return re.sub(r".*" + re.escape(record) + " ", "", data)
+
+
 def get_record(domain, record, resolver):
     results = []
+    domain = dns.name.from_text(domain)
+    if not domain.is_absolute():
+        domain = domain.concatenate(dns.name.root)
+    request = dns.message.make_query(domain, record)
+    request.flags |= dns.flags.CD
     try:
-        answers = resolver.query(domain, record, rdclass="IN")
-        for item in answers:
-            results.append({"value": str(item)})
+        response = dns.query.udp(request, resolver.nameservers[0])
+        for item in response.answer:
+            for line in str(item).split("\n"):
+                results.append({"value": value_from_record(record, line)})
+    except dns.message.Truncated:
+        pass
     except (
         dns.resolver.NoAnswer,
         dns.rdatatype.UnknownRdatatype,
