@@ -1,5 +1,6 @@
 import requests
 from ip_utils import is_valid_ipv6_address
+import socket
 
 
 def ripe_ip_info(ip):
@@ -20,10 +21,10 @@ def ripe_ip_info(ip):
     else:
         ripe_url = "https://rest.db.ripe.net/search?type-filter=inetnum"
     ripe_url = ripe_url + "&source=ripe&query-string="
-    r = requests.get(ripe_url + ip, headers={"Accept": "application/json"}, timeout=5)
     try:
+        r = requests.get(ripe_url + ip, headers={"Accept": "application/json"}, timeout=5)
         ripe_json = r.json()["objects"]["object"][0]["attributes"]["attribute"]
-    except KeyError:
+    except (KeyError, socket.timeout):
         return None
     return {
         "netname": get_attr(ripe_json, "netname"),
