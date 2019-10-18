@@ -88,11 +88,8 @@ def get_record(domain, record, resolver):
     request.flags |= dns.flags.CD
     try:
         response = dns.query.udp(request, resolver.nameservers[0])
-        for item in response.answer:
-            for line in str(item).split("\n"):
-                results.append({"value": value_from_record(record, line)})
     except dns.message.Truncated:
-        pass
+        response = dns.query.tcp(request, resolver.nameservers[0])
     except (
         dns.resolver.NoAnswer,
         dns.rdatatype.UnknownRdatatype,
@@ -101,6 +98,9 @@ def get_record(domain, record, resolver):
         dns.exception.Timeout,
     ):
         pass
+    for item in response.answer:
+        for line in str(item).split("\n"):
+            results.append({"value": value_from_record(record, line)})
     if len(results) > 0:
         return results
     else:
