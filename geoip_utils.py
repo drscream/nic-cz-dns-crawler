@@ -1,5 +1,6 @@
 import geoip2.database
 from os import path
+from ip_utils import is_valid_ip_address
 
 
 def init_geoip(config):
@@ -25,6 +26,8 @@ def annotate_geoip(items, key, dbs):
     if items:
         for item in items:
             ip = item[key]
+            if not is_valid_ip_address(ip):
+                continue
             try:
                 result = {}
                 if geoip_country:
