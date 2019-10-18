@@ -3,7 +3,6 @@ from config_loader import load_config
 from geoip_utils import init_geoip, annotate_geoip
 from http_utils import get_webserver_vendor
 from dns_utils import get_local_resolver, get_txtbind, get_record, annotate_dns_algorithm, check_dnssec
-from ripe_utils import annotate_ripe
 
 config = load_config("config.yml")
 geoip_dbs = init_geoip(config)
@@ -14,12 +13,10 @@ def get_dns_local(domain):
     return {
         "DNS_AUTH": get_record(domain, "NS", local_resolver),
         "MAIL": get_record(domain, "MX", local_resolver),
-        "WEB4": annotate_ripe(annotate_geoip(get_record(domain, "A", local_resolver), "value", geoip_dbs)),
-        "WEB4_www": annotate_ripe(annotate_geoip(get_record("www." + domain, "A", local_resolver), "value", geoip_dbs)),
-        "WEB6": annotate_ripe(annotate_geoip(get_record(domain, "AAAA", local_resolver), "value", geoip_dbs)),
-        "WEB6_www": annotate_ripe(
-            annotate_geoip(get_record("www." + domain, "AAAA", local_resolver), "value", geoip_dbs)
-        ),
+        "WEB4": annotate_geoip(get_record(domain, "A", local_resolver), "value", geoip_dbs),
+        "WEB4_www": annotate_geoip(get_record("www." + domain, "A", local_resolver), "value", geoip_dbs),
+        "WEB6": annotate_geoip(get_record(domain, "AAAA", local_resolver), "value", geoip_dbs),
+        "WEB6_www": annotate_geoip(get_record("www." + domain, "AAAA", local_resolver), "value", geoip_dbs),
         "WEB_TLSA": get_record("_443._tcp." + domain, "TLSA", local_resolver),
         "WEB_TLSA_www": get_record("_443._tcp.www." + domain, "TLSA", local_resolver),
         "MAIL_TLSA": get_record("_25._tcp." + domain, "TLSA", local_resolver),
@@ -41,10 +38,10 @@ def get_dns_auth(domain, nameservers):
         ns_ipv6 = aaaa[0]["value"] if aaaa else None
         result = {
             "ns": ns,
-            "ns_ipv4": annotate_ripe(annotate_geoip([{"value": ns_ipv4}], "value", geoip_dbs))[0]
+            "ns_ipv4": annotate_geoip([{"value": ns_ipv4}], "value", geoip_dbs)[0]
             if ns_ipv4
             else ns_ipv4,
-            "ns_ipv6": annotate_ripe(annotate_geoip([{"value": ns_ipv6}], "value", geoip_dbs))[0]
+            "ns_ipv6": annotate_geoip([{"value": ns_ipv6}], "value", geoip_dbs)[0]
             if ns_ipv6
             else ns_ipv6,
             "HOSTNAMEBIND4": get_txtbind(ns_ipv4, "hostname.bind") if ns_ipv4 else None,
