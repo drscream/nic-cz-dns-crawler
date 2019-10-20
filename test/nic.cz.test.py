@@ -15,7 +15,6 @@ assert sort_by_value(r["results"]["DNS_LOCAL"]["DNS_AUTH"]) == sort_by_value(
 )
 
 assert r["results"]["WEB"]["WEB4_80_VENDOR"][0]["value"] == "nginx"
-assert r["results"]["DNS_LOCAL"]["WEB4"][0]["ripe"]["netname"] == "CZ-NIC-I"
 assert r["results"]["DNS_LOCAL"]["DNSSEC"]["valid"]
 assert r["results"]["DNS_LOCAL"]["DS"][0]["algorithm"] == "ECDSAP256SHA256"
 assert r["results"]["DNS_LOCAL"]["WEB4"][0]["geoip"] == {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}
