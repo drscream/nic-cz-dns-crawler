@@ -14,7 +14,10 @@ assert sort_by_value(r["results"]["DNS_LOCAL"]["DNS_AUTH"]) == sort_by_value(
     [{"value": "a.ns.nic.cz."}, {"value": "b.ns.nic.cz."}, {"value": "d.ns.nic.cz."}]
 )
 
-assert r["results"]["WEB"]["WEB4_80_VENDOR"][0]["value"] == "nginx"
+assert r["results"]["WEB"]["WEB4_80"][0]["status"] == 301
+assert r["results"]["WEB"]["WEB4_80"][0]["headers"]["server"][0] == "nginx"
+assert r["results"]["WEB"]["WEB4_443"][0]["http2"]
+assert r["results"]["WEB"]["WEB4_443_www"][0]["status"] == 200
 assert r["results"]["DNS_LOCAL"]["DNSSEC"]["valid"]
 assert r["results"]["DNS_LOCAL"]["DS"][0]["algorithm"] == "ECDSAP256SHA256"
 assert r["results"]["DNS_LOCAL"]["WEB4"][0]["geoip"] == {"country": "CZ", "asn": 25192, "org": "CZ.NIC, z.s.p.o."}

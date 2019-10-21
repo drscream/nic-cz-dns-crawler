@@ -193,6 +193,7 @@ dns:
   - 127.0.0.1
 DNS_TIMEOUT: 2
 HTTP_TIMEOUT: 2
+save_web_content: False  # beware, setting to True will output HUGE files
 ```
 
 Using free (GeoLite2) Country and ASN DBs instead of commercial ones:
