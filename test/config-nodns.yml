@@ -3,3 +3,5 @@ geoip:
   asn: ./test/GeoLite2-ASN.mmdb
 DNS_TIMEOUT: 2
 HTTP_TIMEOUT: 2
+save_web_content: False
+strip_html: True
