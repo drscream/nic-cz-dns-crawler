@@ -52,6 +52,16 @@ def get_header_list(headers, name):
 
 
 def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_content=False, strip_html=False):
+    headers = {
+        "Host": domain,
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "cs-CZ,cs;q=0.9,en-US;q=0.8,en;q=0.7",
+    }
+
     if not ips or len(ips) < 1:
         return None
     results = []
@@ -68,11 +78,11 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
         ssl_context.verify_mode = ssl.CERT_NONE
         try:
             conn = HTTPConnection(host=ip, port=port, timeout=timeout, secure=tls, ssl_context=ssl_context)
-            request = conn.request("GET", "/", headers={"Host": domain, ":authority": domain})
+            request = conn.request("GET", "/", headers={**headers, ":authority": domain})
             response = conn.get_response()
             if response.status == 400:
                 conn = HTTPConnection(host=ip, port=port, timeout=timeout, secure=tls, ssl_context=ssl_context)
-                request = conn.request("GET", "/", headers={"Host": domain})
+                request = conn.request("GET", "/", headers=headers)
                 response = conn.get_response()
         except (
             ConnectionRefusedError,
