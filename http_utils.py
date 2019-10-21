@@ -5,7 +5,9 @@ from html.parser import HTMLParser
 import re
 import ssl
 import socket
+import certifi
 from hyper.http20.exceptions import StreamResetError
+
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -61,7 +63,7 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
             port = 443
         else:
             port = 80
-        ssl_context = init_context()
+        ssl_context = init_context(cert_path=certifi.where())
         ssl_context.check_hostname = False
         ssl_context.verify_mode = ssl.CERT_NONE
         try:
