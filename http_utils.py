@@ -56,8 +56,10 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
         "Host": domain,
         "Connection": "keep-alive",
         "Upgrade-Insecure-Requests": "1",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/74.0.3729.131 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,"
+                  "application/signed-exchange;v=b3",
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "cs-CZ,cs;q=0.9,en-US;q=0.8,en;q=0.7",
     }
