@@ -86,6 +86,10 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
                 conn = HTTPConnection(host=ip, port=port, timeout=timeout, secure=tls, ssl_context=ssl_context)
                 request = conn.request("GET", "/", headers=headers)
                 response = conn.get_response()
+        except ssl.SSLError:
+            conn = HTTPConnection(host=domain, port=port, timeout=timeout, secure=tls, ssl_context=ssl_context)
+            request = conn.request("GET", "/", headers={**headers, ":authority": domain})
+            response = conn.get_response()
         except (
             ConnectionRefusedError,
             ssl.SSLError,
@@ -95,36 +99,37 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
             OSError,
         ) as e:
             result["error"] = str(e)
-        else:
-            result["status"] = response.status
-            result["headers"] = {}
-            if 300 < response.status < 400:
-                result["headers"]["location"] = get_header_list(response.headers, "location")
-            result["headers"]["server"] = get_header_list(response.headers, "server")
-            result["headers"]["x-frame-options"] = get_header_list(response.headers, "x-frame-options")
-            result["headers"]["content-security-policy"] = get_header_list(response.headers, "content-security-policy")
-            result["headers"]["x-xss-protection"] = get_header_list(response.headers, "x-xss-protection")
-            result["headers"]["strict-transport-security"] = get_header_list(
-                response.headers, "strict-transport-security"
-            )
-            result["headers"]["expect-ct"] = get_header_list(response.headers, "expect-ct")
-            result["headers"]["x-content-type-options"] = get_header_list(response.headers, "x-content-type-options")
-            result["headers"]["feature-policy"] = get_header_list(response.headers, "feature-policy")
-            result["headers"]["access-control-allow-origin"] = get_header_list(
-                response.headers, "access-control-allow-origin"
-            )
-            result["headers"]["x-powered-by"] = get_header_list(response.headers, "x-powered-by")
-            result["headers"] = dict(filter(lambda item: item[1] is not None, result["headers"].items()))
-            if save_content:
-                content = str(response.read(decode_content=True).decode())
-                if strip_html:
-                    result["content"] = strip_newlines(strip_tags(content))
-                else:
-                    result["content"] = content
-            if tls and request is not None:
-                result["http2"] = True
-            elif tls:
-                result["http2"] = False
-            response.close()
+            results.append(result)
+            continue
+        result["status"] = response.status
+        result["headers"] = {}
+        if 300 < response.status < 400:
+            result["headers"]["location"] = get_header_list(response.headers, "location")
+        result["headers"]["server"] = get_header_list(response.headers, "server")
+        result["headers"]["x-frame-options"] = get_header_list(response.headers, "x-frame-options")
+        result["headers"]["content-security-policy"] = get_header_list(response.headers, "content-security-policy")
+        result["headers"]["x-xss-protection"] = get_header_list(response.headers, "x-xss-protection")
+        result["headers"]["strict-transport-security"] = get_header_list(
+            response.headers, "strict-transport-security"
+        )
+        result["headers"]["expect-ct"] = get_header_list(response.headers, "expect-ct")
+        result["headers"]["x-content-type-options"] = get_header_list(response.headers, "x-content-type-options")
+        result["headers"]["feature-policy"] = get_header_list(response.headers, "feature-policy")
+        result["headers"]["access-control-allow-origin"] = get_header_list(
+            response.headers, "access-control-allow-origin"
+        )
+        result["headers"]["x-powered-by"] = get_header_list(response.headers, "x-powered-by")
+        result["headers"] = dict(filter(lambda item: item[1] is not None, result["headers"].items()))
+        if save_content:
+            content = str(response.read(decode_content=True).decode())
+            if strip_html:
+                result["content"] = strip_newlines(strip_tags(content))
+            else:
+                result["content"] = content
+        if tls and request is not None:
+            result["http2"] = True
+        elif tls:
+            result["http2"] = False
+        response.close()
         results.append(result)
     return results
