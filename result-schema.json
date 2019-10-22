@@ -1,0 +1,1505 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string"
+    },
+    "results": {
+      "type": "object",
+      "properties": {
+        "DNS_LOCAL": {
+          "type": "object",
+          "properties": {
+            "NS_AUTH": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "value"
+                    ]
+                  }
+                }
+              ]
+            },
+            "MAIL": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "value"
+                    ]
+                  }
+                }
+              ]
+            },
+            "WEB4": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      },
+                      "geoip": {
+                        "type": "object",
+                        "properties": {
+                          "country": {
+                            "type": "string"
+                          },
+                          "org": {
+                            "type": "string"
+                          },
+                          "asn": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "asn",
+                          "country",
+                          "org"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "geoip",
+                      "value"
+                    ]
+                  }
+                }
+              ]
+            },
+            "WEB4_www": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      },
+                      "geoip": {
+                        "type": "object",
+                        "properties": {
+                          "country": {
+                            "type": "string"
+                          },
+                          "org": {
+                            "type": "string"
+                          },
+                          "asn": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "asn",
+                          "country",
+                          "org"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "value"
+                    ]
+                  }
+                }
+              ]
+            },
+            "WEB6": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      },
+                      "geoip": {
+                        "type": "object",
+                        "properties": {
+                          "country": {
+                            "type": "string"
+                          },
+                          "org": {
+                            "type": "string"
+                          },
+                          "asn": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "asn",
+                          "country",
+                          "org"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "geoip",
+                      "value"
+                    ]
+                  }
+                }
+              ]
+            },
+            "WEB6_www": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      },
+                      "geoip": {
+                        "type": "object",
+                        "properties": {
+                          "country": {
+                            "type": "string"
+                          },
+                          "org": {
+                            "type": "string"
+                          },
+                          "asn": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "asn",
+                          "country",
+                          "org"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "value"
+                    ]
+                  }
+                }
+              ]
+            },
+            "WEB_TLSA": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "value"
+                    ]
+                  }
+                }
+              ]
+            },
+            "WEB_TLSA_www": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "value"
+                    ]
+                  }
+                }
+              ]
+            },
+            "MAIL_TLSA": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "value"
+                    ]
+                  }
+                }
+              ]
+            },
+            "DS": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      },
+                      "algorithm": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "algorithm",
+                      "value"
+                    ]
+                  }
+                }
+              ]
+            },
+            "DNSKEY": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      },
+                      "algorithm": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "algorithm",
+                      "value"
+                    ]
+                  }
+                }
+              ]
+            },
+            "DNSSEC": {
+              "type": "object",
+              "properties": {
+                "valid": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "rrsig": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "error": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "valid"
+              ]
+            }
+          },
+          "required": [
+            "DNSKEY",
+            "DNSSEC",
+            "DS",
+            "MAIL",
+            "MAIL_TLSA",
+            "NS_AUTH",
+            "WEB4",
+            "WEB4_www",
+            "WEB6",
+            "WEB6_www",
+            "WEB_TLSA",
+            "WEB_TLSA_www"
+          ]
+        },
+        "DNS_AUTH": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "ns": {
+                    "type": "string"
+                  },
+                  "ns_ipv4": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string"
+                          },
+                          "geoip": {
+                            "type": "object",
+                            "properties": {
+                              "country": {
+                                "type": [
+                                  "null",
+                                  "string"
+                                ]
+                              },
+                              "org": {
+                                "type": "string"
+                              },
+                              "asn": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "asn",
+                              "country",
+                              "org"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "geoip",
+                          "value"
+                        ]
+                      }
+                    ]
+                  },
+                  "ns_ipv6": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string"
+                          },
+                          "geoip": {
+                            "type": "object",
+                            "properties": {
+                              "country": {
+                                "type": [
+                                  "null",
+                                  "string"
+                                ]
+                              },
+                              "org": {
+                                "type": "string"
+                              },
+                              "asn": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "asn",
+                              "country",
+                              "org"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "geoip",
+                          "value"
+                        ]
+                      }
+                    ]
+                  },
+                  "HOSTNAMEBIND4": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": [
+                              "null",
+                              "string"
+                            ]
+                          },
+                          "error": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "value"
+                        ]
+                      }
+                    ]
+                  },
+                  "HOSTNAMEBIND6": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": [
+                              "null",
+                              "string"
+                            ]
+                          },
+                          "error": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "value"
+                        ]
+                      }
+                    ]
+                  },
+                  "VERSIONBIND4": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": [
+                              "null",
+                              "string"
+                            ]
+                          },
+                          "error": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "value"
+                        ]
+                      }
+                    ]
+                  },
+                  "VERSIONBIND6": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": [
+                              "null",
+                              "string"
+                            ]
+                          },
+                          "error": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "value"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "HOSTNAMEBIND4",
+                  "HOSTNAMEBIND6",
+                  "VERSIONBIND4",
+                  "VERSIONBIND6",
+                  "ns",
+                  "ns_ipv4",
+                  "ns_ipv6"
+                ]
+              }
+            }
+          ]
+        },
+        "WEB": {
+          "type": "object",
+          "properties": {
+            "WEB4_80": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ip": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "integer"
+                      },
+                      "headers": {
+                        "type": "object",
+                        "properties": {
+                          "location": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "server": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-powered-by": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-frame-options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-xss-protection": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-content-type-options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "access-control-allow-origin": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "strict-transport-security": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "content-security-policy": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "error": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "ip"
+                    ]
+                  }
+                }
+              ]
+            },
+            "WEB4_80_www": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ip": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "integer"
+                      },
+                      "headers": {
+                        "type": "object",
+                        "properties": {
+                          "location": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "server": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-powered-by": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-frame-options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-xss-protection": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-content-type-options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "access-control-allow-origin": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "strict-transport-security": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "content-security-policy": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "error": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "ip"
+                    ]
+                  }
+                }
+              ]
+            },
+            "WEB4_443": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ip": {
+                        "type": "string"
+                      },
+                      "cert": {
+                        "type": "object",
+                        "properties": {
+                          "subject": {
+                            "type": "string"
+                          },
+                          "issuer": {
+                            "type": "object",
+                            "properties": {
+                              "countryName": {
+                                "type": "string"
+                              },
+                              "organizationName": {
+                                "type": "string"
+                              },
+                              "commonName": {
+                                "type": "string"
+                              },
+                              "organizationalUnitName": {
+                                "type": "string"
+                              },
+                              "stateOrProvinceName": {
+                                "type": "string"
+                              },
+                              "localityName": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "commonName",
+                              "countryName",
+                              "organizationName"
+                            ]
+                          },
+                          "version": {
+                            "type": "integer"
+                          },
+                          "valid": {
+                            "type": "object",
+                            "properties": {
+                              "notBefore": {
+                                "type": "string"
+                              },
+                              "notAfter": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "notAfter",
+                              "notBefore"
+                            ]
+                          },
+                          "altNames": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "error": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "status": {
+                        "type": "integer"
+                      },
+                      "headers": {
+                        "type": "object",
+                        "properties": {
+                          "location": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "server": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "content-security-policy": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "strict-transport-security": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-powered-by": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-xss-protection": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-content-type-options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-frame-options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "access-control-allow-origin": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "http2": {
+                        "type": "boolean"
+                      },
+                      "error": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cert",
+                      "ip"
+                    ]
+                  }
+                }
+              ]
+            },
+            "WEB4_443_www": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ip": {
+                        "type": "string"
+                      },
+                      "cert": {
+                        "type": "object",
+                        "properties": {
+                          "subject": {
+                            "type": "string"
+                          },
+                          "issuer": {
+                            "type": "object",
+                            "properties": {
+                              "countryName": {
+                                "type": "string"
+                              },
+                              "organizationName": {
+                                "type": "string"
+                              },
+                              "commonName": {
+                                "type": "string"
+                              },
+                              "stateOrProvinceName": {
+                                "type": "string"
+                              },
+                              "localityName": {
+                                "type": "string"
+                              },
+                              "organizationalUnitName": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "commonName",
+                              "countryName",
+                              "organizationName"
+                            ]
+                          },
+                          "version": {
+                            "type": "integer"
+                          },
+                          "valid": {
+                            "type": "object",
+                            "properties": {
+                              "notBefore": {
+                                "type": "string"
+                              },
+                              "notAfter": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "notAfter",
+                              "notBefore"
+                            ]
+                          },
+                          "altNames": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "error": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "status": {
+                        "type": "integer"
+                      },
+                      "headers": {
+                        "type": "object",
+                        "properties": {
+                          "server": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-frame-options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "content-security-policy": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-xss-protection": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "strict-transport-security": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-content-type-options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "location": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-powered-by": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "access-control-allow-origin": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "http2": {
+                        "type": "boolean"
+                      },
+                      "error": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cert",
+                      "ip"
+                    ]
+                  }
+                }
+              ]
+            },
+            "WEB6_80": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ip": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "integer"
+                      },
+                      "headers": {
+                        "type": "object",
+                        "properties": {
+                          "location": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "server": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-powered-by": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-content-type-options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "strict-transport-security": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "content-security-policy": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "error": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "ip"
+                    ]
+                  }
+                }
+              ]
+            },
+            "WEB6_80_www": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ip": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "integer"
+                      },
+                      "headers": {
+                        "type": "object",
+                        "properties": {
+                          "location": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "server": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-powered-by": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-content-type-options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "strict-transport-security": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "content-security-policy": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "error": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "ip"
+                    ]
+                  }
+                }
+              ]
+            },
+            "WEB6_443": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ip": {
+                        "type": "string"
+                      },
+                      "cert": {
+                        "type": "object",
+                        "properties": {
+                          "subject": {
+                            "type": "string"
+                          },
+                          "issuer": {
+                            "type": "object",
+                            "properties": {
+                              "countryName": {
+                                "type": "string"
+                              },
+                              "organizationName": {
+                                "type": "string"
+                              },
+                              "commonName": {
+                                "type": "string"
+                              },
+                              "organizationalUnitName": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "commonName",
+                              "countryName",
+                              "organizationName"
+                            ]
+                          },
+                          "version": {
+                            "type": "integer"
+                          },
+                          "valid": {
+                            "type": "object",
+                            "properties": {
+                              "notBefore": {
+                                "type": "string"
+                              },
+                              "notAfter": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "notAfter",
+                              "notBefore"
+                            ]
+                          },
+                          "altNames": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "error": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "status": {
+                        "type": "integer"
+                      },
+                      "headers": {
+                        "type": "object",
+                        "properties": {
+                          "location": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "server": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "content-security-policy": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "strict-transport-security": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-powered-by": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-frame-options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-content-type-options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "http2": {
+                        "type": "boolean"
+                      },
+                      "error": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cert",
+                      "ip"
+                    ]
+                  }
+                }
+              ]
+            },
+            "WEB6_443_www": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ip": {
+                        "type": "string"
+                      },
+                      "cert": {
+                        "type": "object",
+                        "properties": {
+                          "subject": {
+                            "type": "string"
+                          },
+                          "issuer": {
+                            "type": "object",
+                            "properties": {
+                              "countryName": {
+                                "type": "string"
+                              },
+                              "organizationName": {
+                                "type": "string"
+                              },
+                              "commonName": {
+                                "type": "string"
+                              },
+                              "stateOrProvinceName": {
+                                "type": "string"
+                              },
+                              "localityName": {
+                                "type": "string"
+                              },
+                              "organizationalUnitName": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "commonName",
+                              "countryName",
+                              "organizationName"
+                            ]
+                          },
+                          "version": {
+                            "type": "integer"
+                          },
+                          "valid": {
+                            "type": "object",
+                            "properties": {
+                              "notBefore": {
+                                "type": "string"
+                              },
+                              "notAfter": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "notAfter",
+                              "notBefore"
+                            ]
+                          },
+                          "altNames": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "error": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "status": {
+                        "type": "integer"
+                      },
+                      "headers": {
+                        "type": "object",
+                        "properties": {
+                          "server": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-frame-options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "content-security-policy": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-xss-protection": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "strict-transport-security": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-content-type-options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-powered-by": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "location": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "http2": {
+                        "type": "boolean"
+                      },
+                      "error": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cert",
+                      "ip"
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "WEB4_443",
+            "WEB4_443_www",
+            "WEB4_80",
+            "WEB4_80_www",
+            "WEB6_443",
+            "WEB6_443_www",
+            "WEB6_80",
+            "WEB6_80_www"
+          ]
+        }
+      },
+      "required": [
+        "DNS_AUTH",
+        "DNS_LOCAL",
+        "WEB"
+      ]
+    }
+  },
+  "required": [
+    "domain",
+    "results",
+    "timestamp"
+  ]
+}
