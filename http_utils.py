@@ -2,6 +2,7 @@ import urllib3
 from hyper import HTTPConnection
 from hyper.tls import init_context
 from html.parser import HTMLParser
+from datetime import datetime
 import re
 import ssl
 import socket
@@ -51,6 +52,10 @@ def get_header_list(headers, name):
     return None if headers.get(name) is None else [s.decode("utf-8") for s in headers.get(name)]
 
 
+def datetime_to_iso(date_string):
+    return datetime.strptime(date_string, "%b  %d %H:%M:%S %Y %Z").strftime("%Y-%m-%d %H:%M:%S")
+
+
 def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_content=False, strip_html=False):
     headers = {
         "Host": domain,
@@ -76,24 +81,47 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
         else:
             port = 80
         ssl_context = init_context(cert_path=certifi.where())
-        ssl_context.check_hostname = False
-        ssl_context.verify_mode = ssl.CERT_NONE
+        ssl_context_noverify = init_context(cert_path=certifi.where())
+        ssl_context_noverify.check_hostname = False
+        ssl_context_noverify.verify_mode = ssl.CERT_NONE
+        if tls:
+            result["cert"] = {}
+            try:
+                sock = ssl_context.wrap_socket(socket.socket(), server_hostname=domain)
+                sock.settimeout(timeout)
+                sock.connect((domain, 443))
+                cert = sock.getpeercert()
+                result["cert"]["subject"] = dict(x[0] for x in cert["subject"])["commonName"]
+                result["cert"]["issuer"] = dict(x[0] for x in cert["issuer"])
+                result["cert"]["version"] = cert["version"]
+                result["cert"]["valid"] = {}
+                result["cert"]["valid"]["notBefore"] = datetime_to_iso(cert["notBefore"])
+                result["cert"]["valid"]["notAfter"] = datetime_to_iso(cert["notAfter"])
+                result["cert"]["altNames"] = [x[1] for x in cert["subjectAltName"]]
+            except (ConnectionRefusedError,
+                    ConnectionResetError,
+                    ssl.SSLCertVerificationError,
+                    TimeoutError,
+                    ssl.SSLError,
+                    OSError) as e:
+                result["cert"]["error"] = str(e)
         try:
-            conn = HTTPConnection(host=ip, port=port, timeout=timeout, secure=tls, ssl_context=ssl_context)
+            conn = HTTPConnection(host=ip, port=port, timeout=timeout, secure=tls, ssl_context=ssl_context_noverify)
             request = conn.request("GET", "/", headers={**headers, ":authority": domain})
             response = conn.get_response()
             if response.status == 400:
-                conn = HTTPConnection(host=ip, port=port, timeout=timeout, secure=tls, ssl_context=ssl_context)
+                conn = HTTPConnection(host=ip, port=port, timeout=timeout, secure=tls, ssl_context=ssl_context_noverify)
                 request = conn.request("GET", "/", headers=headers)
                 response = conn.get_response()
-        except ssl.SSLError:
-            conn = HTTPConnection(host=domain, port=port, timeout=timeout, secure=tls, ssl_context=ssl_context)
+        except (ssl.SSLError, ssl.SSLCertVerificationError):
+            conn = HTTPConnection(host=domain, port=port, timeout=timeout, secure=tls, ssl_context=ssl_context_noverify)
             request = conn.request("GET", "/", headers={**headers, ":authority": domain})
             response = conn.get_response()
         except (
             ConnectionRefusedError,
-            ssl.SSLError,
+            ValueError,
             socket.timeout,
+            TimeoutError,
             StreamResetError,
             ConnectionResetError,
             OSError,
