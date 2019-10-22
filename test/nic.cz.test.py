@@ -10,10 +10,9 @@ def sort_by_value(list):
     return sorted(list, key=lambda k: k["value"])
 
 
-assert sort_by_value(r["results"]["DNS_LOCAL"]["DNS_AUTH"]) == sort_by_value(
+assert sort_by_value(r["results"]["DNS_LOCAL"]["NS_AUTH"]) == sort_by_value(
     [{"value": "a.ns.nic.cz."}, {"value": "b.ns.nic.cz."}, {"value": "d.ns.nic.cz."}]
 )
-
 assert r["results"]["WEB"]["WEB4_80"][0]["status"] == 301
 assert r["results"]["WEB"]["WEB4_80"][0]["headers"]["server"][0] == "nginx"
 assert r["results"]["WEB"]["WEB4_443"][0]["http2"]
