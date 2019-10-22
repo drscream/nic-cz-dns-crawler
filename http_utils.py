@@ -8,7 +8,7 @@ import ssl
 import socket
 import certifi
 from hyper.http20.exceptions import StreamResetError
-
+from h2.exceptions import StreamClosedError
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -121,6 +121,7 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
             StreamResetError,
             ConnectionResetError,
             OSError,
+            StreamClosedError
         ) as e:
             result["error"] = str(e)
             results.append(result)
