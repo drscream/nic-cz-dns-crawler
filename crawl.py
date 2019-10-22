@@ -12,7 +12,7 @@ local_resolver = get_local_resolver(config)
 
 def get_dns_local(domain):
     return {
-        "DNS_AUTH": get_record(domain, "NS", local_resolver),
+        "NS_AUTH": get_record(domain, "NS", local_resolver),
         "MAIL": get_record(domain, "MX", local_resolver),
         "WEB4": annotate_geoip(get_record(domain, "A", local_resolver), "value", geoip_dbs),
         "WEB4_www": annotate_geoip(get_record("www." + domain, "A", local_resolver), "value", geoip_dbs),
@@ -82,7 +82,7 @@ def get_web_status(domain, dns):
 
 def process_domain(domain):
     dns_local = get_dns_local(domain)
-    dns_auth = get_dns_auth(domain, dns_local["DNS_AUTH"])
+    dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"])
     web = get_web_status(domain, dns_local)
 
     return {
