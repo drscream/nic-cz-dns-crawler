@@ -14,6 +14,37 @@ def get_local_resolver(config):
     return local_resolver
 
 
+def validate_rrset(rrset, rrsigset, keys, origin=None, now=None):
+    if isinstance(origin, str):
+        origin = dns.name.from_text(origin, dns.name.root)
+
+    if isinstance(rrset, tuple):
+        rrname = rrset[0]
+    else:
+        rrname = rrset.name
+
+    if isinstance(rrsigset, tuple):
+        rrsigname = rrsigset[0]
+        rrsigrdataset = rrsigset[1]
+    else:
+        rrsigname = rrsigset.name
+        rrsigrdataset = rrsigset
+
+    rrname = rrname.choose_relativity(origin)
+    rrsigname = rrsigname.choose_relativity(origin)
+    if rrname != rrsigname:
+        raise dns.dnssec.ValidationFailure("owner names do not match")
+
+    messages = []
+    for rrsig in rrsigrdataset:
+        try:
+            dns.dnssec._validate_rrsig(rrset, rrsig, keys, origin, now)
+            return
+        except dns.dnssec.ValidationFailure as e:
+            messages.append(str(e))
+    raise dns.dnssec.ValidationFailure(messages[-1])
+
+
 def check_dnssec(domain, resolver):
     sub = (dns.name.from_text(domain).split(depth=3))[1]
     q = dns.message.make_query(sub, "DNSKEY", want_dnssec=True)
@@ -29,13 +60,22 @@ def check_dnssec(domain, resolver):
 
     rcode = response.rcode()
 
+    if rcode == 2:  # NOERROR
+        return {"valid": False, "error": f"rcode {rcode}"}
+
     if rcode != 0:  # NOERROR
         return {"valid": None, "error": f"rcode {rcode}"}
 
     answer = response.answer
 
-    if len(answer) != 2:  # no DNSSEC records
-        return {"valid": None}
+    if len(answer) == 0:  # no DNSSEC records
+        return {"valid": None, "message": f"No records"}
+
+    if len(answer) == 1:  # missing DS or DNSKEY
+        if "DNSKEY" in repr(answer[0]):
+            return {"valid": None, "message": f"Missing DS"}
+        if "DS" in repr(answer[0]):
+            return {"valid": None, "message": f"Missing DNSKEY"}
 
     if answer[0].rdtype == dns.rdatatype.RRSIG:
         rrsig, rrset = answer
@@ -46,10 +86,10 @@ def check_dnssec(domain, resolver):
     keys = {sub: rrset}
 
     try:
-        dns.dnssec.validate(rrset, rrsig, keys)
+        validate_rrset(rrset, rrsig, keys)
     except Exception as e:
-        return {"valid": False, "message": str(e)}
-    return {"valid": True, "rrsig": str(rrsig), "rrset": str(rrset)}
+        return {"valid": False, "error": str(e)}
+    return {"valid": True, "rrsig": str(rrsig).split("\n")}
 
 
 def annotate_dns_algorithm(items, key, index):
