@@ -113,10 +113,6 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
                 conn = HTTPConnection(host=ip, port=port, timeout=timeout, secure=tls, ssl_context=ssl_context_noverify)
                 request = conn.request("GET", "/", headers=headers)
                 response = conn.get_response()
-        except (ssl.SSLError, ssl.SSLCertVerificationError):
-            conn = HTTPConnection(host=domain, port=port, timeout=timeout, secure=tls, ssl_context=ssl_context_noverify)
-            request = conn.request("GET", "/", headers={**headers, ":authority": domain})
-            response = conn.get_response()
         except (
             ConnectionRefusedError,
             ValueError,
@@ -129,6 +125,16 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
             result["error"] = str(e)
             results.append(result)
             continue
+        except (ssl.SSLError, ssl.SSLCertVerificationError):
+            try:
+                conn = HTTPConnection(host=domain, port=port, timeout=timeout,
+                                      secure=tls, ssl_context=ssl_context_noverify)
+                request = conn.request("GET", "/", headers={**headers, ":authority": domain})
+                response = conn.get_response()
+            except (ssl.SSLError, ssl.SSLCertVerificationError) as e:
+                result["error"] = str(e)
+                results.append(result)
+                continue
         result["status"] = response.status
         result["headers"] = {}
         if 300 < response.status < 400:
