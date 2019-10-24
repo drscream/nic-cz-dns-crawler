@@ -61,10 +61,10 @@ def check_dnssec(domain, resolver):
     rcode = response.rcode()
 
     if rcode == 2:  # NOERROR
-        return {"valid": False, "error": f"rcode {rcode}"}
+        return {"valid": False, "message": f"rcode {rcode}"}
 
     if rcode != 0:  # NOERROR
-        return {"valid": None, "error": f"rcode {rcode}"}
+        return {"valid": None, "message": f"rcode {rcode}"}
 
     answer = response.answer
 
