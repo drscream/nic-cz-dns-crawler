@@ -95,7 +95,10 @@ def check_dnssec(domain, resolver):
 def annotate_dns_algorithm(items, key, index):
     if items:
         for item in items:
-            alg_number = item[key].split()[index]
+            try:
+                alg_number = item[key].split()[index]
+            except IndexError:
+                continue
             item["algorithm"] = dns.dnssec.algorithm_to_text(int(alg_number))
     return items
 
