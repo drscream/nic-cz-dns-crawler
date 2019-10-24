@@ -40,12 +40,13 @@ test_odvr:
     - download_geoip
   before_script:
     - pip install -q -r requirements.txt
+    - pip install -q jsonschema
   script: 
     - export PYTHONPATH="$(pwd)"
     - cd test
     - mv config.yml ../config.yml
     - python nic.cz.test.py > nic.cz.json
-    - cat nic.cz.json
+    - jsonschema -i nic.cz.json result-schema.json
   artifacts:
     paths:
       - ./test/nic.cz.json
@@ -56,12 +57,13 @@ test_system_dns:
     - download_geoip
   before_script:
     - pip install -q -r requirements.txt
+    - pip install -q jsonschema
   script: 
     - export PYTHONPATH="$(pwd)"
     - cd test
     - mv config-nodns.yml ../config.yml
     - python nic.cz.test.py > nic.cz-nodns.json
-    - cat nic.cz-nodns.json
+    - jsonschema -i nic.cz-nodns.json result-schema.json
   artifacts:
     paths:
       - ./test/nic.cz-nodns.json
