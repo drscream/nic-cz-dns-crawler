@@ -74,8 +74,10 @@ def check_dnssec(domain, resolver):
     if len(answer) == 1:  # missing DS or DNSKEY
         if "DNSKEY" in repr(answer[0]):
             return {"valid": None, "message": f"Missing DS"}
-        if "DS" in repr(answer[0]):
+        elif "DS" in repr(answer[0]):
             return {"valid": None, "message": f"Missing DNSKEY"}
+        else:
+            return {"valid": None, "message": f"Missing DS or DNSKEY, answer contains: '{answer[0]}'."}
 
     if answer[0].rdtype == dns.rdatatype.RRSIG:
         rrsig, rrset = answer
