@@ -177,7 +177,7 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
                 charset = charset_from_header(content_type[0])
             try:
                 content = str(response.read(decode_content=True).decode(charset))
-            except UnicodeDecodeError:
+            except (UnicodeDecodeError, LookupError):
                 content = str(response.read(decode_content=True).decode(fallback_charset))
             if strip_html:
                 result["content"] = strip_newlines(strip_tags(content))
