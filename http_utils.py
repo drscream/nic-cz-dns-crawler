@@ -11,6 +11,7 @@ from hyper.http20.exceptions import StreamResetError
 from h2.exceptions import StreamClosedError, ProtocolError
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+fallback_charset = "iso-8859-1"
 
 
 class HTMLStripper(HTMLParser):
@@ -60,9 +61,9 @@ def charset_from_header(header_string):
     try:
         charset = re.search(r"charset=([^'$]*)", header_string, re.IGNORECASE).group(1)
     except (AttributeError, TypeError):
-        charset = "iso-8859-1"
+        charset = fallback_charset
     if len(charset) > 0:
-        charset = "iso-8859-1"
+        charset = fallback_charset
     return charset
 
 
@@ -167,7 +168,11 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
         result["headers"]["x-powered-by"] = get_header_list(response.headers, "x-powered-by")
         result["headers"] = dict(filter(lambda item: item[1] is not None, result["headers"].items()))
         if save_content:
-            charset = charset_from_header(get_header_list(response.headers, "content-type")[0])
+            content_type = get_header_list(response.headers, "content-type")
+            if not content_type:
+                charset = fallback_charset
+            else:
+                charset = charset_from_header(content_type[0])
             content = str(response.read(decode_content=True).decode(charset))
             if strip_html:
                 result["content"] = strip_newlines(strip_tags(content))

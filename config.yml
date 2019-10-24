@@ -5,5 +5,5 @@ dns:
   - 127.0.0.1
 DNS_TIMEOUT: 2
 HTTP_TIMEOUT: 2
-save_web_content: False
+save_web_content: True
 strip_html: True
