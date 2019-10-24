@@ -56,6 +56,16 @@ def datetime_to_iso(date_string):
     return datetime.strptime(date_string, "%b  %d %H:%M:%S %Y %Z").strftime("%Y-%m-%d %H:%M:%S")
 
 
+def charset_from_header(header_string):
+    try:
+        charset = re.search(r"charset=([^'$]*)", header_string, re.IGNORECASE).group(1)
+    except (AttributeError, TypeError):
+        charset = "iso-8859-1"
+    if len(charset) > 0:
+        charset = "iso-8859-1"
+    return charset
+
+
 def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_content=False, strip_html=False):
     headers = {
         "Host": domain,
@@ -157,7 +167,8 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
         result["headers"]["x-powered-by"] = get_header_list(response.headers, "x-powered-by")
         result["headers"] = dict(filter(lambda item: item[1] is not None, result["headers"].items()))
         if save_content:
-            content = str(response.read(decode_content=True).decode())
+            charset = charset_from_header(get_header_list(response.headers, "content-type")[0])
+            content = str(response.read(decode_content=True).decode(charset))
             if strip_html:
                 result["content"] = strip_newlines(strip_tags(content))
             else:
