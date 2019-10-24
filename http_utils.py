@@ -58,6 +58,8 @@ def datetime_to_iso(date_string):
 
 
 def charset_from_header(header_string):
+    if "utf-8" in header_string.lower():
+        return "utf-8"
     try:
         charset = re.search(r"charset=([^'$]*)", header_string, re.IGNORECASE).group(1)
     except (AttributeError, TypeError):
