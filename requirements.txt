@@ -1,9 +1,9 @@
 rq==1.1.0
 redis==3.3.11
-dnspython==1.16.0
 geoip2==2.9.0
 pyaml==19.4.1
 pycryptodome==3.9.0
 ecdsa==0.13.3
 certifi==2019.9.11 
 git+https://github.com/Lukasa/hyper.git
+git+https://github.com/rthalley/dnspython.git
