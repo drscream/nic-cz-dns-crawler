@@ -62,7 +62,7 @@ def charset_from_header(header_string):
         charset = re.search(r"charset=([^'$]*)", header_string, re.IGNORECASE).group(1)
     except (AttributeError, TypeError):
         charset = fallback_charset
-    if len(charset) > 0:
+    if len(charset) == 0:
         charset = fallback_charset
     return charset
 
@@ -173,7 +173,10 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
                 charset = fallback_charset
             else:
                 charset = charset_from_header(content_type[0])
-            content = str(response.read(decode_content=True).decode(charset))
+            try:
+                content = str(response.read(decode_content=True).decode(charset))
+            except UnicodeDecodeError:
+                content = str(response.read(decode_content=True).decode(fallback_charset))
             if strip_html:
                 result["content"] = strip_newlines(strip_tags(content))
             else:
