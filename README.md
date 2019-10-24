@@ -96,11 +96,29 @@ Results are printed to the main process' stdout – JSON for every domain, separ
 ```
 …
 [2019-05-03 07:38:17] 2/3
-{"domain": "nic.cz", "timestamp": "2019-09-24T05:28:06.536991", "results": {"DNS_LOCAL": {"DNS_AUTH": [{"value": "a.ns.nic.cz."}, {"value": "b.ns.nic.cz."}, {"value": "d.ns.nic.cz."}], "MAIL": [{"value": "10 mail.nic.cz."}, {"value": "20 mx.nic.cz."}, {"value": "30 bh.nic.cz."}], "WEB4": [{"value": "217.31.205.50", "geoip": {"country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "CZ-NIC-I", "inetnum": "217.31.205.0 - 217.31.206.255"}}], "WEB4_www": [{"value": "217.31.205.50", "geoip": {"country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "CZ-NIC-I", "inetnum": "217.31.205.0 - 217.31.206.255"}}], "WEB6": [{"value": "2001:1488:0:3::2", "geoip": {"country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "CZ-NIC-NET", "inetnum": "2001:1488::/48"}}], "WEB6_www": [{"value": "2001:1488:0:3::2", "geoip": {"country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "CZ-NIC-NET", "inetnum": "2001:1488::/48"}}], "WEB_TLSA": null, "WEB_TLSA_www": [{"value": "1 1 1 a1c442880eb3fdf5ea9978c3821b806520d39735cfa9fdfb0fc7b5c27c679db4"}], "MAIL_TLSA": null, "DS": [{"value": "61281 13 2 4104d40c8fe2030bf7a09a199fcf37b36f7ec8ddd16f5a84f2e61c248d3afd0f", "algorithm": "ECDSAP256SHA256"}], "DNSKEY": [{"value": "256 3 13 10TdB3LI+IdWr/LIV/0gntJWk14+7tzI L9Gpyvav3F8pjEhg0PB85k3ksXDfAZ/+ 9pxRXOou5nu68vUxkc0VbQ==", "algorithm": "ECDSAP256SHA256"}, {"value": "256 3 13 4BWL1uxEYld1r529eJRZ8vnCAWbbemDi A6QuJA5croqccrgSl11LpVl74RV66Tvx 4LqFpIuMD10oaTZDdHLbMg==", "algorithm": "ECDSAP256SHA256"}, {"value": "257 3 13 LM4zvjUgZi2XZKsYooDE0HFYGfWp242f KB+O8sLsuox8S6MJTowY8lBDjZD7JKbm aNot3+1H8zU9TrDzWmmHwQ==", "algorithm": "ECDSAP256SHA256"}], "DNSSEC": {"valid": true, "rrsig": "nic.cz. 260 IN RRSIG DNSKEY 13 2 1800 20191005212609 20190922054001 61281 nic.cz. Zdbi4HD79gLQ8fMX6aj2MqkavK30QFdy OhedI7zH/OZAund4ZnI/ri83S20fBeD0 uh1Gu2vKNY7y1KnegOJrfQ==\nnic.cz. 260 IN RRSIG DNSKEY 13 2 1800 20191005220333 20190922054001 41805 nic.cz. hqS71kiKr1tk0pl3rkh8WWmvBaOrbaZP PJm46gCf5jQkVfGwbBr9f337GNoWy8qZ ebBjEECssePwvhknOL6I4w==", "rrset": "nic.cz. 260 IN DNSKEY 256 3 13 10TdB3LI+IdWr/LIV/0gntJWk14+7tzI L9Gpyvav3F8pjEhg0PB85k3ksXDfAZ/+ 9pxRXOou5nu68vUxkc0VbQ==\nnic.cz. 260 IN DNSKEY 256 3 13 4BWL1uxEYld1r529eJRZ8vnCAWbbemDi A6QuJA5croqccrgSl11LpVl74RV66Tvx 4LqFpIuMD10oaTZDdHLbMg==\nnic.cz. 260 IN DNSKEY 257 3 13 LM4zvjUgZi2XZKsYooDE0HFYGfWp242f KB+O8sLsuox8S6MJTowY8lBDjZD7JKbm aNot3+1H8zU9TrDzWmmHwQ=="}}, "DNS_AUTH": [{"ns": "a.ns.nic.cz.", "ns_ipv4": {"value": "194.0.12.1", "geoip": {"country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "A-NS-NIC-CZ", "inetnum": "194.0.12.0 - 194.0.12.255"}}, "ns_ipv6": {"value": "2001:678:f::1", "geoip": {"country": "DE", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "A-NS-NIC-CZ", "inetnum": "2001:678:f::/48"}}, "HOSTNAMEBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "HOSTNAMEBIND6": {"value": null, "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"}}, {"ns": "b.ns.nic.cz.", "ns_ipv4": {"value": "194.0.13.1", "geoip": {"country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "B-NS-NIC-CZ", "inetnum": "194.0.13.0 - 194.0.13.255"}}, "ns_ipv6": {"value": "2001:678:10::1", "geoip": {"country": "DE", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "B-NS-NIC-CZ", "inetnum": "2001:678:10::/48"}}, "HOSTNAMEBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "HOSTNAMEBIND6": {"value": null, "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"}}, {"ns": "d.ns.nic.cz.", "ns_ipv4": {"value": "193.29.206.1", "geoip": {"country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "D-NS-NIC-CZ", "inetnum": "193.29.206.0 - 193.29.206.255"}}, "ns_ipv6": {"value": "2001:678:1::1", "geoip": {"country": "DE", "org": "CZ.NIC, z.s.p.o.", "asn": 25192}, "ripe": {"netname": "D-NS-NIC-CZ", "inetnum": "2001:678:1::/48"}}, "HOSTNAMEBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "HOSTNAMEBIND6": {"value": null, "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"}, "VERSIONBIND4": {"value": null, "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"}, "VERSIONBIND6": {"value": null, "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"}}], "WEB": {"WEB4_80_VENDOR": [{"ip": "217.31.205.50", "value": "nginx"}], "WEB4_80_www_VENDOR": [{"ip": "217.31.205.50", "value": "nginx"}], "WEB4_443_VENDOR": [{"ip": "217.31.205.50", "value": "nginx"}], "WEB4_443_www_VENDOR": [{"ip": "217.31.205.50", "value": "nginx"}], "WEB6_80_VENDOR": [{"ip": "2001:1488:0:3::2", "value": "nginx"}], "WEB6_80_www_VENDOR": [{"ip": "2001:1488:0:3::2", "value": "nginx"}], "WEB6_443_VENDOR": [{"ip": "2001:1488:0:3::2", "value": "nginx"}], "WEB6_443_www_VENDOR": [{"ip": "2001:1488:0:3::2", "value": "nginx"}]}}}
+{"domain": "nic.cz", "timestamp": "2019-09-24T05:28:06.536991", "results": {…}}
 …
 ```
 
 The progress info with timestamp is printed to stderr, so you can save just the output easily – `python main.py list.txt > results`.
+
+A JSON schema for the output JSON is included in this repository: [`result-schema.json`](result-schema.json), and also an example for nic.cz: [`result-example.json`](result-example.json).
+
+There are several tools for schema validation, viewing, and even code generation.
+
+To validate a result against schema (CI is set up to do it automatically):
+
+```bash
+$ pip install jsonschema
+$ jsonschema -i result-example.json result-schema.json # if it prints nothing, it's valid
+```
+
+Or, if you don't loathe JS, `ajv` has a much better output:
+
+```bash
+$ npm i -g ajv
+$ ajv validate -s result-schema.json -d result-example.json
+```
 
 #### Formatting the JSON output
 
@@ -130,6 +148,8 @@ CREATE TABLE results …;
 ```
 
 The SQL output is tested only with PostgreSQL 11.
+
+There's also `output_sql.py`, useful for inserting big chunks of resuls (which would be slow to do one by one).
 
 #### Custom output formats
 
