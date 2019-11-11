@@ -158,22 +158,25 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
                 continue
         result["status"] = response.status
         result["headers"] = {}
-        if 300 < response.status < 400:
-            result["headers"]["location"] = get_header_list(response.headers, "location")
-        result["headers"]["server"] = get_header_list(response.headers, "server")
-        result["headers"]["x-frame-options"] = get_header_list(response.headers, "x-frame-options")
-        result["headers"]["content-security-policy"] = get_header_list(response.headers, "content-security-policy")
-        result["headers"]["x-xss-protection"] = get_header_list(response.headers, "x-xss-protection")
-        result["headers"]["strict-transport-security"] = get_header_list(
-            response.headers, "strict-transport-security"
-        )
-        result["headers"]["expect-ct"] = get_header_list(response.headers, "expect-ct")
-        result["headers"]["x-content-type-options"] = get_header_list(response.headers, "x-content-type-options")
-        result["headers"]["feature-policy"] = get_header_list(response.headers, "feature-policy")
-        result["headers"]["access-control-allow-origin"] = get_header_list(
-            response.headers, "access-control-allow-origin"
-        )
-        result["headers"]["x-powered-by"] = get_header_list(response.headers, "x-powered-by")
+        try:
+            if 300 < response.status < 400:
+                result["headers"]["location"] = get_header_list(response.headers, "location")
+            result["headers"]["server"] = get_header_list(response.headers, "server")
+            result["headers"]["x-frame-options"] = get_header_list(response.headers, "x-frame-options")
+            result["headers"]["content-security-policy"] = get_header_list(response.headers, "content-security-policy")
+            result["headers"]["x-xss-protection"] = get_header_list(response.headers, "x-xss-protection")
+            result["headers"]["strict-transport-security"] = get_header_list(
+                response.headers, "strict-transport-security"
+            )
+            result["headers"]["expect-ct"] = get_header_list(response.headers, "expect-ct")
+            result["headers"]["x-content-type-options"] = get_header_list(response.headers, "x-content-type-options")
+            result["headers"]["feature-policy"] = get_header_list(response.headers, "feature-policy")
+            result["headers"]["access-control-allow-origin"] = get_header_list(
+                response.headers, "access-control-allow-origin"
+            )
+            result["headers"]["x-powered-by"] = get_header_list(response.headers, "x-powered-by")
+        except UnicodeDecodeError:
+            pass
         result["headers"] = dict(filter(lambda item: item[1] is not None, result["headers"].items()))
         if save_content:
             content_type = get_header_list(response.headers, "content-type")
