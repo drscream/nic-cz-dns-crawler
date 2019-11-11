@@ -105,7 +105,10 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
                 sock.settimeout(timeout)
                 sock.connect((domain, 443))
                 cert = sock.getpeercert()
-                result["cert"]["subject"] = dict(x[0] for x in cert["subject"])["commonName"]
+                try:
+                    result["cert"]["subject"] = dict(x[0] for x in cert["subject"])["commonName"]
+                except KeyError:
+                    result["cert"]["subject"] = ""
                 result["cert"]["issuer"] = dict(x[0] for x in cert["issuer"])
                 result["cert"]["version"] = cert["version"]
                 result["cert"]["valid"] = {}
