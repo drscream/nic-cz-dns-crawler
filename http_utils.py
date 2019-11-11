@@ -1,4 +1,5 @@
 import urllib3
+import hyper
 from hyper import HTTPConnection
 from hyper.tls import init_context
 from html.parser import HTMLParser
@@ -135,7 +136,9 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_conte
             StreamResetError,
             ConnectionResetError,
             OSError,
-            StreamClosedError
+            StreamClosedError,
+            KeyError,
+            hyper.http11.parser.ParseError
         ) as e:
             result["error"] = str(e)
             results.append(result)
