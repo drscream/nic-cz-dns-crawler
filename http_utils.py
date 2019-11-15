@@ -1,5 +1,6 @@
 import urllib3
 import hyper
+import h2
 from hyper import HTTPConnection
 from hyper.tls import init_context
 from html.parser import HTMLParser
@@ -11,8 +12,10 @@ import certifi
 from hyper.http20.exceptions import StreamResetError
 from h2.exceptions import StreamClosedError, ProtocolError
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 fallback_charset = "iso-8859-1"
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+h2.utilities._check_sent_host_authority_header = lambda headers, flags: headers
 
 
 class HTMLStripper(HTMLParser):

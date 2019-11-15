@@ -5,5 +5,6 @@ pyaml==19.4.1
 pycryptodome==3.9.0
 ecdsa==0.13.3
 certifi==2019.9.11 
-git+https://github.com/Lukasa/hyper.git
+git+https://github.com/python-hyper/hyper.git
+git+https://github.com/python-hyper/hyper-h2.git
 git+https://github.com/rthalley/dnspython.git
