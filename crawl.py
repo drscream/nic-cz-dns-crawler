@@ -1,8 +1,12 @@
+import re
 from datetime import datetime
+from copy import deepcopy
+
 from config_loader import load_config
 from geoip_utils import init_geoip, annotate_geoip
 from http_utils import get_webserver_info
-from dns_utils import get_local_resolver, get_txtbind, get_record, annotate_dns_algorithm, check_dnssec
+from dns_utils import get_local_resolver, get_txtbind, get_record, check_dnssec
+from dns_utils import annotate_dns_algorithm, get_txt, parse_dmarc, parse_spf
 
 
 config = load_config("config.yml")
@@ -11,6 +15,7 @@ local_resolver = get_local_resolver(config)
 
 
 def get_dns_local(domain):
+    txt = get_record(domain, "TXT", local_resolver)
     return {
         "NS_AUTH": get_record(domain, "NS", local_resolver),
         "MAIL": get_record(domain, "MX", local_resolver),
@@ -21,6 +26,9 @@ def get_dns_local(domain):
         "WEB_TLSA": get_record("_443._tcp." + domain, "TLSA", local_resolver),
         "WEB_TLSA_www": get_record("_443._tcp.www." + domain, "TLSA", local_resolver),
         "MAIL_TLSA": get_record("_25._tcp." + domain, "TLSA", local_resolver),
+        "TXT": txt,
+        "TXT_SPF": parse_spf(get_txt(re.compile("^\"?v=spf"), deepcopy(txt), "value"), "value"),
+        "TXT_DMARC": parse_dmarc(get_record("_dmarc." + domain, "TXT", local_resolver), "value"),
         "DS": annotate_dns_algorithm(get_record(domain, "DS", local_resolver), "value", 1),
         "DNSKEY": annotate_dns_algorithm(get_record(domain, "DNSKEY", local_resolver), "value", 2),
         "DNSSEC": check_dnssec(domain, local_resolver),

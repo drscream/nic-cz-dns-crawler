@@ -105,6 +105,66 @@ def annotate_dns_algorithm(items, key, index):
     return items
 
 
+def parse_dmarc(items, key):
+    if not items:
+        return items
+    parsed = []
+    for item in items:
+        record = item[key].strip("\"").strip(" ")
+        raw_tags = [t.split("=") for t in record.split(';') if t]
+        item[key] = {t[0].strip(): t[1].strip() for t in raw_tags}
+        parsed.append(item)
+    if len(parsed) == 0:
+        return None
+    return parsed
+
+
+def get_spf_ips(record, protocol):
+    key = f"ip{str(protocol)}:"
+    ips = [f.replace(key, "") for f in record if f.startswith(key)]
+    if len(ips) == 0:
+        return None
+    return ips
+
+
+def parse_spf(items, key):
+    if not items:
+        return items
+    parsed = []
+    for item in items.copy():
+        dict = {}
+        record = item[key].strip("\"").split(" ")
+        alls = [k for k in record if "all" in k]
+        if len(alls) == 0:
+            all = None
+        else:
+            all = alls[0]
+        kvs = [k for k in record if "=" in k]
+        for kv in kvs:
+            data = kv.split("=")
+            dict[data[0]] = data[1]
+        dict["ip4"] = get_spf_ips(record, 4)
+        dict["ip6"] = get_spf_ips(record, 6)
+        dict["all"] = all
+        item[key] = dict
+        parsed.append(item)
+    if len(parsed) == 0:
+        return None
+    return parsed
+
+
+def get_txt(regex, items, key):
+    if not items:
+        return items
+    filtered = []
+    for item in items:
+        if re.match(regex, item[key]):
+            filtered.append(item)
+    if len(filtered) == 0:
+        return None
+    return filtered
+
+
 def get_txtbind(nameserver, qname, timeout=5):
     result = None
     try:
