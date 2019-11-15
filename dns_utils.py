@@ -127,6 +127,14 @@ def get_spf_ips(record, protocol):
     return ips
 
 
+def get_spf_includes(record):
+    key = "include:"
+    includes = [f.replace(key, "") for f in record if f.startswith(key)]
+    if len(includes) == 0:
+        return None
+    return includes
+
+
 def parse_spf(items, key):
     if not items:
         return items
@@ -145,6 +153,7 @@ def parse_spf(items, key):
             dict[data[0]] = data[1]
         dict["ip4"] = get_spf_ips(record, 4)
         dict["ip6"] = get_spf_ips(record, 6)
+        dict["include"] = get_spf_includes(record)
         dict["all"] = all
         item[key] = dict
         parsed.append(item)
