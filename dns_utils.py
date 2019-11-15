@@ -112,7 +112,8 @@ def parse_dmarc(items, key):
     for item in items:
         record = item[key].strip("\"").strip(" ")
         raw_tags = [t.split("=") for t in record.split(';') if t]
-        item[key] = {t[0].strip(): t[1].strip() for t in raw_tags}
+        output = {t[0].strip(): t[1].strip() for t in raw_tags}
+        item = {k: v for k, v in output.items() if v is not None}
         parsed.append(item)
     if len(parsed) == 0:
         return None
@@ -140,7 +141,7 @@ def parse_spf(items, key):
         return items
     parsed = []
     for item in items.copy():
-        dict = {}
+        output = {}
         record = item[key].strip("\"").split(" ")
         alls = [k for k in record if "all" in k]
         if len(alls) == 0:
@@ -150,12 +151,12 @@ def parse_spf(items, key):
         kvs = [k for k in record if "=" in k]
         for kv in kvs:
             data = kv.split("=")
-            dict[data[0]] = data[1]
-        dict["ip4"] = get_spf_ips(record, 4)
-        dict["ip6"] = get_spf_ips(record, 6)
-        dict["include"] = get_spf_includes(record)
-        dict["all"] = all
-        item[key] = dict
+            output[data[0]] = data[1]
+        output["ip4"] = get_spf_ips(record, 4)
+        output["ip6"] = get_spf_ips(record, 6)
+        output["include"] = get_spf_includes(record)
+        output["all"] = all
+        item = {k: v for k, v in output.items() if v is not None}
         parsed.append(item)
     if len(parsed) == 0:
         return None
