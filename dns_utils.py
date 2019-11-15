@@ -136,6 +136,21 @@ def get_spf_includes(record):
     return includes
 
 
+def get_spf_rules(record):
+    return record[1:]
+
+
+def get_spf_all(record):
+    alls = [k for k in record if "all" in k]
+    if len(alls) == 0:
+        return None
+    else:
+        all = alls[-1]
+        if all == "all":
+            all = "+all"
+        return all.replace("all", "")
+
+
 def parse_spf(items, key):
     if not items:
         return items
@@ -143,19 +158,15 @@ def parse_spf(items, key):
     for item in items.copy():
         output = {}
         record = item[key].strip("\"").split(" ")
-        alls = [k for k in record if "all" in k]
-        if len(alls) == 0:
-            all = None
-        else:
-            all = alls[0]
         kvs = [k for k in record if "=" in k]
         for kv in kvs:
             data = kv.split("=")
             output[data[0]] = data[1]
+        output["rules"] = get_spf_rules(record)
         output["ip4"] = get_spf_ips(record, 4)
         output["ip6"] = get_spf_ips(record, 6)
         output["include"] = get_spf_includes(record)
-        output["all"] = all
+        output["all"] = get_spf_all(record)
         item = {k: v for k, v in output.items() if v is not None}
         parsed.append(item)
     if len(parsed) == 0:
