@@ -369,7 +369,7 @@ If you're looking into writing some additional tests, be aware that some Docker 
 
 The crawler is developed primarily for Linux, but it should work on any OS supported by Python –at least the worker part (but the main process should work too, if you manage to get a Redis server running on your OS).
 
-One exception is Windows, because it doesn't support `fork()`, but it's possible to get it working under WSL (Windows Subsystem for Linux):
+One exception is Windows, because it [doesn't support `fork()`](https://github.com/rq/rq/issues/859), but it's possible to get it working under WSL (Windows Subsystem for Linux):
 
 ![win10 screenshot](https://i.vgy.me/emJjGN.png)
 
