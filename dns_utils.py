@@ -108,7 +108,7 @@ def annotate_dns_algorithm(items, key, index):
 def parse_dmarc(items, key):
     if not items:
         return None
-    items = [item for item in items if item[key].startswith("v=DMARC")]
+    items = [item for item in items if item[key].startswith("\"v=DMARC")]
     if len(items) == 0:
         return None
     parsed = []
@@ -157,7 +157,7 @@ def get_spf_all(record):
 def parse_spf(items, key):
     if not items:
         return None
-    items = [item for item in items if item[key].startswith("v=spf")]
+    items = [item for item in items if item[key].startswith("\"v=spf")]
     if len(items) == 0:
         return None
     parsed = []
