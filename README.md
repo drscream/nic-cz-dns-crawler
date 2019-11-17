@@ -364,6 +364,18 @@ Some basic tests are in the `tests` directory in this repo. If you want to run t
 
 If you're looking into writing some additional tests, be aware that some Docker containers used in GitLab CI don't have IPv6 configured (even if it's working on the host machine), so checking for eg. `WEB6_80_www_VENDOR` will fail without additional setup.
 
+
+## OS support
+
+The crawler is developed primarily for Linux, but it should work on any OS supported by Python –at least the worker part (but the main process should work too, if you manage to get a Redis server running on your OS).
+
+One exception is Windows, because it doesn't support `fork()`, but it's possible to get it working under WSL (Windows Subsystem for Linux):
+
+![win10 screenshot](https://i.vgy.me/emJjGN.png)
+
+…so you can turn a gaming machine into an internet crawler quite easily.
+
+
 ## Bug reporting
 
 Please create [issues in this Gitlab repo](https://gitlab.labs.nic.cz/adam/dns-crawler/issues).
