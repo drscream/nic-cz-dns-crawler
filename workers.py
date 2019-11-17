@@ -16,7 +16,7 @@ redis_host = "localhost:6379"
 def print_help():
     sys.stderr.write(f"Usage: {sys.argv[0]} [count] [redis]\n")
     sys.stderr.write(f"       count - worker count, 8 workers per CPU core by default\n")
-    sys.stderr.write(f"       redis - redis host, localhost:6379 by default\n\n")
+    sys.stderr.write(f"       redis - redis host:port, localhost:6379 by default\n\n")
     sys.stderr.write(f"Examples: {sys.argv[0]} 8\n")
     sys.stderr.write(f"          {sys.argv[0]} 24 192.168.0.22:4444\n")
     sys.stderr.write(f"          {sys.argv[0]} 16 redis.foo.bar\n")
@@ -59,7 +59,15 @@ if worker_count > 24 * cpu_count:
 if len(sys.argv) > 2:
     redis_host = sys.argv[2]
 
-redis = Redis(host=redis_host.split(":")[0], port=redis_host.split(":")[1])
+try:
+    redis_param = redis_host.split(":")
+    redis_host = redis_param[0]
+    redis_port = redis_param[1]
+except IndexError:
+    redis_port = "6379"
+
+redis = Redis(host=redis_host, port=redis_port)
+
 commands = []
 
 for n in range(worker_count):
