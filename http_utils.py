@@ -12,7 +12,9 @@ from h2.exceptions import ProtocolError, StreamClosedError
 from hyper import HTTPConnection
 from hyper.http20.exceptions import StreamResetError
 from hyper.tls import init_context
+from config_loader import load_config
 
+config = load_config("config.yml")
 fallback_charset = "iso-8859-1"
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -74,13 +76,13 @@ def charset_from_header(header_string):
     return charset
 
 
-def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=5, save_content=False, strip_html=False):
+def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=config["http_timeout"],
+                       save_content=False, strip_html=False):
     headers = {
         "Host": domain,
         "Connection": "keep-alive",
         "Upgrade-Insecure-Requests": "1",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) "
-                      "Chrome/74.0.3729.131 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,"
                   "application/signed-exchange;v=b3",
         "Accept-Encoding": "gzip, deflate",
