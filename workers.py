@@ -1,11 +1,12 @@
+import subprocess
 import sys
 from multiprocessing import cpu_count
-import subprocess
 from socket import gethostname
 from time import sleep
-from redis import Redis
-from timestamp import timestamp
 
+from redis import Redis
+
+from timestamp import timestamp
 
 cpu_count = cpu_count()
 worker_count = cpu_count * 8

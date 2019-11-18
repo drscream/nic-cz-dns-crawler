@@ -211,8 +211,9 @@ geoip:
   isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb
 dns:
   - 127.0.0.1
-DNS_TIMEOUT: 2
-HTTP_TIMEOUT: 2
+job_timeout: 60  # max. duration for a single domain 
+dns_timeout: 2
+http_timeout: 2
 save_web_content: False  # beware, setting to True will output HUGE files
 strip_html: False # when saving web content, strip HTML tags, scripts, and CSS
 ```

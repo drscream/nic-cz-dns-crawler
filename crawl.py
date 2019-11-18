@@ -1,13 +1,13 @@
 import re
-from datetime import datetime
 from copy import deepcopy
+from datetime import datetime
 
 from config_loader import load_config
-from geoip_utils import init_geoip, annotate_geoip
+from dns_utils import (annotate_dns_algorithm, check_dnssec,
+                       get_local_resolver, get_record, get_txt, get_txtbind,
+                       parse_dmarc, parse_spf)
+from geoip_utils import annotate_geoip, init_geoip
 from http_utils import get_webserver_info
-from dns_utils import get_local_resolver, get_txtbind, get_record, check_dnssec
-from dns_utils import annotate_dns_algorithm, get_txt, parse_dmarc, parse_spf
-
 
 config = load_config("config.yml")
 geoip_dbs = init_geoip(config)

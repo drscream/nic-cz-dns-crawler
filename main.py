@@ -1,18 +1,22 @@
-from redis import Redis
+import json
+import sys
+import threading
+from multiprocessing import cpu_count
+from time import sleep
+
 import rq
+from redis import Redis
 from rq import Queue, job
 from rq.registry import FinishedJobRegistry
-import sys
+
+from config_loader import load_config
 from crawl import process_domain
-from time import sleep
-import json
-from multiprocessing import cpu_count
-import threading
 from timestamp import timestamp
 
 POLL_INTERVAL = 2
 
 cpu_count = cpu_count()
+config = load_config("config.yml")
 
 
 def print_help():
@@ -41,7 +45,7 @@ def create_jobs(domains, function, queue, should_stop):
 
 def create_job(domain, function, queue):
     domain = domain.strip()
-    queue.enqueue(function, domain, job_id=domain, result_ttl=-1)
+    queue.enqueue(function, domain, job_id=domain, result_ttl=-1, job_timeout=config["job_timeout"])
 
 
 try:

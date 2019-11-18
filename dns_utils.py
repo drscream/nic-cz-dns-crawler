@@ -1,14 +1,15 @@
-import dns.resolver
-import dns.name
-import dns.dnssec
 import re
+
+import dns.dnssec
+import dns.name
+import dns.resolver
 
 
 def get_local_resolver(config):
     use_custom_dns = "dns" in config and len(config["dns"]) > 0
 
     local_resolver = dns.resolver.Resolver(configure=(not use_custom_dns))
-    local_resolver.timeout = local_resolver.lifetime = int(config["DNS_TIMEOUT"])
+    local_resolver.timeout = local_resolver.lifetime = int(config["dns_timeout"])
     if use_custom_dns:
         local_resolver.nameservers = config["dns"]
     return local_resolver

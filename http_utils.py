@@ -1,16 +1,17 @@
-import urllib3
-import hyper
-import h2
-from hyper import HTTPConnection
-from hyper.tls import init_context
-from html.parser import HTMLParser
-from datetime import datetime
 import re
-import ssl
 import socket
+import ssl
+from datetime import datetime
+from html.parser import HTMLParser
+
 import certifi
+import h2
+import hyper
+import urllib3
+from h2.exceptions import ProtocolError, StreamClosedError
+from hyper import HTTPConnection
 from hyper.http20.exceptions import StreamResetError
-from h2.exceptions import StreamClosedError, ProtocolError
+from hyper.tls import init_context
 
 fallback_charset = "iso-8859-1"
 
