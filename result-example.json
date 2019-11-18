@@ -1,6 +1,6 @@
 {
   "domain": "nic.cz",
-  "timestamp": "2019-10-24T08:24:58.870848",
+  "timestamp": "2019-11-18T10:24:32.647921",
   "results": {
     "DNS_LOCAL": {
       "NS_AUTH": [
@@ -44,6 +44,9 @@
         }
       ],
       "MAIL_TLSA": null,
+      "TXT": [{ "value": "\"MS=92011E91562E6FD18FF9C5FA1F053F90DD5B1892\"" }],
+      "TXT_SPF": null,
+      "TXT_DMARC": null,
       "DS": [
         {
           "value": "61281 13 2 4104d40c8fe2030bf7a09a199fcf37b36f7ec8ddd16f5a84f2e61c248d3afd0f",
@@ -52,7 +55,7 @@
       ],
       "DNSKEY": [
         {
-          "value": "256 3 13 10TdB3LI+IdWr/LIV/0gntJWk14+7tzI L9Gpyvav3F8pjEhg0PB85k3ksXDfAZ/+ 9pxRXOou5nu68vUxkc0VbQ==",
+          "value": "256 3 13 kg9LOAsy4nwTJoXRv/71gRmtB4Sb6qCD zikX8/pPO4n0IpmnTiz9WPVX8jKB1Hhz gYymDtG7Z6ygICrHQhBkRg==",
           "algorithm": "ECDSAP256SHA256"
         },
         {
@@ -63,8 +66,8 @@
       "DNSSEC": {
         "valid": true,
         "rrsig": [
-          "nic.cz. 251 IN RRSIG DNSKEY 13 2 1800 20191105190639 20191023104002 49650 nic.cz. YeAtktsdN46ElaIcjjKGKcb8oFqrrnYA Fh9z2qPtkPOma5teK9Ju/9KYAaZbu2pm ou0UZlk74I9N1gZGnAifbg==",
-          "nic.cz. 251 IN RRSIG DNSKEY 13 2 1800 20191105233609 20191023104002 61281 nic.cz. eB0cS4P+JRoOdAr1QG5vDWZjo30tm8cX yj6gnZMI2cU2GLrdr5FJ5aFMtrfCq91G 6xs7RgDl5b+PlX0N8THP1A=="
+          "nic.cz. 1800 IN RRSIG DNSKEY 13 2 1800 20191128125810 20191115065815 61281 nic.cz. RXVFWh6udihxsWnDzQT8qs91o3GQzHF1 xcuYKk8wm7ruP3bQW6emqUxqQAnMizSL SHHn2Kyb5ZITThKLAOCVWw==",
+          "nic.cz. 1800 IN RRSIG DNSKEY 13 2 1800 20191129014847 20191115065815 9334 nic.cz. uSe30rAySNjcTIHvMdW/bDrIUrN32LPF JrG8fBP6bKFD1esUwKevMTMQjeVer8V4 THb16dGKRB+w1HI3NxdRZA=="
         ]
       }
     },
@@ -85,7 +88,7 @@
         },
         "HOSTNAMEBIND6": {
           "value": null,
-          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
         },
         "VERSIONBIND4": {
           "value": null,
@@ -93,7 +96,7 @@
         },
         "VERSIONBIND6": {
           "value": null,
-          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
         }
       },
       {
@@ -112,7 +115,7 @@
         },
         "HOSTNAMEBIND6": {
           "value": null,
-          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
         },
         "VERSIONBIND4": {
           "value": null,
@@ -120,7 +123,7 @@
         },
         "VERSIONBIND6": {
           "value": null,
-          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
         }
       },
       {
@@ -137,10 +140,7 @@
           "value": null,
           "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
         },
-        "HOSTNAMEBIND6": {
-          "value": null,
-          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:1::1 UDP port 53 answered REFUSED"
-        },
+        "HOSTNAMEBIND6": { "value": "unidentified server" },
         "VERSIONBIND4": {
           "value": null,
           "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 193.29.206.1 UDP port 53 answered REFUSED"
