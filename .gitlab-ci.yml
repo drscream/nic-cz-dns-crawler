@@ -34,6 +34,13 @@ download_geoip:
     paths:
       - ./test/*.mmdb
 
+validate_result_example:
+  stage: test
+  before_script:
+    - pip install -q jsonschema
+  script: 
+    - jsonschema -i result-example.json result-schema.json
+
 test_odvr:
   stage: test
   dependencies:
