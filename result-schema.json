@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/schema#",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
   "definitions": {
     "dns_record_array": {
       "type": "array",
@@ -415,7 +415,8 @@
             "WEB6_www",
             "WEB_TLSA",
             "WEB_TLSA_www"
-          ]
+          ],
+          "additionalProperties": false
         },
         "DNS_AUTH": {
           "description": "Authoritative DNS servers, with GeoIP info and (hostname|version).bind (if available).",
@@ -488,7 +489,8 @@
                   "ns",
                   "ns_ipv4",
                   "ns_ipv6"
-                ]
+                ],
+                "additionalProperties": false
               }
             }
           ]
@@ -571,11 +573,14 @@
             "WEB6_443_www",
             "WEB6_80",
             "WEB6_80_www"
-          ]
+          ],
+          "additionalProperties": false
         }
       },
-      "required": ["DNS_AUTH", "DNS_LOCAL", "WEB"]
+      "required": ["DNS_AUTH", "DNS_LOCAL", "WEB"],
+      "additionalProperties": false
     }
   },
-  "required": ["domain", "results", "timestamp"]
+  "required": ["domain", "results", "timestamp"],
+  "additionalProperties": false
 }
