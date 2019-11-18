@@ -76,7 +76,7 @@ def charset_from_header(header_string):
     return charset
 
 
-def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=config["http_timeout"],
+def get_webserver_info(domain, ips, ipv6=False, tls=False, timeout=int(config["http_timeout"]),
                        save_content=False, strip_html=False):
     headers = {
         "Host": domain,
