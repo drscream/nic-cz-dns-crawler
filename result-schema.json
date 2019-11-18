@@ -25,6 +25,59 @@
         "required": ["value"]
       }
     },
+    "txt_spf_record_array": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "v": {
+            "type": "string"
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ip4": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ip6": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "all": {
+            "type": "string"
+          }
+        },
+        "required": ["v", "rules"],
+        "additionalProperties": false
+      }
+    },
+    "txt_dmarc_record_array": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "v": {
+            "type": "string"
+          }
+        },
+        "required": ["v"],
+        "additionalProperties": true
+      }
+    },
     "ip_record_array": {
       "type": "array",
       "items": { "$ref": "#/definitions/ip_record_with_geoip" }
@@ -358,6 +411,33 @@
                 { "$ref": "#/definitions/dns_record_array" }
               ]
             },
+            "TXT": {
+              "description": "TXT records",
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                { "$ref": "#/definitions/dns_record_array" }
+              ]
+            },
+            "TXT_SPF": {
+              "description": "SPF record parsed from TXT",
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                { "$ref": "#/definitions/txt_spf_record_array" }
+              ]
+            },
+            "TXT_DMARC": {
+              "description": "DMARC record parsed from TXT",
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                { "$ref": "#/definitions/txt_dmarc_record_array" }
+              ]
+            },
             "DS": {
               "description": "Domain's DS record with algorithm annotation.",
               "anyOf": [
@@ -408,6 +488,9 @@
             "DS",
             "MAIL",
             "MAIL_TLSA",
+            "TXT",
+            "TXT_SPF",
+            "TXT_DMARC",
             "NS_AUTH",
             "WEB4",
             "WEB4_www",
