@@ -164,7 +164,7 @@ def parse_spf(items, key):
     parsed = []
     for item in items.copy():
         output = {}
-        record = item[key].strip("\"").split(" ")
+        record = re.sub(r" +", " ", item[key].strip("\"")).split(" ")
         kvs = [k for k in record if "=" in k]
         for kv in kvs:
             data = kv.split("=")
