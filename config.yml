@@ -3,7 +3,7 @@ geoip:
   isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb
 dns:
   - 127.0.0.1
-job_timeout: 60
+job_timeout: 80
 dns_timeout: 2
 http_timeout: 2
 save_web_content: False

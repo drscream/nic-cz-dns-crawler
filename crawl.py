@@ -7,7 +7,7 @@ from dns_utils import (annotate_dns_algorithm, check_dnssec,
                        get_local_resolver, get_record, get_txt, get_txtbind,
                        parse_dmarc, parse_spf)
 from geoip_utils import annotate_geoip, init_geoip
-from http_utils import get_webserver_info
+from web_utils import get_webserver_info
 
 config = load_config("config.yml")
 geoip_dbs = init_geoip(config)
@@ -41,6 +41,8 @@ def get_dns_auth(domain, nameservers):
     results = []
     for item in nameservers:
         ns = item["value"]
+        if not ns:
+            break
         a = get_record(ns, "A", local_resolver)
         aaaa = get_record(ns, "AAAA", local_resolver)
         ns_ipv4 = a[0]["value"] if a else None
@@ -59,33 +61,16 @@ def get_dns_auth(domain, nameservers):
 
 
 def get_web_status(domain, dns):
-    save_content = config["save_web_content"] == "True"
-    strip_html = config["strip_html"] == "True"
-    result = {
-        "WEB4_80": get_webserver_info(domain, dns["WEB4"], save_content=save_content, strip_html=strip_html),
-        "WEB4_80_www": get_webserver_info(
-            f"www.{domain}", dns["WEB4"], save_content=save_content, strip_html=strip_html
-        ),
-        "WEB4_443": get_webserver_info(
-            domain, dns["WEB4"], tls=True, save_content=save_content, strip_html=strip_html
-        ),
-        "WEB4_443_www": get_webserver_info(
-            f"www.{domain}", dns["WEB4"], tls=True, save_content=save_content, strip_html=strip_html
-        ),
-        "WEB6_80": get_webserver_info(
-            domain, dns["WEB6"], ipv6=True, save_content=save_content, strip_html=strip_html
-        ),
-        "WEB6_80_www": get_webserver_info(
-            f"www.{domain}", dns["WEB6"], ipv6=True, save_content=save_content, strip_html=strip_html
-        ),
-        "WEB6_443": get_webserver_info(
-            domain, dns["WEB6"], ipv6=True, tls=True, save_content=save_content, strip_html=strip_html
-        ),
-        "WEB6_443_www": get_webserver_info(
-            f"www.{domain}", dns["WEB6"], ipv6=True, tls=True, save_content=save_content, strip_html=strip_html
-        ),
+    return {
+        "WEB4_80": get_webserver_info(domain, dns["WEB4"]),
+        "WEB4_80_www": get_webserver_info(f"www.{domain}", dns["WEB4"]),
+        "WEB4_443": get_webserver_info(domain, dns["WEB4"], tls=True),
+        "WEB4_443_www": get_webserver_info(f"www.{domain}", dns["WEB4"], tls=True),
+        "WEB6_80": get_webserver_info(domain, dns["WEB6"], ipv6=True),
+        "WEB6_80_www": get_webserver_info(f"www.{domain}", dns["WEB6"], ipv6=True),
+        "WEB6_443": get_webserver_info(domain, dns["WEB6"], ipv6=True, tls=True),
+        "WEB6_443_www": get_webserver_info(f"www.{domain}", dns["WEB6"], ipv6=True, tls=True),
     }
-    return result
 
 
 def process_domain(domain):
@@ -96,5 +81,9 @@ def process_domain(domain):
     return {
         "domain": domain,
         "timestamp": datetime.utcnow().isoformat(),
-        "results": {"DNS_LOCAL": dns_local, "DNS_AUTH": dns_auth, "WEB": web},
+        "results": {
+            "DNS_LOCAL": dns_local,
+            "DNS_AUTH": dns_auth,
+            "WEB": web
+        }
     }

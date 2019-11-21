@@ -55,7 +55,7 @@ try:
         domain_count = len(domains)
         finished_count = 0
         created_count = 0
-        parts = cpu_count * 4
+        parts = cpu_count * 8
         domains_per_part = int(domain_count / parts)
         sys.stderr.write(f"{timestamp()} Creating job queue using {parts} threads.\n")
         redis.set("locked", 1)
