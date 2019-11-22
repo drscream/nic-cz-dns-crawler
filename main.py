@@ -13,7 +13,7 @@ from config_loader import load_config
 from crawl import process_domain
 from timestamp import timestamp
 
-POLL_INTERVAL = 2
+POLL_INTERVAL = 5
 
 cpu_count = cpu_count()
 config = load_config("config.yml")
@@ -44,14 +44,13 @@ def create_jobs(domains, function, queue, should_stop):
 
 
 def create_job(domain, function, queue):
-    domain = domain.strip()
     queue.enqueue(function, domain, job_id=domain, result_ttl=-1, job_timeout=config["job_timeout"])
 
 
 try:
     with open(filename, "r") as file:
         sys.stderr.write(f"{timestamp()} Reading domains from {filename}.\n")
-        domains = file.readlines()
+        domains = file.read().splitlines()
         domain_count = len(domains)
         finished_count = 0
         created_count = 0
