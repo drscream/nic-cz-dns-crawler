@@ -29,7 +29,7 @@ def drop_null_values(orig_dict):
 def create_request_headers(domain):
     return {
         "Host": domain,
-        "Connection": "keep-alive",
+        "Connection": "close",
         "Upgrade-Insecure-Requests": "1",
         "User-Agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
@@ -103,7 +103,7 @@ def get_tls_info(domain, ip, ipv6=False, port=443):
         })
     # conn.sendall(f"GET / HTTP/1.1\r\nHost: {domain}\r\nConnection: close\r\n\r\n".encode("ascii"))
     # received = conn.recv(10000)
-    # conn.close()
+    conn.close()
     # result["CCC"] = received.decode("utf-8", "ignore")
     return result
 
@@ -184,9 +184,10 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False):
             r = requests.head
         try:
             response = r(f"{protocol}{host}/", headers=create_request_headers(domain),
-                         allow_redirects=False, verify=False, timeout=http_timeout)
+                         allow_redirects=False, verify=False, timeout=http_timeout, stream=False)
+            response.close()
         except Exception as e:
-            results.append({"error": str(e)})
+            result["error"] = str(e)
             break
         result["status"] = response.status_code
         result["headers"] = get_response_headers(response.headers)
