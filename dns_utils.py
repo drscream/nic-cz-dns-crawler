@@ -4,12 +4,17 @@ import dns.dnssec
 import dns.name
 import dns.resolver
 
+from config_loader import load_config
+
+config = load_config("config.yml")
+dns_timeout = int(config["http_timeout"])
+
 
 def get_local_resolver(config):
     use_custom_dns = "dns" in config and len(config["dns"]) > 0
 
     local_resolver = dns.resolver.Resolver(configure=(not use_custom_dns))
-    local_resolver.timeout = local_resolver.lifetime = int(config["dns_timeout"])
+    local_resolver.timeout = local_resolver.lifetime = dns_timeout
     if use_custom_dns:
         local_resolver.nameservers = config["dns"]
     return local_resolver
@@ -193,13 +198,13 @@ def get_txt(regex, items, key):
     return filtered
 
 
-def get_txtbind(nameserver, qname, timeout=5):
+def get_txtbind(nameserver, qname, timeout=dns_timeout):
     result = None
     try:
         resolver = dns.resolver.Resolver(configure=False)
         resolver.nameservers = [nameserver]
         resolver.timeout = resolver.lifetime = timeout
-        answers = resolver.query(qname, rdtype="TXT", rdclass="CHAOS")
+        answers = resolver.query(qname, rdtype="TXT", rdclass="CHAOS", lifetime=timeout)
         result = {"value": str(answers[0]).replace('"', "")}
     except Exception as e:
         result = {"value": None, "error": str(e)}
@@ -220,9 +225,9 @@ def get_record(domain, record, resolver):
     request = dns.message.make_query(domain, record)
     request.flags |= dns.flags.CD
     try:
-        response = dns.query.udp(request, resolver.nameservers[0])
+        response = dns.query.udp(request, resolver.nameservers[0], resolver.timeout)
     except dns.message.Truncated:
-        response = dns.query.tcp(request, resolver.nameservers[0])
+        response = dns.query.tcp(request, resolver.nameservers[0], resolver.timeout)
     except (
         dns.resolver.NoAnswer,
         dns.rdatatype.UnknownRdatatype,
@@ -230,7 +235,7 @@ def get_record(domain, record, resolver):
         dns.resolver.NXDOMAIN,
         dns.exception.Timeout,
     ):
-        pass
+        return None
     for item in response.answer:
         for line in str(item).split("\n"):
             results.append({"value": value_from_record(record, line)})
