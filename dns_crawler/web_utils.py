@@ -9,8 +9,8 @@ import certifi
 import requests
 import urllib3
 
-from config_loader import load_config
-from ip_utils import is_valid_ip_address
+from .config_loader import load_config
+from .ip_utils import is_valid_ip_address
 
 
 config = load_config("config.yml")

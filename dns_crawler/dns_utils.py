@@ -4,7 +4,7 @@ import dns.dnssec
 import dns.name
 import dns.resolver
 
-from config_loader import load_config
+from .config_loader import load_config
 
 config = load_config("config.yml")
 dns_timeout = int(config["http_timeout"])

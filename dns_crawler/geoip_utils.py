@@ -2,7 +2,7 @@ from os import path
 
 import geoip2.database
 
-from ip_utils import is_valid_ip_address
+from .ip_utils import is_valid_ip_address
 
 
 def init_geoip(config):

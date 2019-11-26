@@ -2,7 +2,7 @@ import socket
 
 import requests
 
-from ip_utils import is_valid_ipv6_address
+from .ip_utils import is_valid_ipv6_address
 
 
 def ripe_ip_info(ip):

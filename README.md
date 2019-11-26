@@ -1,26 +1,53 @@
 # `dns-crawler`
 
-> Crawler for getting info about *(possibly a huge number of)* DNS domains
+> A crawler for getting info about *(possibly a huge number of)* DNS domains
+
+## Installation
+
+Create and activate a virtual environment:
+
+```bash
+mkdir dns-crawler
+cd dns-crawler
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install `dns-crawler`:
+
+```bash
+pip install dns-crawler
+```
+
+This is enough to make the crawler work, but you will probably get `AttributeError: module 'dns.message' has no attribute 'Truncated'` for a lot of domains. This is because the crawler uses current `dnspython`, but the last release on PyPI is ages behind the current code. It can be fixed easily just by installing `dnspython` from git:
+
+```bash
+pip install -U git+https://github.com/rthalley/dnspython.git
+```
+
+(PyPI [doesn't allow us](https://github.com/pypa/pip/issues/6301) to specify the git url it in dependencies unfortunately)
 
 ## Basic usage
+
+Start Redis. The exact command depends on your system.
 
 Feed domains into queue and wait for results:
 
 ```
-$ python main.py domain-list.txt > result.json
+$ dns-crawler domain-list.txt > result.json
 ```
 
 (in another shell) Start workers which process the domains and return results to the main process:
 
 ```
-$ python workers.py
+$ dns-crawler-workers
 ```
 
 ## How fast is it anyway?
 
-A single laptop on ~50Mbps connection can crawl the entire *.cz* zone overnight, give or take.
+A single laptop on ~50Mbps connection can crawl the entire *.cz* zone overnight, give or take (with `save_web_content` disabled).
 
-Since the crawler is designed to be parallel, the actual speed depends almost entirely on the worker count. And it can scale accross multiple machines almost infinitely, so should you need a million domains crawled in a few minutes, you can always just throw more hardware at it.
+Since the crawler is designed to be parallel, the actual speed depends almost entirely on the worker count. And it can scale accross multiple machines almost infinitely, so should you need a million domains crawled in an hour, you can always just throw more hardware at it.
 
 ## Installation
 
@@ -38,16 +65,6 @@ Since the crawler is designed to be parallel, the actual speed depends almost en
 
 No special config needed, but increase the memory limit if you have a lot of domains to process (eg. `maxmemory 1G`). You can also disable disk snapshots to save some I/O time (comment out the `save …` lines).
 
-### Installing Python deps in a virtualenv
-
-```
-$ git clone https://gitlab.labs.nic.cz/adam/dns-crawler
-$ cd dns-crawler
-$ python3 -m venv .venv
-$ source .venv/bin/activate
-$ pip install -r requirements.txt 
-```
-
 ### Trying it out
 
 Create a short domain list (one 2nd level domain per line):
@@ -59,7 +76,7 @@ $ echo -e "nic.cz\nnetmetr.cz\nroot.cz" > domains.txt
 Start the main process to create job for every domain:
 
 ```
-$ python main.py domains.txt
+$ dns-crawler domains.txt
 [2019-09-24 07:38:15] Reading domains from …/domains.txt.
 [2019-09-24 07:38:15] Creating job queue using 2 threads.
 [2019-09-24 07:38:15] 0/3 jobs created.
@@ -71,7 +88,7 @@ $ python main.py domains.txt
 Now it waits for workers to take the jobs from redis. Run a worker in another shell:
 
 ```
-$ python workers.py 1
+$ dns-crawler-workers 3
 07:38:17 RQ worker 'rq:worker:foo-2' started, version 1.0
 07:38:17 *** Listening on default...
 07:38:17 Cleaning registries for queue: default
@@ -100,7 +117,7 @@ Results are printed to the main process' stdout – JSON for every domain, separ
 …
 ```
 
-The progress info with timestamp is printed to stderr, so you can save just the output easily – `python main.py list.txt > results`.
+The progress info with timestamp is printed to stderr, so you can save just the output easily – `dns-crawler list.txt > results`.
 
 A JSON schema for the output JSON is included in this repository: [`result-schema.json`](result-schema.json), and also an example for nic.cz: [`result-example.json`](result-example.json).
 
@@ -122,14 +139,14 @@ $ ajv validate -s result-schema.json -d result-example.json
 
 #### Formatting the JSON output
 
-If you want formatted JSONs, just pipe the output through [jq](https://stedolan.github.io/jq/): `python main.py list.txt | jq`.
+If you want formatted JSONs, just pipe the output through [jq](https://stedolan.github.io/jq/): `dns-crawler list.txt | jq`.
 
 #### SQL output
 
 An util to create SQL `INSERT`s from the crawler output is included in this repo.
 
 ```
-$ python main.py list.txt | python output_sql.py table_name
+$ dns-crawler list.txt | python output_sql.py table_name
 INSERT INTO table_name VALUES …;
 INSERT INTO table_name VALUES …;
 ```
@@ -137,7 +154,7 @@ INSERT INTO table_name VALUES …;
 You can even pipe it right into `psql` or another DB client, which will save the results into DB continually, as they come from the workers:
 
 ```
-$ python main.py list.txt | python output_sql.py table_name | psql -d db_name …
+$ dns-crawler list.txt | python output_sql.py table_name | psql -d db_name …
 ```
 
 It can also generate the table structure (`CREATE TABLE …`), taking the table name as a single argument (without piping anything to stdin):
@@ -150,6 +167,10 @@ CREATE TABLE results …;
 The SQL output is tested only with PostgreSQL 11.
 
 There's also `output_sql.py`, useful for inserting big chunks of resuls (which would be slow to do one by one).
+
+#### Saving to Hadoop
+
+TODO
 
 #### Custom output formats
 
@@ -166,7 +187,7 @@ for line in sys.stdin:
     print(yaml.dump(json.loads(line)))
 ```
 
-(and then just `python main.py domains.txt | python yaml.py`)
+(and then just `dns-crawler domains.txt | python yaml.py`)
 
 CSV is a different beast, since there's no obvious way to represent arrays…
 
@@ -203,7 +224,9 @@ $ python -c "from crawl import process_domain; import json; print(json.dumps(pro
 
 ## Config file
 
-GeoIP DB paths, DNS resolver IP(s), and timeouts are read from `config.yml`. The default values are:
+GeoIP DB paths, DNS resolver IP(s), and timeouts are read from `config.yml` in the working directory, if present.
+
+The default values are:
 
 ```yaml
 geoip:
@@ -211,9 +234,9 @@ geoip:
   isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb
 dns:
   - 127.0.0.1
-job_timeout: 60  # max. duration for a single domain 
-dns_timeout: 2
-http_timeout: 2
+job_timeout: 80  # max. duration for a single domain (seconds) 
+dns_timeout: 2 # seconds
+http_timeout: 2 # seconds
 save_web_content: False  # beware, setting to True will output HUGE files
 strip_html: False # when saving web content, strip HTML tags, scripts, and CSS
 ```
@@ -242,10 +265,10 @@ If no resolvers are specified (`dns` is missing or empty in the config file), th
 
 ## Command line parameters
 
-### main.py
+### dns-crawler
 
 ```
-main.py <file>
+dns-crawler <file>
        file - plaintext domain list, one domain per line (separated by \n)
 ```
 
@@ -253,23 +276,25 @@ The main process uses threads (2 for each CPU core) to create the jobs faster. I
 
 To cancel the process, just send a kill signal or hit `Ctrl-C` any time. The process will perform cleanup and exit.
 
-### workers.py
+### dns-crawler-workers
 
 ```
-Usage: workers.py [count] [redis]
+Usage: dns-crawler-workers [count] [redis]
        count - worker count, 8 workers per CPU core by default
        redis - redis host, localhost:6379 by default
 
-Examples: workers.py 8
-          workers.py 24 192.168.0.22:4444
-          workers.py 16 redis.foo.bar
+Examples: dns-crawler-workers 8
+          dns-crawler-workers 24 192.168.0.22:4444
+          dns-crawler-workers 16 redis.foo.bar
 ```
 
 Trying to use more than 24 workers per CPU core will result in a warning (and countdown before it actually starts the workers):
 
 ```
-$ workers.py 999
-Whoa. You are trying to run 999 workers on 4 CPU cores.
+$ dns-crawler-workers 999
+Whoa. You are trying to run 999 workers on 4 CPU cores. It's easy toscale
+across multiple machines, if you need to. See README.md for details.
+
 Cancel now (Ctrl-C) or have a fire extinguisher ready.
 5 - 4 - 3 -
 ```
@@ -280,12 +305,12 @@ Stopping works the same way as with the main process – `Ctrl-C` (or kill signa
 
 ## Resuming work
 
-Stopping the workers won't delete the jobs from Redis. So, if you stop the `workers.py` process and then start a new one (perhaps to use different worker count…), it will pick up the unfinished jobs and continue.
+Stopping the workers won't delete the jobs from Redis. So, if you stop the `dns-crawler-workers` process and then start a new one (perhaps to use different worker count…), it will pick up the unfinished jobs and continue.
 
 This can also be used change the worker count if it turns out to be too low or hight for your machine or network:
 
-- to reduce the worker count, just stop the `workers.py` process and start a new one with a new count
-- to increase the worker count, either use the same approach, or just start a second `workers.py` process in another shell, the worker count will just add up
+- to reduce the worker count, just stop the `dns-crawler-workers` process and start a new one with a new count
+- to increase the worker count, either use the same approach, or just start a second `dns-crawler-workers` process in another shell, the worker count will just add up
 - scaling to multiple machines works the same way, see below
 
 ## Running on multiple machines
@@ -293,35 +318,35 @@ This can also be used change the worker count if it turns out to be too low or h
 Since all communication between the main process and workers is done through Redis, it's easy to scale the crawler to any number of machines:
 
 ```
-server-1                     server-1
-┬──────────────────┐         ┬──────────────────┐
-│     main.py      │         │     workers.py   │
-│        +         │ ------- │        +         │
-│      redis       │         │    DNS resolver  │
-└──────────────────┘         └──────────────────┘
+machine-1                     machine-1
+┬──────────────────┐         ┬────────────────────┐
+│    dns-crawler   │         │ dns-crawler-workers│
+│        +         │ ------- │          +         │
+│      redis       │         │    DNS resolver    │
+└──────────────────┘         └────────────────────┘
 
-                             server-2
-                             ┬──────────────────┐
-                             │     workers.py   │
-                     ------- │        +         │
-                             │    DNS resolver  │
-                             └──────────────────┘
+                             machine-2
+                             ┬─────────────────────┐
+                             │ dns-crawler-workers │
+                     ------- │          +          │
+                             │    DNS resolver     │
+                             └─────────────────────┘
 
                              …
                              …
 
-                             server-n
-                             ┬──────────────────┐
-                             │     workers.py   │
-                     _______ │        +         │
-                             │    DNS resolver  │
-                             └──────────────────┘
+                             machine-n
+                             ┬─────────────────────┐
+                             │ dns-crawler-workers │
+                     _______ │          +          │
+                             │    DNS resolver     │
+                             └─────────────────────┘
 ```
 
 Just tell the workers to connect to the shared Redis on the main server, eg.:
 
 ```
-$ python workers.py 24 192.168.0.2:6379
+$ dns-crawler-workers 24 192.168.0.2:6379
                     ^            ^
                     24 threads   redis host
 ```
