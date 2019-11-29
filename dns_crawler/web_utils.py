@@ -185,13 +185,13 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False):
             response.close()
         except Exception as e:
             result["error"] = str(e)
-            break
-        result["status"] = response.status_code
-        result["headers"] = get_response_headers(response.headers)
-        if save_content:
-            if not strip_html:
-                result["content"] = response.text
-            else:
-                result["content"] = strip_newlines(strip_tags(response.text))
+        else:
+            result["status"] = response.status_code
+            result["headers"] = get_response_headers(response.headers)
+            if save_content:
+                if not strip_html:
+                    result["content"] = response.text
+                else:
+                    result["content"] = strip_newlines(strip_tags(response.text))
         results.append(result)
     return results
