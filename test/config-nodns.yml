@@ -1,6 +1,6 @@
 geoip:
-  country: ./test/GeoLite2-Country.mmdb
-  asn: ./test/GeoLite2-ASN.mmdb
+  country: GeoLite2-Country.mmdb
+  asn: GeoLite2-ASN.mmdb
 job_timeout: 60
 dns_timeout: 2
 http_timeout: 2

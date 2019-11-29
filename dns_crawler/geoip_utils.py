@@ -1,4 +1,4 @@
-from os import path
+from os import path, getcwd
 
 import geoip2.database
 
@@ -6,7 +6,7 @@ from .ip_utils import is_valid_ip_address
 
 
 def init_geoip(config):
-    pwd = path.dirname(__file__)
+    pwd = getcwd()
     geoip_country = None
     geoip_isp = None
     geoip_asn = None
