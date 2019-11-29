@@ -51,7 +51,7 @@ test_odvr:
   script: 
     - export PYTHONPATH="$(pwd)"
     - cd test
-    - mv config.yml ../config.yml
+    - mv config-odvr.yml config.yml
     - python nic.cz.test.py > nic.cz.json
     - jsonschema -i nic.cz.json ../result-schema.json
   artifacts:
@@ -68,7 +68,7 @@ test_system_dns:
   script: 
     - export PYTHONPATH="$(pwd)"
     - cd test
-    - mv config-nodns.yml ../config.yml
+    - mv config-nodns.yml config.yml
     - python nic.cz.test.py > nic.cz-nodns.json
     - jsonschema -i nic.cz-nodns.json ../result-schema.json
   artifacts:
