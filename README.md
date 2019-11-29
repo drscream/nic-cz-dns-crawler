@@ -249,6 +249,8 @@ geoip:
   asn: /usr/share/GeoIP/GeoLite2-ASN.mmdb
 ```
 
+(use either absolute paths or relative to the working directory)
+
 `ISP` (paid) database is preferred over `ASN` (free), if both are defined. The difference is described on Maxmind's website: https://dev.maxmind.com/faq/what-is-the-difference-between-the-geoip-isp-and-organization-databases/.
 
 The free `GeoLite2-Country` seems to be a bit inaccurate, especially for IPv6 (it places some CZ.NIC nameservers in Ukraine etc.).
