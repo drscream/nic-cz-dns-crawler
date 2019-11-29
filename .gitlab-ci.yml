@@ -13,6 +13,8 @@ stages:
   - lint
   - setup
   - test
+  - build
+  - deploy
 
 lint:
   stage: lint
@@ -74,3 +76,25 @@ test_system_dns:
   artifacts:
     paths:
       - ./test/nic.cz-nodns.json
+
+build:
+  stage: build
+  script:
+    - python setup.py sdist
+  artifacts:
+    paths:
+      - ./dist
+
+deploy_pypi:
+  stage: deploy
+  dependencies:
+    - build
+  variables:
+    TWINE_USERNAME: $PYPI_USERNAME
+    TWINE_PASSWORD: $PYPI_PASSWORD
+  before_script:
+    - pip install twine
+  script:
+    - twine upload dist/*
+  only:
+    - tags

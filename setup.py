@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="dns-crawler",
-    version="1.0.0",
+    use_scm_version=True,
     packages=["dns_crawler"],
     setup_requires=["setuptools_scm"],
     description="A crawler for getting info about DNS domains and services attached to them.",
