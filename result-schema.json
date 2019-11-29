@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
     "dns_record_array": {
       "type": "array",
@@ -139,18 +139,14 @@
         "type": "object",
         "properties": {
           "ip": { "$ref": "#/definitions/webserver_ip" },
-          "cert": { "$ref": "#/definitions/certificate" },
+          "tls": { "$ref": "#/definitions/tls_info" },
           "status": { "$ref": "#/definitions/http_status" },
           "headers": { "$ref": "#/definitions/http_headers" },
-          "http2": {
-            "description": "HTTP2 support.",
-            "type": "boolean"
-          },
           "error": {
             "type": "string"
           }
         },
-        "required": ["cert", "ip"]
+        "required": ["tls", "ip"]
       }
     },
     "http_headers": {
@@ -158,59 +154,54 @@
       "type": "object",
       "properties": {
         "location": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "server": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "content-security-policy": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "strict-transport-security": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "x-powered-by": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "x-xss-protection": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "x-content-type-options": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "x-frame-options": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "access-control-allow-origin": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         }
+      }
+    },
+    "tls_info": {
+      "type": "object",
+      "properties": {
+        "alpn_protocol": {
+          "description": "Protocol negotiated via ALPN.",
+          "type": "string"
+        },
+        "tls_version": {
+          "description": "TLS version used for connection.",
+          "type": "string"
+        },
+        "tls_cipher_name": {
+          "description": "TLS cipher used for connection.",
+          "type": "string"
+        },
+        "tls_cipher_bits": {
+          "description": "TLS cipher's nominal strength",
+          "type": "integer"
+        },
+        "cert": { "$ref": "#/definitions/certificate" }
       }
     },
     "certificate": {
@@ -250,19 +241,18 @@
           "type": "integer"
         },
         "valid": {
-          "description": "Certificate validity period.",
-          "type": "object",
-          "properties": {
-            "notBefore": {
-              "type": "string"
-            },
-            "notAfter": {
-              "type": "string"
-            }
-          },
-          "required": ["notAfter", "notBefore"]
+          "description": "Indicates whether the certificate is valid for current (sub)domain.",
+          "type": "boolean"
         },
-        "altNames": {
+        "not_before": {
+          "description": "Beginning of certificate validity period.",
+          "$ref": "#/definitions/datetime"
+        },
+        "not_after": {
+          "description": "End of certificate validity period.",
+          "$ref": "#/definitions/datetime"
+        },
+        "alt_names": {
           "description": "Alternative names/domains contained in the certificate.",
           "type": "array",
           "items": {
@@ -282,6 +272,10 @@
     "webserver_ip": {
       "description": "Webserver's IP. GeoIP info can be found in DNS_LOCAL.WEB_*.",
       "type": "string"
+    },
+    "datetime": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$"
     }
   },
   "type": "object",
@@ -291,8 +285,8 @@
       "description": "Domain name that was crawled."
     },
     "timestamp": {
-      "type": "string",
-      "description": "Date and time when the crawling was finished (UTC, ISO 8601)."
+      "description": "Date and time when the crawling was finished (UTC).",
+      "$ref": "#/definitions/datetime"
     },
     "results": {
       "type": "object",
@@ -312,7 +306,7 @@
               ]
             },
             "MAIL": {
-              "description": "MX record(s) – mail servers with priorities).",
+              "description": "MX record(s) – mail servers with priorities.",
               "anyOf": [
                 {
                   "type": "null"
@@ -583,68 +577,28 @@
           "type": "object",
           "properties": {
             "WEB4_80": {
-              "anyOf": [
-                {
-                  "type": "null"
-                },
-                { "$ref": "#/definitions/webserver_info_80" }
-              ]
+              "$ref": "#/definitions/webserver_info_80"
             },
             "WEB4_80_www": {
-              "anyOf": [
-                {
-                  "type": "null"
-                },
-                { "$ref": "#/definitions/webserver_info_80" }
-              ]
+              "$ref": "#/definitions/webserver_info_80"
             },
             "WEB4_443": {
-              "anyOf": [
-                {
-                  "type": "null"
-                },
-                { "$ref": "#/definitions/webserver_info_443" }
-              ]
+              "$ref": "#/definitions/webserver_info_443"
             },
             "WEB4_443_www": {
-              "anyOf": [
-                {
-                  "type": "null"
-                },
-                { "$ref": "#/definitions/webserver_info_443" }
-              ]
+              "$ref": "#/definitions/webserver_info_443"
             },
             "WEB6_80": {
-              "anyOf": [
-                {
-                  "type": "null"
-                },
-                { "$ref": "#/definitions/webserver_info_80" }
-              ]
+              "$ref": "#/definitions/webserver_info_80"
             },
             "WEB6_80_www": {
-              "anyOf": [
-                {
-                  "type": "null"
-                },
-                { "$ref": "#/definitions/webserver_info_80" }
-              ]
+              "$ref": "#/definitions/webserver_info_80"
             },
             "WEB6_443": {
-              "anyOf": [
-                {
-                  "type": "null"
-                },
-                { "$ref": "#/definitions/webserver_info_443" }
-              ]
+              "$ref": "#/definitions/webserver_info_443"
             },
             "WEB6_443_www": {
-              "anyOf": [
-                {
-                  "type": "null"
-                },
-                { "$ref": "#/definitions/webserver_info_443" }
-              ]
+              "$ref": "#/definitions/webserver_info_443"
             }
           },
           "required": [

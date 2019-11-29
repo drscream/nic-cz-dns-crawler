@@ -1,40 +1,68 @@
 {
   "domain": "nic.cz",
-  "timestamp": "2019-11-18T10:24:32.647921",
+  "timestamp": "2019-11-29 07:49:07",
   "results": {
     "DNS_LOCAL": {
       "NS_AUTH": [
-        { "value": "a.ns.nic.cz." },
-        { "value": "b.ns.nic.cz." },
-        { "value": "d.ns.nic.cz." }
+        {
+          "value": "a.ns.nic.cz."
+        },
+        {
+          "value": "b.ns.nic.cz."
+        },
+        {
+          "value": "d.ns.nic.cz."
+        }
       ],
       "MAIL": [
-        { "value": "10 mail.nic.cz." },
-        { "value": "20 mx.nic.cz." },
-        { "value": "30 bh.nic.cz." }
+        {
+          "value": "10 mail.nic.cz."
+        },
+        {
+          "value": "20 mx.nic.cz."
+        },
+        {
+          "value": "30 bh.nic.cz."
+        }
       ],
       "WEB4": [
         {
           "value": "217.31.205.50",
-          "geoip": { "country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192 }
+          "geoip": {
+            "country": "CZ",
+            "org": "CZ.NIC, z.s.p.o.",
+            "asn": 25192
+          }
         }
       ],
       "WEB4_www": [
         {
           "value": "217.31.205.50",
-          "geoip": { "country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192 }
+          "geoip": {
+            "country": "CZ",
+            "org": "CZ.NIC, z.s.p.o.",
+            "asn": 25192
+          }
         }
       ],
       "WEB6": [
         {
           "value": "2001:1488:0:3::2",
-          "geoip": { "country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192 }
+          "geoip": {
+            "country": "CZ",
+            "org": "CZ.NIC, z.s.p.o.",
+            "asn": 25192
+          }
         }
       ],
       "WEB6_www": [
         {
           "value": "2001:1488:0:3::2",
-          "geoip": { "country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192 }
+          "geoip": {
+            "country": "CZ",
+            "org": "CZ.NIC, z.s.p.o.",
+            "asn": 25192
+          }
         }
       ],
       "WEB_TLSA": null,
@@ -44,7 +72,11 @@
         }
       ],
       "MAIL_TLSA": null,
-      "TXT": [{ "value": "\"MS=92011E91562E6FD18FF9C5FA1F053F90DD5B1892\"" }],
+      "TXT": [
+        {
+          "value": "\"MS=92011E91562E6FD18FF9C5FA1F053F90DD5B1892\""
+        }
+      ],
       "TXT_SPF": null,
       "TXT_DMARC": null,
       "DS": [
@@ -66,8 +98,8 @@
       "DNSSEC": {
         "valid": true,
         "rrsig": [
-          "nic.cz. 1800 IN RRSIG DNSKEY 13 2 1800 20191128125810 20191115065815 61281 nic.cz. RXVFWh6udihxsWnDzQT8qs91o3GQzHF1 xcuYKk8wm7ruP3bQW6emqUxqQAnMizSL SHHn2Kyb5ZITThKLAOCVWw==",
-          "nic.cz. 1800 IN RRSIG DNSKEY 13 2 1800 20191129014847 20191115065815 9334 nic.cz. uSe30rAySNjcTIHvMdW/bDrIUrN32LPF JrG8fBP6bKFD1esUwKevMTMQjeVer8V4 THb16dGKRB+w1HI3NxdRZA=="
+          "nic.cz. 1371 IN RRSIG DNSKEY 13 2 1800 20191211231536 20191128164001 61281 nic.cz. C7q1Ot4Rl68dNJxXq26QzJeWCzRGNwRN 3s3twPVl1C5s67Bapr+W9lmTijvB6zAH M58DEeVgnAzfNatMNf+SMQ==",
+          "nic.cz. 1371 IN RRSIG DNSKEY 13 2 1800 20191212031655 20191128164001 9334 nic.cz. Z/qaMT34++tTo79baCAme9WpiJSZPF2O s1zy/82KvZG4IOuLlwd3vMqoUnLcqbae /Srvtt6LDuQl/x0Jy+2ikw=="
         ]
       }
     },
@@ -76,15 +108,23 @@
         "ns": "a.ns.nic.cz.",
         "ns_ipv4": {
           "value": "194.0.12.1",
-          "geoip": { "country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192 }
+          "geoip": {
+            "country": "CZ",
+            "org": "CZ.NIC, z.s.p.o.",
+            "asn": 25192
+          }
         },
         "ns_ipv6": {
           "value": "2001:678:f::1",
-          "geoip": { "country": "DE", "org": "CZ.NIC, z.s.p.o.", "asn": 25192 }
+          "geoip": {
+            "country": "DE",
+            "org": "CZ.NIC, z.s.p.o.",
+            "asn": 25192
+          }
         },
         "HOSTNAMEBIND4": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
+          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 194.0.12.1 UDP port 53 answered REFUSED"
         },
         "HOSTNAMEBIND6": {
           "value": null,
@@ -92,7 +132,7 @@
         },
         "VERSIONBIND4": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
+          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 194.0.12.1 UDP port 53 answered REFUSED"
         },
         "VERSIONBIND6": {
           "value": null,
@@ -103,15 +143,23 @@
         "ns": "b.ns.nic.cz.",
         "ns_ipv4": {
           "value": "194.0.13.1",
-          "geoip": { "country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192 }
+          "geoip": {
+            "country": "CZ",
+            "org": "CZ.NIC, z.s.p.o.",
+            "asn": 25192
+          }
         },
         "ns_ipv6": {
           "value": "2001:678:10::1",
-          "geoip": { "country": "DE", "org": "CZ.NIC, z.s.p.o.", "asn": 25192 }
+          "geoip": {
+            "country": "DE",
+            "org": "CZ.NIC, z.s.p.o.",
+            "asn": 25192
+          }
         },
         "HOSTNAMEBIND4": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
+          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 194.0.13.1 UDP port 53 answered REFUSED"
         },
         "HOSTNAMEBIND6": {
           "value": null,
@@ -119,7 +167,7 @@
         },
         "VERSIONBIND4": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
+          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 194.0.13.1 UDP port 53 answered REFUSED"
         },
         "VERSIONBIND6": {
           "value": null,
@@ -130,24 +178,34 @@
         "ns": "d.ns.nic.cz.",
         "ns_ipv4": {
           "value": "193.29.206.1",
-          "geoip": { "country": "CZ", "org": "CZ.NIC, z.s.p.o.", "asn": 25192 }
+          "geoip": {
+            "country": "CZ",
+            "org": "CZ.NIC, z.s.p.o.",
+            "asn": 25192
+          }
         },
         "ns_ipv6": {
           "value": "2001:678:1::1",
-          "geoip": { "country": "DE", "org": "CZ.NIC, z.s.p.o.", "asn": 25192 }
+          "geoip": {
+            "country": "DE",
+            "org": "CZ.NIC, z.s.p.o.",
+            "asn": 25192
+          }
         },
         "HOSTNAMEBIND4": {
           "value": null,
           "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
         },
-        "HOSTNAMEBIND6": { "value": "unidentified server" },
+        "HOSTNAMEBIND6": {
+          "value": "unidentified server"
+        },
         "VERSIONBIND4": {
           "value": null,
-          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 193.29.206.1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
         },
         "VERSIONBIND6": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
+          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:1::1 UDP port 53 answered REFUSED"
         }
       }
     ],
@@ -156,7 +214,10 @@
         {
           "ip": "217.31.205.50",
           "status": 301,
-          "headers": { "location": ["https://nic.cz/"], "server": ["nginx"] }
+          "headers": {
+            "location": "https://nic.cz/",
+            "server": "nginx"
+          }
         }
       ],
       "WEB4_80_www": [
@@ -164,106 +225,111 @@
           "ip": "217.31.205.50",
           "status": 301,
           "headers": {
-            "location": ["https://www.nic.cz/"],
-            "server": ["nginx"]
+            "location": "https://www.nic.cz/",
+            "server": "nginx"
           }
         }
       ],
       "WEB4_443": [
         {
           "ip": "217.31.205.50",
-          "cert": {
-            "subject": "nic.cz",
-            "issuer": {
-              "countryName": "US",
-              "organizationName": "Let's Encrypt",
-              "commonName": "Let's Encrypt Authority X3"
-            },
-            "version": 3,
-            "valid": {
-              "notBefore": "2019-10-07 11:01:43",
-              "notAfter": "2020-01-05 11:01:43"
-            },
-            "altNames": [
-              "dsdng.nic.cz",
-              "edice.nic.cz",
-              "enum.nic.cz",
-              "files.nic.cz",
-              "kariera.nic.cz",
-              "knihy.nic.cz",
-              "nic.cz",
-              "podpora.nic.cz",
-              "pozvanka.nic.cz",
-              "prace.nic.cz",
-              "prihlasky.nic.cz",
-              "www.enum.nic.cz",
-              "www.nic.cz"
-            ]
+          "tls": {
+            "alpn_protocol": "h2",
+            "tls_version": "TLSv1.2",
+            "tls_cipher_name": "ECDHE-RSA-AES128-GCM-SHA256",
+            "tls_cipher_bits": 128,
+            "cert": {
+              "subject": "nic.cz",
+              "valid": true,
+              "issuer": {
+                "countryName": "US",
+                "organizationName": "Let's Encrypt",
+                "commonName": "Let's Encrypt Authority X3"
+              },
+              "version": 3,
+              "not_before": "2019-10-07 11:01:43",
+              "not_after": "2020-01-05 11:01:43",
+              "alt_names": [
+                "dsdng.nic.cz",
+                "edice.nic.cz",
+                "enum.nic.cz",
+                "files.nic.cz",
+                "kariera.nic.cz",
+                "knihy.nic.cz",
+                "nic.cz",
+                "podpora.nic.cz",
+                "pozvanka.nic.cz",
+                "prace.nic.cz",
+                "prihlasky.nic.cz",
+                "www.enum.nic.cz",
+                "www.nic.cz"
+              ]
+            }
           },
           "status": 301,
           "headers": {
-            "location": ["https://www.nic.cz/"],
-            "server": ["nginx"],
-            "content-security-policy": [
-              "default-src 'none'; script-src 'self' 'unsafe-inline' https://onlinechat2.nic.cz https://test-ipv6.nic.cz https://*.test-ipv6.nic.cz https://piwik.nic.cz/piwik.js https://platform.twitter.com https://cdn.syndication.twimg.com https://s.ytimg.com https://*.googleapis.com https://*.google.com https://connect.facebook.net https://*.mapy.cz; object-src 'self'; style-src 'self' 'unsafe-inline' https://platform.twitter.com https://*.nic.cz https://fonts.googleapis.com https://api.mapy.cz; img-src *; media-src *; frame-src *; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.test-ipv6.nic.cz https://*.labs.nic.cz https://rdap.nic.cz https://www.rhybar.cz https://akademie.nic.cz https://piwik.nic.cz/piwik.php https://www.nic.cz/files/CORS/projects-bar/ https://mojeid.cz https://syndication.twitter.com; report-uri https://csp.nic.cz/report/"
-            ],
-            "strict-transport-security": ["max-age=31536000"]
-          },
-          "http2": true
+            "location": "https://www.nic.cz/",
+            "server": "nginx",
+            "content-security-policy": "default-src 'none'; script-src 'self' 'unsafe-inline' https://onlinechat2.nic.cz https://test-ipv6.nic.cz https://*.test-ipv6.nic.cz https://piwik.nic.cz/piwik.js https://platform.twitter.com https://cdn.syndication.twimg.com https://s.ytimg.com https://*.googleapis.com https://*.google.com https://connect.facebook.net https://*.mapy.cz; object-src 'self'; style-src 'self' 'unsafe-inline' https://platform.twitter.com https://*.nic.cz https://fonts.googleapis.com https://api.mapy.cz; img-src *; media-src *; frame-src *; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.test-ipv6.nic.cz https://*.labs.nic.cz https://rdap.nic.cz https://www.rhybar.cz https://akademie.nic.cz https://piwik.nic.cz/piwik.php https://www.nic.cz/files/CORS/projects-bar/ https://mojeid.cz https://syndication.twitter.com; report-uri https://csp.nic.cz/report/",
+            "strict-transport-security": "max-age=31536000"
+          }
         }
       ],
       "WEB4_443_www": [
         {
           "ip": "217.31.205.50",
-          "cert": {
-            "subject": "nic.cz",
-            "issuer": {
-              "countryName": "US",
-              "organizationName": "Let's Encrypt",
-              "commonName": "Let's Encrypt Authority X3"
-            },
-            "version": 3,
-            "valid": {
-              "notBefore": "2019-10-07 11:01:43",
-              "notAfter": "2020-01-05 11:01:43"
-            },
-            "altNames": [
-              "dsdng.nic.cz",
-              "edice.nic.cz",
-              "enum.nic.cz",
-              "files.nic.cz",
-              "kariera.nic.cz",
-              "knihy.nic.cz",
-              "nic.cz",
-              "podpora.nic.cz",
-              "pozvanka.nic.cz",
-              "prace.nic.cz",
-              "prihlasky.nic.cz",
-              "www.enum.nic.cz",
-              "www.nic.cz"
-            ]
+          "tls": {
+            "alpn_protocol": "h2",
+            "tls_version": "TLSv1.2",
+            "tls_cipher_name": "ECDHE-RSA-AES128-GCM-SHA256",
+            "tls_cipher_bits": 128,
+            "cert": {
+              "subject": "nic.cz",
+              "valid": true,
+              "issuer": {
+                "countryName": "US",
+                "organizationName": "Let's Encrypt",
+                "commonName": "Let's Encrypt Authority X3"
+              },
+              "version": 3,
+              "not_before": "2019-10-07 11:01:43",
+              "not_after": "2020-01-05 11:01:43",
+              "alt_names": [
+                "dsdng.nic.cz",
+                "edice.nic.cz",
+                "enum.nic.cz",
+                "files.nic.cz",
+                "kariera.nic.cz",
+                "knihy.nic.cz",
+                "nic.cz",
+                "podpora.nic.cz",
+                "pozvanka.nic.cz",
+                "prace.nic.cz",
+                "prihlasky.nic.cz",
+                "www.enum.nic.cz",
+                "www.nic.cz"
+              ]
+            }
           },
           "status": 200,
           "headers": {
-            "server": ["nginx"],
-            "x-frame-options": ["SAMEORIGIN"],
-            "content-security-policy": [
-              "default-src 'none'; script-src 'self' 'unsafe-inline' https://onlinechat2.nic.cz https://test-ipv6.nic.cz https://*.test-ipv6.nic.cz https://piwik.nic.cz/piwik.js https://platform.twitter.com https://cdn.syndication.twimg.com https://s.ytimg.com https://*.googleapis.com https://*.google.com https://connect.facebook.net https://*.mapy.cz; object-src 'self'; style-src 'self' 'unsafe-inline' https://platform.twitter.com https://*.nic.cz https://fonts.googleapis.com https://api.mapy.cz; img-src *; media-src *; frame-src *; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.test-ipv6.nic.cz https://*.labs.nic.cz https://rdap.nic.cz https://www.rhybar.cz https://akademie.nic.cz https://piwik.nic.cz/piwik.php https://www.nic.cz/files/CORS/projects-bar/ https://mojeid.cz https://syndication.twitter.com; report-uri https://csp.nic.cz/report/"
-            ],
-            "x-xss-protection": ["1; mode=block"],
-            "strict-transport-security": [
-              "max-age=31536000; includeSubdomains"
-            ],
-            "x-content-type-options": ["nosniff"]
-          },
-          "http2": true
+            "server": "nginx",
+            "x-frame-options": "SAMEORIGIN",
+            "content-security-policy": "default-src 'none'; script-src 'self' 'unsafe-inline' https://onlinechat2.nic.cz https://test-ipv6.nic.cz https://*.test-ipv6.nic.cz https://piwik.nic.cz/piwik.js https://platform.twitter.com https://cdn.syndication.twimg.com https://s.ytimg.com https://*.googleapis.com https://*.google.com https://connect.facebook.net https://*.mapy.cz; object-src 'self'; style-src 'self' 'unsafe-inline' https://platform.twitter.com https://*.nic.cz https://fonts.googleapis.com https://api.mapy.cz; img-src *; media-src *; frame-src *; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.test-ipv6.nic.cz https://*.labs.nic.cz https://rdap.nic.cz https://www.rhybar.cz https://akademie.nic.cz https://piwik.nic.cz/piwik.php https://www.nic.cz/files/CORS/projects-bar/ https://mojeid.cz https://syndication.twitter.com; report-uri https://csp.nic.cz/report/",
+            "x-xss-protection": "1; mode=block",
+            "strict-transport-security": "max-age=31536000; includeSubdomains",
+            "x-content-type-options": "nosniff"
+          }
         }
       ],
       "WEB6_80": [
         {
           "ip": "2001:1488:0:3::2",
           "status": 301,
-          "headers": { "location": ["https://nic.cz/"], "server": ["nginx"] }
+          "headers": {
+            "location": "https://nic.cz/",
+            "server": "nginx"
+          }
         }
       ],
       "WEB6_80_www": [
@@ -271,99 +337,101 @@
           "ip": "2001:1488:0:3::2",
           "status": 301,
           "headers": {
-            "location": ["https://www.nic.cz/"],
-            "server": ["nginx"]
+            "location": "https://www.nic.cz/",
+            "server": "nginx"
           }
         }
       ],
       "WEB6_443": [
         {
           "ip": "2001:1488:0:3::2",
-          "cert": {
-            "subject": "nic.cz",
-            "issuer": {
-              "countryName": "US",
-              "organizationName": "Let's Encrypt",
-              "commonName": "Let's Encrypt Authority X3"
-            },
-            "version": 3,
-            "valid": {
-              "notBefore": "2019-10-07 11:01:43",
-              "notAfter": "2020-01-05 11:01:43"
-            },
-            "altNames": [
-              "dsdng.nic.cz",
-              "edice.nic.cz",
-              "enum.nic.cz",
-              "files.nic.cz",
-              "kariera.nic.cz",
-              "knihy.nic.cz",
-              "nic.cz",
-              "podpora.nic.cz",
-              "pozvanka.nic.cz",
-              "prace.nic.cz",
-              "prihlasky.nic.cz",
-              "www.enum.nic.cz",
-              "www.nic.cz"
-            ]
+          "tls": {
+            "alpn_protocol": "h2",
+            "tls_version": "TLSv1.2",
+            "tls_cipher_name": "ECDHE-RSA-AES128-GCM-SHA256",
+            "tls_cipher_bits": 128,
+            "cert": {
+              "subject": "nic.cz",
+              "valid": true,
+              "issuer": {
+                "countryName": "US",
+                "organizationName": "Let's Encrypt",
+                "commonName": "Let's Encrypt Authority X3"
+              },
+              "version": 3,
+              "not_before": "2019-10-07 11:01:43",
+              "not_after": "2020-01-05 11:01:43",
+              "alt_names": [
+                "dsdng.nic.cz",
+                "edice.nic.cz",
+                "enum.nic.cz",
+                "files.nic.cz",
+                "kariera.nic.cz",
+                "knihy.nic.cz",
+                "nic.cz",
+                "podpora.nic.cz",
+                "pozvanka.nic.cz",
+                "prace.nic.cz",
+                "prihlasky.nic.cz",
+                "www.enum.nic.cz",
+                "www.nic.cz"
+              ]
+            }
           },
           "status": 301,
           "headers": {
-            "location": ["https://www.nic.cz/"],
-            "server": ["nginx"],
-            "content-security-policy": [
-              "default-src 'none'; script-src 'self' 'unsafe-inline' https://onlinechat2.nic.cz https://test-ipv6.nic.cz https://*.test-ipv6.nic.cz https://piwik.nic.cz/piwik.js https://platform.twitter.com https://cdn.syndication.twimg.com https://s.ytimg.com https://*.googleapis.com https://*.google.com https://connect.facebook.net https://*.mapy.cz; object-src 'self'; style-src 'self' 'unsafe-inline' https://platform.twitter.com https://*.nic.cz https://fonts.googleapis.com https://api.mapy.cz; img-src *; media-src *; frame-src *; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.test-ipv6.nic.cz https://*.labs.nic.cz https://rdap.nic.cz https://www.rhybar.cz https://akademie.nic.cz https://piwik.nic.cz/piwik.php https://www.nic.cz/files/CORS/projects-bar/ https://mojeid.cz https://syndication.twitter.com; report-uri https://csp.nic.cz/report/"
-            ],
-            "strict-transport-security": ["max-age=31536000"]
-          },
-          "http2": true
+            "location": "https://www.nic.cz/",
+            "server": "nginx",
+            "content-security-policy": "default-src 'none'; script-src 'self' 'unsafe-inline' https://onlinechat2.nic.cz https://test-ipv6.nic.cz https://*.test-ipv6.nic.cz https://piwik.nic.cz/piwik.js https://platform.twitter.com https://cdn.syndication.twimg.com https://s.ytimg.com https://*.googleapis.com https://*.google.com https://connect.facebook.net https://*.mapy.cz; object-src 'self'; style-src 'self' 'unsafe-inline' https://platform.twitter.com https://*.nic.cz https://fonts.googleapis.com https://api.mapy.cz; img-src *; media-src *; frame-src *; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.test-ipv6.nic.cz https://*.labs.nic.cz https://rdap.nic.cz https://www.rhybar.cz https://akademie.nic.cz https://piwik.nic.cz/piwik.php https://www.nic.cz/files/CORS/projects-bar/ https://mojeid.cz https://syndication.twitter.com; report-uri https://csp.nic.cz/report/",
+            "strict-transport-security": "max-age=31536000"
+          }
         }
       ],
       "WEB6_443_www": [
         {
           "ip": "2001:1488:0:3::2",
-          "cert": {
-            "subject": "nic.cz",
-            "issuer": {
-              "countryName": "US",
-              "organizationName": "Let's Encrypt",
-              "commonName": "Let's Encrypt Authority X3"
-            },
-            "version": 3,
-            "valid": {
-              "notBefore": "2019-10-07 11:01:43",
-              "notAfter": "2020-01-05 11:01:43"
-            },
-            "altNames": [
-              "dsdng.nic.cz",
-              "edice.nic.cz",
-              "enum.nic.cz",
-              "files.nic.cz",
-              "kariera.nic.cz",
-              "knihy.nic.cz",
-              "nic.cz",
-              "podpora.nic.cz",
-              "pozvanka.nic.cz",
-              "prace.nic.cz",
-              "prihlasky.nic.cz",
-              "www.enum.nic.cz",
-              "www.nic.cz"
-            ]
+          "tls": {
+            "alpn_protocol": "h2",
+            "tls_version": "TLSv1.2",
+            "tls_cipher_name": "ECDHE-RSA-AES128-GCM-SHA256",
+            "tls_cipher_bits": 128,
+            "cert": {
+              "subject": "nic.cz",
+              "valid": true,
+              "issuer": {
+                "countryName": "US",
+                "organizationName": "Let's Encrypt",
+                "commonName": "Let's Encrypt Authority X3"
+              },
+              "version": 3,
+              "not_before": "2019-10-07 11:01:43",
+              "not_after": "2020-01-05 11:01:43",
+              "alt_names": [
+                "dsdng.nic.cz",
+                "edice.nic.cz",
+                "enum.nic.cz",
+                "files.nic.cz",
+                "kariera.nic.cz",
+                "knihy.nic.cz",
+                "nic.cz",
+                "podpora.nic.cz",
+                "pozvanka.nic.cz",
+                "prace.nic.cz",
+                "prihlasky.nic.cz",
+                "www.enum.nic.cz",
+                "www.nic.cz"
+              ]
+            }
           },
           "status": 200,
           "headers": {
-            "server": ["nginx"],
-            "x-frame-options": ["SAMEORIGIN"],
-            "content-security-policy": [
-              "default-src 'none'; script-src 'self' 'unsafe-inline' https://onlinechat2.nic.cz https://test-ipv6.nic.cz https://*.test-ipv6.nic.cz https://piwik.nic.cz/piwik.js https://platform.twitter.com https://cdn.syndication.twimg.com https://s.ytimg.com https://*.googleapis.com https://*.google.com https://connect.facebook.net https://*.mapy.cz; object-src 'self'; style-src 'self' 'unsafe-inline' https://platform.twitter.com https://*.nic.cz https://fonts.googleapis.com https://api.mapy.cz; img-src *; media-src *; frame-src *; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.test-ipv6.nic.cz https://*.labs.nic.cz https://rdap.nic.cz https://www.rhybar.cz https://akademie.nic.cz https://piwik.nic.cz/piwik.php https://www.nic.cz/files/CORS/projects-bar/ https://mojeid.cz https://syndication.twitter.com; report-uri https://csp.nic.cz/report/"
-            ],
-            "x-xss-protection": ["1; mode=block"],
-            "strict-transport-security": [
-              "max-age=31536000; includeSubdomains"
-            ],
-            "x-content-type-options": ["nosniff"]
-          },
-          "http2": true
+            "server": "nginx",
+            "x-frame-options": "SAMEORIGIN",
+            "content-security-policy": "default-src 'none'; script-src 'self' 'unsafe-inline' https://onlinechat2.nic.cz https://test-ipv6.nic.cz https://*.test-ipv6.nic.cz https://piwik.nic.cz/piwik.js https://platform.twitter.com https://cdn.syndication.twimg.com https://s.ytimg.com https://*.googleapis.com https://*.google.com https://connect.facebook.net https://*.mapy.cz; object-src 'self'; style-src 'self' 'unsafe-inline' https://platform.twitter.com https://*.nic.cz https://fonts.googleapis.com https://api.mapy.cz; img-src *; media-src *; frame-src *; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.test-ipv6.nic.cz https://*.labs.nic.cz https://rdap.nic.cz https://www.rhybar.cz https://akademie.nic.cz https://piwik.nic.cz/piwik.php https://www.nic.cz/files/CORS/projects-bar/ https://mojeid.cz https://syndication.twitter.com; report-uri https://csp.nic.cz/report/",
+            "x-xss-protection": "1; mode=block",
+            "strict-transport-security": "max-age=31536000; includeSubdomains",
+            "x-content-type-options": "nosniff"
+          }
         }
       ]
     }

@@ -101,10 +101,7 @@ def get_tls_info(domain, ip, ipv6=False, port=443):
             "tls_cipher_bits": conn.cipher()[2],
             "cert": parse_cert(cert, domain)
         })
-    # conn.sendall(f"GET / HTTP/1.1\r\nHost: {domain}\r\nConnection: close\r\n\r\n".encode("ascii"))
-    # received = conn.recv(10000)
     conn.close()
-    # result["CCC"] = received.decode("utf-8", "ignore")
     return result
 
 

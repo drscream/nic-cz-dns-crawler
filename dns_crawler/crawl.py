@@ -80,7 +80,7 @@ def process_domain(domain):
 
     return {
         "domain": domain,
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
         "results": {
             "DNS_LOCAL": dns_local,
             "DNS_AUTH": dns_auth,
