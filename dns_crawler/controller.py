@@ -45,7 +45,8 @@ def create_jobs(domains, function, queue, timeout, should_stop):
 
 
 def create_job(domain, function, queue, timeout):
-    queue.enqueue(function, domain, job_id=domain, result_ttl=-1, job_timeout=timeout)
+    if len(domain.strip()) > 0:
+        queue.enqueue(function, domain, job_id=domain, result_ttl=-1, job_timeout=timeout)
 
 
 def main():
