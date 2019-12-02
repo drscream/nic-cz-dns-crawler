@@ -353,6 +353,8 @@ $ dns-crawler-workers 24 192.168.0.2:6379
                     24 threads   redis host
 ```
 
+Make sure to run the workers with ~same Python version on these machines, otherwise you'll get `unsupported pickle protocol` errors. See the [pickle protocol versions in Python docs](https://docs.python.org/3.8/library/pickle.html#data-stream-format).
+
 ## Monitoring
 
 ### Command line
