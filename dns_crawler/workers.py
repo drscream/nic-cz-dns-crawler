@@ -69,8 +69,7 @@ def main():
                 sys.stdout.flush()
                 if s == 0:
                     sleep(1)
-                    sys.stdout.write("ignition")
-                    print("\n")
+                    sys.stdout.write("ignition\n\n")
         except KeyboardInterrupt:
             sys.exit(1)
 
