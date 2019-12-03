@@ -84,7 +84,7 @@ def parse_cert(cert, domain):
     result["version"] = int(str(cert.version)[-1])
     result["algorithm"] = cert.signature_hash_algorithm.name
     try:
-        result["alt_names"] = [name.value for name in cert.extensions.get_extension_for_oid(
+        result["alt_names"] = [str(name.value) for name in cert.extensions.get_extension_for_oid(
             x509.oid.ExtensionOID.SUBJECT_ALTERNATIVE_NAME).value]
     except x509.extensions.ExtensionNotFound:
         pass

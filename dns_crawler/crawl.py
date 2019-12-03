@@ -86,7 +86,7 @@ def get_web_status(domain, dns):
         "WEB6_80": get_webserver_info(domain, dns["WEB6"], ipv6=True),
         "WEB6_80_www": get_webserver_info(f"www.{domain}", dns["WEB6"], ipv6=True),
         "WEB6_443": get_webserver_info(domain, dns["WEB6"], ipv6=True, tls=True),
-        "WEB6_443_www": get_webserver_info(f"www.{domain}", dns["WEB6"], ipv6=True, tls=True),
+        "WEB6_443_www": get_webserver_info(f"www.{domain}", dns["WEB6"], ipv6=True, tls=True)
     }
 
 
