@@ -59,7 +59,7 @@ def get_dns_auth(domain, nameservers):
     for item in nameservers:
         ns = item["value"]
         if not ns:
-            break
+            continue
         a = get_record(ns, "A", local_resolver)
         aaaa = get_record(ns, "AAAA", local_resolver)
         ns_ipv4 = a[0]["value"] if a else None

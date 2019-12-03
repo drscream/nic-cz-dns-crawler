@@ -189,7 +189,7 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False):
     for ip in ips:
         ip = ip["value"]
         if not is_valid_ip_address(ip):
-            break
+            continue
         result = {
             "ip": ip
         }
