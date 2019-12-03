@@ -23,6 +23,12 @@ lint:
   script:
     - flake8 --config=.flake8
 
+validate_result_example:
+  stage: lint
+  before_script:
+    - pip install -q jsonschema
+  script: 
+    - jsonschema -i result-example.json result-schema.json
 
 download_geoip:
   stage: setup
@@ -35,13 +41,6 @@ download_geoip:
   artifacts:
     paths:
       - ./test/*.mmdb
-
-validate_result_example:
-  stage: test
-  before_script:
-    - pip install -q jsonschema
-  script: 
-    - jsonschema -i result-example.json result-schema.json
 
 test_odvr:
   stage: test
