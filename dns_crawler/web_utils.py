@@ -23,12 +23,12 @@ from html.parser import HTMLParser
 from urllib.parse import unquote
 
 import certifi
+import idna
 import requests
 import urllib3
 
 from .config_loader import load_config
 from .ip_utils import is_valid_ip_address
-
 
 config = load_config("config.yml")
 http_timeout = int(config["http_timeout"])
@@ -45,7 +45,7 @@ def drop_null_values(orig_dict):
 
 def create_request_headers(domain):
     return {
-        "Host": domain,
+        "Host": idna.encode(domain).decode("ascii"),
         "Connection": "close",
         "Upgrade-Insecure-Requests": "1",
         "User-Agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
@@ -93,7 +93,7 @@ def get_tls_info(domain, ip, ipv6=False, port=443):
     ctx = ssl.create_default_context()
     ctx.load_verify_locations(certifi.where())
     ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_OPTIONAL
+    ctx.verify_mode = ssl.CERT_NONE
     ctx.set_alpn_protocols(alpn_protocols)
 
     if not ipv6:
