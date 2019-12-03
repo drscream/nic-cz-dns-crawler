@@ -45,8 +45,7 @@ def create_jobs(domains, function, queue, timeout, should_stop):
 
 
 def create_job(domain, function, queue, timeout):
-    if len(domain.strip()) > 0:
-        queue.enqueue(function, domain, job_id=domain, result_ttl=-1, job_timeout=timeout)
+    queue.enqueue(function, domain, job_id=domain, result_ttl=-1, job_timeout=timeout)
 
 
 def main():
@@ -66,13 +65,15 @@ def main():
     try:
         with open(filename, "r") as file:
             sys.stderr.write(f"{timestamp()} Reading domains from {filename}.\n")
-            domains = file.read().splitlines()
+            domains = (line.strip() for line in file.read().splitlines())
             domain_count = len(domains)
             finished_count = 0
             created_count = 0
             parts = cpus * 8
+            if parts > domain_count:
+                parts = 1
             domains_per_part = int(domain_count / parts)
-            sys.stderr.write(f"{timestamp()} Creating job queue using {parts} threads.\n")
+            sys.stderr.write(f"{timestamp()} Creating job queue using {parts} thread{('s' if parts > 1 else '')}.\n")
             redis.set("locked", 1)
 
             for thread_num in range(parts):
