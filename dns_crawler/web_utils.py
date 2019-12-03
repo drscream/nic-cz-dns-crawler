@@ -82,9 +82,12 @@ def parse_cert(cert, domain):
     result["subject"] = parse_cert_name(cert.subject)
     result["issuer"] = parse_cert_name(cert.issuer)
     result["version"] = int(str(cert.version)[-1])
-    result["alt_names"] = [name.value for name in cert.extensions.get_extension_for_oid(
-        x509.oid.ExtensionOID.SUBJECT_ALTERNATIVE_NAME).value]
     result["algorithm"] = cert.signature_hash_algorithm.name
+    try:
+        result["alt_names"] = [name.value for name in cert.extensions.get_extension_for_oid(
+            x509.oid.ExtensionOID.SUBJECT_ALTERNATIVE_NAME).value]
+    except x509.extensions.ExtensionNotFound:
+        pass
     return drop_null_values(result)
 
 
