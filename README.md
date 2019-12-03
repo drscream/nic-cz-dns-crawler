@@ -213,12 +213,12 @@ geoip:
   country: /usr/share/GeoIP/GeoIP2-Country.mmdb
   isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb
 dns:
-  - 127.0.0.1
+  - 193.17.47.1  # https://www.nic.cz/odvr/
 job_timeout: 80  # max. duration for a single domain (seconds) 
-dns_timeout: 2 # seconds
-http_timeout: 2 # seconds
+dns_timeout: 2  # seconds
+http_timeout: 2  # seconds
 save_web_content: False  # beware, setting to True will output HUGE files
-strip_html: False # when saving web content, strip HTML tags, scripts, and CSS
+strip_html: False  # when saving web content, strip HTML tags, scripts, and CSS
 ```
 
 Using free (GeoLite2) Country and ASN DBs instead of commercial ones:
@@ -234,16 +234,6 @@ geoip:
 `ISP` (paid) database is preferred over `ASN` (free), if both are defined. The difference is described on Maxmind's website: https://dev.maxmind.com/faq/what-is-the-difference-between-the-geoip-isp-and-organization-databases/.
 
 The free `GeoLite2-Country` seems to be a bit inaccurate, especially for IPv6 (it places some CZ.NIC nameservers in Ukraine etc.).
-
-Using [ODVR](https://blog.nic.cz/2019/04/30/spoustime-nove-odvr/) or other resolvers:
-
-```yaml
-dns:
-  - 193.17.47.1
-  - 185.43.135.1
-```
-
-If no resolvers are specified (`dns` is missing or empty in the config file), the crawler will attempt to use system settings (handled by `dnspython`, but it usually ends up with `/etc/resolv.conf` on Linux).
 
 ## Command line parameters
 

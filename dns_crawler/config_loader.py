@@ -19,24 +19,27 @@ from os import path, getcwd
 
 import yaml
 
+defaults = {
+    "geoip": {
+        "country": "/usr/share/GeoIP/GeoIP2-Country.mmdb",
+        "isp": "/usr/share/GeoIP/GeoIP2-ISP.mmdb"},
+    "dns": [
+        "193.17.47.1"
+    ],
+    "job_timeout": "80",
+    "dns_timeout": "2",
+    "http_timeout": "2",
+    "save_web_content": "False",
+    "strip_html": "True"
+}
+
 
 def load_config(filename):
     pwd = getcwd()
     try:
         with open(path.join(pwd, filename), "r") as conf_file:
-            config = yaml.load(conf_file, Loader=yaml.BaseLoader)
+            config_from_file = yaml.load(conf_file, Loader=yaml.BaseLoader)
+            config = {**defaults, **config_from_file}
     except FileNotFoundError:
-        config = {
-            "geoip": {
-                "country": "/usr/share/GeoIP/GeoIP2-Country.mmdb",
-                "isp": "/usr/share/GeoIP/GeoIP2-ISP.mmdb"},
-            "dns": [
-                "127.0.0.1"
-            ],
-            "job_timeout": "80",
-            "dns_timeout": "2",
-            "http_timeout": "2",
-            "save_web_content": "False",
-            "strip_html": "True"
-        }
+        config = defaults
     return config
