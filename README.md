@@ -30,10 +30,25 @@ pip install -U git+https://github.com/rthalley/dnspython.git
 ## Basic usage
 
 To run a single-threaded crawler (suitable for small domain counts), just pass a domain list:
+
 ```
 $ echo -e "nic.cz\nnetmetr.cz\nroot.cz" > domain-list.txt
-$ dns-crawler domain-list.txt > result.json
+$ dns-crawler domain-list.txt > results.json
+[2019-12-03 11:03:54] Reading domains from domain-list.txt.
+[2019-12-03 11:03:54] Read 3 domains.
+[2019-12-03 11:03:56] Finished.
 ```
+
+Results are printed to stdout – JSON for every domain, separated by `\n`:
+
+```
+$ cat results.json
+{"domain": "nic.cz", "timestamp": "2019-12-03 10:03:55", "results": {…}}
+{"domain": "netmetr.cz", "timestamp": "2019-12-03 10:03:55", "results": {…}}
+{"domain": "root.cz", "timestamp": "2019-12-03 10:03:56", "results": {…}}
+```
+
+If you want formatted JSONs, just pipe the output through [jq](https://stedolan.github.io/jq/) or your tool of choice: `dns-crawler domain-list.txt | jq`.
 
 ## Multithreaded crawling
 
@@ -55,7 +70,7 @@ $ dns-crawler-workers
 
 ## How fast is it anyway?
 
-A single laptop on ~50Mbps connection can crawl the entire *.cz* zone overnight, give or take (with `save_web_content` disabled).
+A single fairly modern laptop on ~50Mbps connection can crawl the entire *.cz* zone overnight, give or take (with `save_web_content` disabled), using 8 workers per CPU thread.
 
 Since the crawler is designed to be parallel, the actual speed depends almost entirely on the worker count. And it can scale accross multiple machines almost infinitely, so should you need a million domains crawled in an hour, you can always just throw more hardware at it.
 
@@ -105,10 +120,6 @@ Or, if you don't loathe JS, `ajv` has a much better output:
 $ npm i -g ajv
 $ ajv validate -s result-schema.json -d result-example.json
 ```
-
-#### Formatting the JSON output
-
-If you want formatted JSONs, just pipe the output through [jq](https://stedolan.github.io/jq/): `dns-crawler list.txt | jq`.
 
 #### SQL output
 

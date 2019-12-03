@@ -25,6 +25,7 @@ def main():
             sys.stderr.write(f"{timestamp()} Read {domain_count} domain{('s' if domain_count > 1 else '')}.\n")
             for domain in domains:
                 print(json.dumps(process_domain(domain)))
+            sys.stderr.write(f"Finished.\n")
     except FileNotFoundError:
         sys.stderr.write(f"File '{filename}' does not exist.\n\n")
         print_help()
