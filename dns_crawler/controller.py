@@ -77,16 +77,17 @@ def main():
             redis.set("locked", 1)
 
             if parts == 1:
-                create_jobs(domains, process_domain, queue, config["job_timeout"], False)
-            for thread_num in range(parts):
-                if thread_num == parts - 1:  # last one
-                    end = domain_count
-                else:
-                    end = (thread_num + 1) * domains_per_part
-                part = domains[(thread_num * domains_per_part):end]
-                t = threading.Thread(target=create_jobs,
-                                     args=(part, process_domain, queue, config["job_timeout"], lambda: stop_threads))
-                t.start()
+                create_jobs(domains, process_domain, queue, config["job_timeout"], lambda: False)
+            else:
+                for thread_num in range(parts):
+                    if thread_num == parts - 1:  # last one
+                        end = domain_count
+                    else:
+                        end = (thread_num + 1) * domains_per_part
+                    part = domains[(thread_num * domains_per_part):end]
+                    t = threading.Thread(target=create_jobs,
+                                        args=(part, process_domain, queue, config["job_timeout"], lambda: stop_threads))
+                    t.start()
 
             while created_count < domain_count:
                 sys.stderr.write(f"{timestamp()} {created_count}/{domain_count} jobs created.\n")
