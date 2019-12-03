@@ -65,7 +65,7 @@ def main():
     try:
         with open(filename, "r") as file:
             sys.stderr.write(f"{timestamp()} Reading domains from {filename}.\n")
-            domains = (line.strip() for line in file.read().splitlines())
+            domains = [line for line in file.read().splitlines() if line.strip()]
             domain_count = len(domains)
             finished_count = 0
             created_count = 0
