@@ -70,12 +70,14 @@ def main():
             finished_count = 0
             created_count = 0
             parts = cpus * 8
-            if parts > domain_count:
+            if parts * 1000 > domain_count:
                 parts = 1
             domains_per_part = int(domain_count / parts)
             sys.stderr.write(f"{timestamp()} Creating job queue using {parts} thread{('s' if parts > 1 else '')}.\n")
             redis.set("locked", 1)
 
+            if parts == 1:
+                create_jobs(domains, process_domain, queue, config["job_timeout"], False)
             for thread_num in range(parts):
                 if thread_num == parts - 1:  # last one
                     end = domain_count
