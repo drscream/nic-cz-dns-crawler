@@ -30,3 +30,5 @@ def main():
     except FileNotFoundError:
         sys.stderr.write(f"File '{filename}' does not exist.\n\n")
         print_help()
+    except KeyboardInterrupt:
+        sys.exit(0)
