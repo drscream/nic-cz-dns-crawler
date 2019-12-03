@@ -33,7 +33,9 @@ assert sort_by_value(r["results"]["DNS_LOCAL"]["NS_AUTH"]) == sort_by_value(
 assert r["results"]["WEB"]["WEB4_80"][0]["status"] == 301
 assert r["results"]["WEB"]["WEB4_80"][0]["headers"]["server"] == "nginx"
 assert r["results"]["WEB"]["WEB4_443"][0]["tls"]["alpn_protocol"] == "h2"
-assert r["results"]["WEB"]["WEB4_443"][0]["tls"]["cert"]["subject"] == "nic.cz"
+assert r["results"]["WEB"]["WEB4_443"][0]["tls"]["cert"]["subject"]["CN"] == "nic.cz"
+assert r["results"]["WEB"]["WEB4_443"][0]["tls"]["cert"]["version"] == 3
+assert r["results"]["WEB"]["WEB4_443"][0]["tls"]["cert"]["algorithm"] == "sha256"
 assert r["results"]["WEB"]["WEB4_443_www"][0]["status"] == 200
 assert r["results"]["DNS_LOCAL"]["DNSSEC"]["valid"]
 assert r["results"]["DNS_LOCAL"]["DS"][0]["algorithm"] == "ECDSAP256SHA256"
