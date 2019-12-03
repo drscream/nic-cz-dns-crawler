@@ -114,7 +114,7 @@ def get_tls_info(domain, ip, ipv6=False, port=443):
         }
     try:
         cert = conn.getpeercert(binary_form=True)
-    except (OSError) as e:
+    except (OSError, AttributeError) as e:
         result = {
             "error": str(e)
         }
