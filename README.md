@@ -36,6 +36,9 @@ $ echo -e "nic.cz\nnetmetr.cz\nroot.cz" > domain-list.txt
 $ dns-crawler domain-list.txt > results.json
 [2019-12-03 11:03:54] Reading domains from domain-list.txt.
 [2019-12-03 11:03:54] Read 3 domains.
+[2019-12-03 11:03:55] 1/3
+[2019-12-03 11:03:55] 2/3
+[2019-12-03 11:03:56] 3/3
 [2019-12-03 11:03:56] Finished.
 ```
 

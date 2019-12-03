@@ -23,9 +23,10 @@ def main():
             domains = [line for line in file.read().splitlines() if line.strip()]
             domain_count = len(domains)
             sys.stderr.write(f"{timestamp()} Read {domain_count} domain{('s' if domain_count > 1 else '')}.\n")
-            for domain in domains:
+            for num, domain in enumerate(domains, start=1):
                 print(json.dumps(process_domain(domain)))
-            sys.stderr.write(f"Finished.\n")
+                sys.stderr.write(f"{timestamp()} {num}/{domain_count}\n")
+            sys.stderr.write(f"{timestamp()} Finished.\n")
     except FileNotFoundError:
         sys.stderr.write(f"File '{filename}' does not exist.\n\n")
         print_help()
