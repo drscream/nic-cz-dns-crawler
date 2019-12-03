@@ -29,12 +29,22 @@ pip install -U git+https://github.com/rthalley/dnspython.git
 
 ## Basic usage
 
+To run a single-threaded crawler (suitable for small domain counts), just pass a domain list:
+```
+$ echo -e "nic.cz\nnetmetr.cz\nroot.cz" > domain-list.txt
+$ dns-crawler domain-list.txt > result.json
+```
+
+## Multithreaded crawling
+
+The crawler can run with multiple threads to speed things up when you have a lot of domains to go through. Communication betweeen the controller and workers is done through Redis (this makes it easy to run workers on multiple machines if needed, see below).
+
 Start Redis. The exact command depends on your system.
 
 Feed domains into queue and wait for results:
 
 ```
-$ dns-crawler domain-list.txt > result.json
+$ dns-crawler-controller domain-list.txt > result.json
 ```
 
 (in another shell) Start workers which process the domains and return results to the main process:
@@ -64,47 +74,6 @@ Since the crawler is designed to be parallel, the actual speed depends almost en
 ### Redis configuration
 
 No special config needed, but increase the memory limit if you have a lot of domains to process (eg. `maxmemory 1G`). You can also disable disk snapshots to save some I/O time (comment out the `save …` lines).
-
-### Trying it out
-
-Create a short domain list (one 2nd level domain per line):
-
-```
-$ echo -e "nic.cz\nnetmetr.cz\nroot.cz" > domains.txt
-```
-
-Start the main process to create job for every domain:
-
-```
-$ dns-crawler domains.txt
-[2019-09-24 07:38:15] Reading domains from …/domains.txt.
-[2019-09-24 07:38:15] Creating job queue using 2 threads.
-[2019-09-24 07:38:15] 0/3 jobs created.
-[2019-09-24 07:38:16] 3/3 jobs created.
-[2019-09-24 07:38:16] Created 3 jobs. Waiting for workers…
-[2019-09-24 07:38:17] 0/3
-```
-
-Now it waits for workers to take the jobs from redis. Run a worker in another shell:
-
-```
-$ dns-crawler-workers 3
-07:38:17 RQ worker 'rq:worker:foo-2' started, version 1.0
-07:38:17 *** Listening on default...
-07:38:17 Cleaning registries for queue: default
-07:38:17 default: crawl.process_domain('nic.cz') (nic.cz)
-07:38:17 RQ worker 'rq:worker:foo-1' started, version 1.0
-07:38:17 RQ worker 'rq:worker:foo-3' started, version 1.0
-07:38:17 *** Listening on default...
-07:38:17 *** Listening on default...
-07:38:17 default: crawl.process_domain('netmetr.cz') (netmetr.cz)
-07:38:17 default: crawl.process_domain('root.cz') (root.cz)
-07:38:17 default: Job OK (netmetr.cz)
-07:38:17 default: Job OK (nic.cz)
-07:38:17 RQ worker 'rq:worker:foo-2' done, quitting
-07:38:17 RQ worker 'rq:worker:foo-3' done, quitting
-07:38:19 default: Job OK (root.cz)
-```
 
 ### Output formats
 
@@ -146,7 +115,7 @@ If you want formatted JSONs, just pipe the output through [jq](https://stedolan.
 An util to create SQL `INSERT`s from the crawler output is included in this repo.
 
 ```
-$ dns-crawler list.txt | python output_sql.py table_name
+$ dns-crawler-controller list.txt | python output_sql.py table_name
 INSERT INTO table_name VALUES …;
 INSERT INTO table_name VALUES …;
 ```
@@ -154,7 +123,7 @@ INSERT INTO table_name VALUES …;
 You can even pipe it right into `psql` or another DB client, which will save the results into DB continually, as they come from the workers:
 
 ```
-$ dns-crawler list.txt | python output_sql.py table_name | psql -d db_name …
+$ dns-crawler-controller list.txt | python output_sql.py table_name | psql -d db_name …
 ```
 
 It can also generate the table structure (`CREATE TABLE …`), taking the table name as a single argument (without piping anything to stdin):

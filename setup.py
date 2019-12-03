@@ -14,8 +14,9 @@ setup(
     url="https://gitlab.labs.nic.cz/adam/dns-crawler",
     entry_points={
         "console_scripts": [
-            "dns-crawler=dns_crawler.controller:main",
-            "dns-crawler-workers=dns_crawler.workers:main"
+            "dns-crawler-controller=dns_crawler.controller:main",
+            "dns-crawler-workers=dns_crawler.workers:main",
+            "dns-crawler=dns_crawler.single:main"
         ]
     },
     install_requires=[
