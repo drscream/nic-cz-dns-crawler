@@ -67,6 +67,7 @@ def main():
             sys.stderr.write(f"{timestamp()} Reading domains from {filename}.\n")
             domains = [line for line in file.read().splitlines() if line.strip()]
             domain_count = len(domains)
+            sys.stderr.write(f"{timestamp()} Read {domain_count} domain{('s' if domain_count > 1 else '')}.\n")
             finished_count = 0
             created_count = 0
             parts = cpus * 8
@@ -86,7 +87,8 @@ def main():
                         end = (thread_num + 1) * domains_per_part
                     part = domains[(thread_num * domains_per_part):end]
                     t = threading.Thread(target=create_jobs,
-                                        args=(part, process_domain, queue, config["job_timeout"], lambda: stop_threads))
+                                         args=(part, process_domain, queue,
+                                               config["job_timeout"], lambda: stop_threads))
                     t.start()
 
             while created_count < domain_count:
