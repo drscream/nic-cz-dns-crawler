@@ -65,7 +65,7 @@ Feed domains into queue and wait for results:
 $ dns-crawler-controller domain-list.txt > result.json
 ```
 
-(in another shell) Start workers which process the domains and return results to the main process:
+(in another shell) Start workers which process the domains and return results to the controller:
 
 ```
 $ dns-crawler-workers
@@ -95,7 +95,7 @@ No special config needed, but increase the memory limit if you have a lot of dom
 
 ### Output formats
 
-Results are printed to the main process' stdout – JSON for every domain, separated by `\n`:
+Results are printed to the main process' (`dns-crawler` or `dns-crawler-controller`) stdout – JSON for every domain, separated by `\n`:
 
 ```
 …
@@ -126,7 +126,7 @@ $ ajv validate -s result-schema.json -d result-example.json
 
 #### Custom output format
 
-Since the main process just spits out JSONs to stdout, it's pretty easy to process it with almost anything.
+Since the main process (`dns-crawler` or `dns-crawler-controller`) just spits out JSONs to stdout, it's pretty easy to process it with almost anything.
 
 A simple example for YAML output:
 
@@ -209,14 +209,23 @@ The free `GeoLite2-Country` seems to be a bit inaccurate, especially for IPv6 (i
 
 ## Command line parameters
 
-### dns-crawler
+### dns-crawler-controller
 
 ```
 dns-crawler <file>
        file - plaintext domain list, one domain per line (separated by \n)
 ```
 
-The main process uses threads (2 for each CPU core) to create the jobs faster. It's *much* faster on (more) modern machines – eg. i7-7600U in a laptop does about 4.2k jobs/s, while server with Xeon X3430 does just about 1.4k (using 8 threads, as they both appear as 4 core to the system).
+### dns-crawler-controller
+
+```
+dns-crawler-controller <file>
+       file - plaintext domain list, one domain per line (separated by \n)
+```
+
+The controller process uses threads (2 for each CPU core) to create the jobs faster when you give it a lot of domains (>1000× CPU core count).
+
+It's *much* faster on (more) modern machines – eg. i7-7600U in a laptop does about 7k jobs/s, while server with Xeon X3430 does just about ~2.5k (both using 8 threads, as they both appear as 4 core to the system).
 
 To cancel the process, just send a kill signal or hit `Ctrl-C` any time. The process will perform cleanup and exit.
 
@@ -243,9 +252,9 @@ Cancel now (Ctrl-C) or have a fire extinguisher ready.
 5 - 4 - 3 -
 ```
 
-Stopping works the same way as with the main process – `Ctrl-C` (or kill signal) will finish the current job(s) and exit.
+Stopping works the same way as with the controller process – `Ctrl-C` (or kill signal) will finish the current job(s) and exit.
 
-> The workers will shout at you that *"Result will never expire, clean up result key manually"*. This is perfectly fine, results are continually cleaned by the main process. Unfortunately there's no easy way to disable this message in `rq` without setting a fixed TTL.
+> The workers will shout at you that *"Result will never expire, clean up result key manually"*. This is perfectly fine, results are continually cleaned by the controller. Unfortunately there's no easy way to disable this message in `rq` without setting a fixed TTL.
 
 ## Resuming work
 
@@ -259,32 +268,32 @@ This can also be used change the worker count if it turns out to be too low or h
 
 ## Running on multiple machines
 
-Since all communication between the main process and workers is done through Redis, it's easy to scale the crawler to any number of machines:
+Since all communication between the controller and workers is done through Redis, it's easy to scale the crawler to any number of machines:
 
 ```
 machine-1                     machine-1
-┬──────────────────┐         ┬────────────────────┐
-│    dns-crawler   │         │ dns-crawler-workers│
-│        +         │ ------- │          +         │
-│      redis       │         │    DNS resolver    │
-└──────────────────┘         └────────────────────┘
+┬───────────────────────────┐         ┬────────────────────┐
+│    dns-crawler-controller │         │ dns-crawler-workers│
+│        +                  │ ------- │          +         │
+│      redis                │         │    DNS resolver    │
+└───────────────────────────┘         └────────────────────┘
 
-                             machine-2
-                             ┬─────────────────────┐
-                             │ dns-crawler-workers │
-                     ------- │          +          │
-                             │    DNS resolver     │
-                             └─────────────────────┘
+                                      machine-2
+                                      ┬─────────────────────┐
+                                      │ dns-crawler-workers │
+                              ------- │          +          │
+                                      │    DNS resolver     │
+                                      └─────────────────────┘
 
-                             …
-                             …
+                                      …
+                                      …
 
-                             machine-n
-                             ┬─────────────────────┐
-                             │ dns-crawler-workers │
-                     _______ │          +          │
-                             │    DNS resolver     │
-                             └─────────────────────┘
+                                      machine-n
+                                      ┬─────────────────────┐
+                                      │ dns-crawler-workers │
+                              _______ │          +          │
+                                      │    DNS resolver     │
+                                      └─────────────────────┘
 ```
 
 Just tell the workers to connect to the shared Redis on the main server, eg.:
@@ -339,7 +348,7 @@ If you're looking into writing some additional tests, be aware that some Docker 
 
 ## OS support
 
-The crawler is developed primarily for Linux, but it should work on any OS supported by Python –at least the worker part (but the main process should work too, if you manage to get a Redis server running on your OS).
+The crawler is developed primarily for Linux, but it should work on any OS supported by Python – at least the worker part (but the controller should work too, if you manage to get a Redis server running on your OS).
 
 One exception is Windows, because it [doesn't support `fork()`](https://github.com/rq/rq/issues/859), but it's possible to get it working under WSL (Windows Subsystem for Linux):
 
