@@ -109,14 +109,20 @@ def get_tls_info(domain, ip, ipv6=False, port=443):
         result = {
             "error": str(e)
         }
-    cert = conn.getpeercert(binary_form=True)
-    result = drop_null_values({
-        "alpn_protocol": conn.selected_alpn_protocol(),
-        "tls_version": conn.version(),
-        "tls_cipher_name": conn.cipher()[0],
-        "tls_cipher_bits": conn.cipher()[2],
-        "cert": parse_cert(cert, domain)
-    })
+    try:
+        cert = conn.getpeercert(binary_form=True)
+    except (OSError) as e:
+        result = {
+            "error": str(e)
+        }
+    else:
+        result = drop_null_values({
+            "alpn_protocol": conn.selected_alpn_protocol(),
+            "tls_version": conn.version(),
+            "tls_cipher_name": conn.cipher()[0],
+            "tls_cipher_bits": conn.cipher()[2],
+            "cert": parse_cert(cert, domain)
+        })
     conn.close()
     return result
 
