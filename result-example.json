@@ -1,6 +1,6 @@
 {
   "domain": "nic.cz",
-  "timestamp": "2019-11-29 07:49:07",
+  "timestamp": "2019-12-03 15:46:47",
   "results": {
     "DNS_LOCAL": {
       "NS_AUTH": [
@@ -98,8 +98,8 @@
       "DNSSEC": {
         "valid": true,
         "rrsig": [
-          "nic.cz. 1371 IN RRSIG DNSKEY 13 2 1800 20191211231536 20191128164001 61281 nic.cz. C7q1Ot4Rl68dNJxXq26QzJeWCzRGNwRN 3s3twPVl1C5s67Bapr+W9lmTijvB6zAH M58DEeVgnAzfNatMNf+SMQ==",
-          "nic.cz. 1371 IN RRSIG DNSKEY 13 2 1800 20191212031655 20191128164001 9334 nic.cz. Z/qaMT34++tTo79baCAme9WpiJSZPF2O s1zy/82KvZG4IOuLlwd3vMqoUnLcqbae /Srvtt6LDuQl/x0Jy+2ikw=="
+          "nic.cz. 123 IN RRSIG DNSKEY 13 2 1800 20191216113233 20191203072158 61281 nic.cz. txwFvfElbHvOLt+xCYHLWC80IadHGsJ+ hF73GgZtNpgB7X/yVpLVvQyiC+sVf7rP ysIHsM7SesoVGrBLlhD8tg==",
+          "nic.cz. 123 IN RRSIG DNSKEY 13 2 1800 20191217060958 20191203072158 9334 nic.cz. NOGLhleb9IpfoUrdtWlIfhD/aHIedc2q /UGx7Yc1W0by6z2RxgffO8E3wbBRq7iN dC+vXhs85aVD0vWaVQhpoA=="
         ]
       }
     },
@@ -124,7 +124,7 @@
         },
         "HOSTNAMEBIND4": {
           "value": null,
-          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 194.0.12.1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
         },
         "HOSTNAMEBIND6": {
           "value": null,
@@ -132,7 +132,7 @@
         },
         "VERSIONBIND4": {
           "value": null,
-          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 194.0.12.1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
         },
         "VERSIONBIND6": {
           "value": null,
@@ -159,19 +159,19 @@
         },
         "HOSTNAMEBIND4": {
           "value": null,
-          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 194.0.13.1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
         },
         "HOSTNAMEBIND6": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
+          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"
         },
         "VERSIONBIND4": {
           "value": null,
-          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 194.0.13.1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
         },
         "VERSIONBIND6": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
+          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"
         }
       },
       {
@@ -194,18 +194,19 @@
         },
         "HOSTNAMEBIND4": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
+          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 193.29.206.1 UDP port 53 answered REFUSED"
         },
         "HOSTNAMEBIND6": {
-          "value": "unidentified server"
+          "value": null,
+          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
         },
         "VERSIONBIND4": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
+          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 193.29.206.1 UDP port 53 answered REFUSED"
         },
         "VERSIONBIND6": {
           "value": null,
-          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:1::1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
         }
       }
     ],
@@ -217,7 +218,8 @@
           "headers": {
             "location": "https://nic.cz/",
             "server": "nginx"
-          }
+          },
+          "content": "301 Moved Permanently \n301 Moved Permanently \nnginx"
         }
       ],
       "WEB4_80_www": [
@@ -227,7 +229,8 @@
           "headers": {
             "location": "https://www.nic.cz/",
             "server": "nginx"
-          }
+          },
+          "content": "301 Moved Permanently \n301 Moved Permanently \nnginx"
         }
       ],
       "WEB4_443": [
@@ -239,16 +242,17 @@
             "tls_cipher_name": "ECDHE-RSA-AES128-GCM-SHA256",
             "tls_cipher_bits": 128,
             "cert": {
-              "subject": "nic.cz",
-              "valid": true,
-              "issuer": {
-                "countryName": "US",
-                "organizationName": "Let's Encrypt",
-                "commonName": "Let's Encrypt Authority X3"
-              },
-              "version": 3,
               "not_before": "2019-10-07 11:01:43",
               "not_after": "2020-01-05 11:01:43",
+              "subject": {
+                "CN": "nic.cz"
+              },
+              "issuer": {
+                "C": "US",
+                "O": "Let's Encrypt",
+                "CN": "Let's Encrypt Authority X3"
+              },
+              "version": 3,
               "alt_names": [
                 "dsdng.nic.cz",
                 "edice.nic.cz",
@@ -263,7 +267,8 @@
                 "prihlasky.nic.cz",
                 "www.enum.nic.cz",
                 "www.nic.cz"
-              ]
+              ],
+              "algorithm": "sha256"
             }
           },
           "status": 301,
@@ -272,7 +277,8 @@
             "server": "nginx",
             "content-security-policy": "default-src 'none'; script-src 'self' 'unsafe-inline' https://onlinechat2.nic.cz https://test-ipv6.nic.cz https://*.test-ipv6.nic.cz https://piwik.nic.cz/piwik.js https://platform.twitter.com https://cdn.syndication.twimg.com https://s.ytimg.com https://*.googleapis.com https://*.google.com https://connect.facebook.net https://*.mapy.cz; object-src 'self'; style-src 'self' 'unsafe-inline' https://platform.twitter.com https://*.nic.cz https://fonts.googleapis.com https://api.mapy.cz; img-src *; media-src *; frame-src *; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.test-ipv6.nic.cz https://*.labs.nic.cz https://rdap.nic.cz https://www.rhybar.cz https://akademie.nic.cz https://piwik.nic.cz/piwik.php https://www.nic.cz/files/CORS/projects-bar/ https://mojeid.cz https://syndication.twitter.com; report-uri https://csp.nic.cz/report/",
             "strict-transport-security": "max-age=31536000"
-          }
+          },
+          "content": "301 Moved Permanently \n301 Moved Permanently \nnginx"
         }
       ],
       "WEB4_443_www": [
@@ -284,16 +290,17 @@
             "tls_cipher_name": "ECDHE-RSA-AES128-GCM-SHA256",
             "tls_cipher_bits": 128,
             "cert": {
-              "subject": "nic.cz",
-              "valid": true,
-              "issuer": {
-                "countryName": "US",
-                "organizationName": "Let's Encrypt",
-                "commonName": "Let's Encrypt Authority X3"
-              },
-              "version": 3,
               "not_before": "2019-10-07 11:01:43",
               "not_after": "2020-01-05 11:01:43",
+              "subject": {
+                "CN": "nic.cz"
+              },
+              "issuer": {
+                "C": "US",
+                "O": "Let's Encrypt",
+                "CN": "Let's Encrypt Authority X3"
+              },
+              "version": 3,
               "alt_names": [
                 "dsdng.nic.cz",
                 "edice.nic.cz",
@@ -308,7 +315,8 @@
                 "prihlasky.nic.cz",
                 "www.enum.nic.cz",
                 "www.nic.cz"
-              ]
+              ],
+              "algorithm": "sha256"
             }
           },
           "status": 200,
@@ -319,7 +327,8 @@
             "x-xss-protection": "1; mode=block",
             "strict-transport-security": "max-age=31536000; includeSubdomains",
             "x-content-type-options": "nosniff"
-          }
+          },
+          "content": "CZ.NIC \nObsah\nNavigace\nHledat\nk navigaci ↓ \nČesky \nEnglish \nDomény \nRegistrátoři \nO nás \nProjekty \nk obsahu ↑ \nVyhledávání v registru \nPro vyhledání údajů vložte doménové jméno jakojmeno.cz(bez www) nebo identifikátor kontaktu nebo sady jmenných serverů.\nÚčel použití poskytovaných dat a informací \nStatistiky \nRegistrovaných domén CZ:1 331 414 \nZabezpečeno technologiíDNSSEC :765 040 \nChcete se jako první dozvědět o aktivitách sdružení CZ.NIC? \nChcete být první, kteří se dozvědí více o projektech sdružení a o novinkách týkajících se internetových technologií? \nPřihlaste se do e-mailové konference sdružení. \nRegistrovat doménu \nJak se stát registrátorem \nStatistiky \nZprávy on-line \nNejnovější zajímavosti ze světa domén, DNS a internetu najdete na:\nNovinky \n03.12.2019 12:40 \nVypsali jsme první běh nového kurzu věnovaného forenzní analýze \nBezpečnostní analytik Filip Pokorný působící v Národním bezpečnostním týmu CSIRT.CZ připravil proAkademii CZ.NICkurzÚvod do forenzní analýzy paměti . V něm se účastníci seznámí především s principy fungování paměti a její analýzou za pomoci nástroje Volatility. Mimo to bude součástí kurzu například také ukázka způsobů, díky nimž je možné získat informace o bezpečnostním incidentu.\nDalší novinky \nBlog \n2. prosince 2019 9:15 \nTurris ochrání i vaše servery \nTrochu historie Co je projekt Turris, to asi není třeba v Čechách představovat. Ale pojďme si jen pro úplnost zrekapitulovat, jak celý projekt vznikl a jak se v průběhu doby vyvinul. Vše začalo zkoumáním, jak probíhají útoky na běžné domácnosti. […]\nvíce » \nDalší texty na blogu . \nNahoru \n© 2019 CZ.NIC, z. s. p. o. \nOstatní weby: \nmojeID \nFRED \nDNSSEC \nCZ.NIC-CSIRT \nCSIRT.CZ \nLaboratoře \nAkademie \nEdice CZ.NIC \nDoménový prohlížeč \nKontakt \nČesky \nEnglish"
         }
       ],
       "WEB6_80": [
@@ -329,7 +338,8 @@
           "headers": {
             "location": "https://nic.cz/",
             "server": "nginx"
-          }
+          },
+          "content": "301 Moved Permanently \n301 Moved Permanently \nnginx"
         }
       ],
       "WEB6_80_www": [
@@ -339,7 +349,8 @@
           "headers": {
             "location": "https://www.nic.cz/",
             "server": "nginx"
-          }
+          },
+          "content": "301 Moved Permanently \n301 Moved Permanently \nnginx"
         }
       ],
       "WEB6_443": [
@@ -351,16 +362,17 @@
             "tls_cipher_name": "ECDHE-RSA-AES128-GCM-SHA256",
             "tls_cipher_bits": 128,
             "cert": {
-              "subject": "nic.cz",
-              "valid": true,
-              "issuer": {
-                "countryName": "US",
-                "organizationName": "Let's Encrypt",
-                "commonName": "Let's Encrypt Authority X3"
-              },
-              "version": 3,
               "not_before": "2019-10-07 11:01:43",
               "not_after": "2020-01-05 11:01:43",
+              "subject": {
+                "CN": "nic.cz"
+              },
+              "issuer": {
+                "C": "US",
+                "O": "Let's Encrypt",
+                "CN": "Let's Encrypt Authority X3"
+              },
+              "version": 3,
               "alt_names": [
                 "dsdng.nic.cz",
                 "edice.nic.cz",
@@ -375,7 +387,8 @@
                 "prihlasky.nic.cz",
                 "www.enum.nic.cz",
                 "www.nic.cz"
-              ]
+              ],
+              "algorithm": "sha256"
             }
           },
           "status": 301,
@@ -384,7 +397,8 @@
             "server": "nginx",
             "content-security-policy": "default-src 'none'; script-src 'self' 'unsafe-inline' https://onlinechat2.nic.cz https://test-ipv6.nic.cz https://*.test-ipv6.nic.cz https://piwik.nic.cz/piwik.js https://platform.twitter.com https://cdn.syndication.twimg.com https://s.ytimg.com https://*.googleapis.com https://*.google.com https://connect.facebook.net https://*.mapy.cz; object-src 'self'; style-src 'self' 'unsafe-inline' https://platform.twitter.com https://*.nic.cz https://fonts.googleapis.com https://api.mapy.cz; img-src *; media-src *; frame-src *; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.test-ipv6.nic.cz https://*.labs.nic.cz https://rdap.nic.cz https://www.rhybar.cz https://akademie.nic.cz https://piwik.nic.cz/piwik.php https://www.nic.cz/files/CORS/projects-bar/ https://mojeid.cz https://syndication.twitter.com; report-uri https://csp.nic.cz/report/",
             "strict-transport-security": "max-age=31536000"
-          }
+          },
+          "content": "301 Moved Permanently \n301 Moved Permanently \nnginx"
         }
       ],
       "WEB6_443_www": [
@@ -396,16 +410,17 @@
             "tls_cipher_name": "ECDHE-RSA-AES128-GCM-SHA256",
             "tls_cipher_bits": 128,
             "cert": {
-              "subject": "nic.cz",
-              "valid": true,
-              "issuer": {
-                "countryName": "US",
-                "organizationName": "Let's Encrypt",
-                "commonName": "Let's Encrypt Authority X3"
-              },
-              "version": 3,
               "not_before": "2019-10-07 11:01:43",
               "not_after": "2020-01-05 11:01:43",
+              "subject": {
+                "CN": "nic.cz"
+              },
+              "issuer": {
+                "C": "US",
+                "O": "Let's Encrypt",
+                "CN": "Let's Encrypt Authority X3"
+              },
+              "version": 3,
               "alt_names": [
                 "dsdng.nic.cz",
                 "edice.nic.cz",
@@ -420,7 +435,8 @@
                 "prihlasky.nic.cz",
                 "www.enum.nic.cz",
                 "www.nic.cz"
-              ]
+              ],
+              "algorithm": "sha256"
             }
           },
           "status": 200,
@@ -431,7 +447,8 @@
             "x-xss-protection": "1; mode=block",
             "strict-transport-security": "max-age=31536000; includeSubdomains",
             "x-content-type-options": "nosniff"
-          }
+          },
+          "content": "CZ.NIC \nObsah\nNavigace\nHledat\nk navigaci ↓ \nČesky \nEnglish \nDomény \nRegistrátoři \nO nás \nProjekty \nk obsahu ↑ \nVyhledávání v registru \nPro vyhledání údajů vložte doménové jméno jakojmeno.cz(bez www) nebo identifikátor kontaktu nebo sady jmenných serverů.\nÚčel použití poskytovaných dat a informací \nStatistiky \nRegistrovaných domén CZ:1 331 414 \nZabezpečeno technologiíDNSSEC :765 040 \nChcete se jako první dozvědět o aktivitách sdružení CZ.NIC? \nChcete být první, kteří se dozvědí více o projektech sdružení a o novinkách týkajících se internetových technologií? \nPřihlaste se do e-mailové konference sdružení. \nRegistrovat doménu \nJak se stát registrátorem \nStatistiky \nZprávy on-line \nNejnovější zajímavosti ze světa domén, DNS a internetu najdete na:\nNovinky \n03.12.2019 12:40 \nVypsali jsme první běh nového kurzu věnovaného forenzní analýze \nBezpečnostní analytik Filip Pokorný působící v Národním bezpečnostním týmu CSIRT.CZ připravil proAkademii CZ.NICkurzÚvod do forenzní analýzy paměti . V něm se účastníci seznámí především s principy fungování paměti a její analýzou za pomoci nástroje Volatility. Mimo to bude součástí kurzu například také ukázka způsobů, díky nimž je možné získat informace o bezpečnostním incidentu.\nDalší novinky \nBlog \n2. prosince 2019 9:15 \nTurris ochrání i vaše servery \nTrochu historie Co je projekt Turris, to asi není třeba v Čechách představovat. Ale pojďme si jen pro úplnost zrekapitulovat, jak celý projekt vznikl a jak se v průběhu doby vyvinul. Vše začalo zkoumáním, jak probíhají útoky na běžné domácnosti. […]\nvíce » \nDalší texty na blogu . \nNahoru \n© 2019 CZ.NIC, z. s. p. o. \nOstatní weby: \nmojeID \nFRED \nDNSSEC \nCZ.NIC-CSIRT \nCSIRT.CZ \nLaboratoře \nAkademie \nEdice CZ.NIC \nDoménový prohlížeč \nKontakt \nČesky \nEnglish"
         }
       ]
     }

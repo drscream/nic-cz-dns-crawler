@@ -209,40 +209,17 @@
       "properties": {
         "subject": {
           "description": "Certificate subject.",
-          "type": "string"
+          "$ref": "#/definitions/certificate_name"
         },
         "issuer": {
           "description": "Certificate issuer.",
-          "type": "object",
-          "properties": {
-            "countryName": {
-              "type": "string"
-            },
-            "organizationName": {
-              "type": "string"
-            },
-            "commonName": {
-              "type": "string"
-            },
-            "organizationalUnitName": {
-              "type": "string"
-            },
-            "stateOrProvinceName": {
-              "type": "string"
-            },
-            "localityName": {
-              "type": "string"
-            }
-          },
-          "required": ["commonName", "countryName", "organizationName"]
+          "$ref": "#/definitions/certificate_name"
         },
         "version": {
-          "description": "SSL version.",
-          "type": "integer"
-        },
-        "valid": {
-          "description": "Indicates whether the certificate is valid for current (sub)domain.",
-          "type": "boolean"
+          "description": "Certificate version.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3
         },
         "not_before": {
           "description": "Beginning of certificate validity period.",
@@ -259,11 +236,58 @@
             "type": "string"
           }
         },
+        "algorithm": {
+          "description": "Certificate algorithm.",
+          "type": "string",
+          "enum": [
+            "sha1",
+            "sha512-224",
+            "sha512-256",
+            "sha224",
+            "sha256",
+            "sha384",
+            "sha512",
+            "sha3-224",
+            "sha3-256",
+            "sha3-384",
+            "sha3-512",
+            "shake128",
+            "shake256",
+            "md5",
+            "blake2b",
+            "blake2s"
+          ]
+        },
         "error": {
           "description": "Error message from SSL (python socket).",
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
+    },
+    "certificate_name": {
+      "type": "object",
+      "properties": {
+        "C": {
+          "type": "string"
+        },
+        "O": {
+          "type": "string"
+        },
+        "CN": {
+          "type": "string"
+        },
+        "OU": {
+          "type": "string"
+        },
+        "L": {
+          "type": "string"
+        },
+        "S": {
+          "type": "string"
+        }
+      },
+      "required": ["CN"]
     },
     "http_status": {
       "description": "Status code received from the webserver.",

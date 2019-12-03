@@ -18,7 +18,6 @@
 import re
 import socket
 import ssl
-from datetime import datetime
 from html.parser import HTMLParser
 from urllib.parse import unquote
 
@@ -26,6 +25,8 @@ import certifi
 import idna
 import requests
 import urllib3
+from cryptography import x509
+from cryptography.hazmat.backends import default_backend
 
 from .config_loader import load_config
 from .ip_utils import is_valid_ip_address
@@ -65,27 +66,25 @@ def parse_alt_svc(header):
     return result
 
 
-def cert_datetime_to_iso(date_string):
-    return datetime.strptime(date_string, "%b  %d %H:%M:%S %Y %Z").strftime("%Y-%m-%d %H:%M:%S")
+def cert_datetime_to_iso(cert_date):
+    return cert_date.strftime("%Y-%m-%d %H:%M:%S")
+
+
+def parse_cert_name(name):
+    return {k: v for k, v in [s.rfc4514_string().split("=") for s in name.rdns]}
 
 
 def parse_cert(cert, domain):
+    cert = x509.load_der_x509_certificate(cert, default_backend())
     result = {}
-    try:
-        result["subject"] = dict(x[0] for x in cert["subject"])["commonName"]
-    except KeyError:
-        result["subject"] = ""
-    try:
-        ssl.match_hostname(cert, domain)
-    except ssl.CertificateError:
-        result["valid"] = False
-    else:
-        result["valid"] = True
-    result["issuer"] = dict(x[0] for x in cert["issuer"])
-    result["version"] = cert["version"]
-    result["not_before"] = cert_datetime_to_iso(cert["notBefore"])
-    result["not_after"] = cert_datetime_to_iso(cert["notAfter"])
-    result["alt_names"] = [x[1] for x in cert["subjectAltName"]]
+    result["not_before"] = cert_datetime_to_iso(cert.not_valid_before)
+    result["not_after"] = cert_datetime_to_iso(cert.not_valid_after)
+    result["subject"] = parse_cert_name(cert.subject)
+    result["issuer"] = parse_cert_name(cert.issuer)
+    result["version"] = int(str(cert.version)[-1])
+    result["alt_names"] = [name.value for name in cert.extensions.get_extension_for_oid(
+        x509.oid.ExtensionOID.SUBJECT_ALTERNATIVE_NAME).value]
+    result["algorithm"] = cert.signature_hash_algorithm.name
     return drop_null_values(result)
 
 
@@ -102,22 +101,22 @@ def get_tls_info(domain, ip, ipv6=False, port=443):
         inet = socket.AF_INET6
     sock = socket.socket(inet, socket.SOCK_STREAM)
     conn = ctx.wrap_socket(sock, server_hostname=domain)
-
     conn.settimeout(float(http_timeout))
 
     try:
         conn.connect((ip, port))
-    except (ssl.SSLError, OSError, socket.timeout):
-        result = False
-    else:
-        cert = conn.getpeercert()
-        result = drop_null_values({
-            "alpn_protocol": conn.selected_alpn_protocol(),
-            "tls_version": conn.version(),
-            "tls_cipher_name": conn.cipher()[0],
-            "tls_cipher_bits": conn.cipher()[2],
-            "cert": parse_cert(cert, domain)
-        })
+    except (OSError, socket.timeout) as e:
+        result = {
+            "error": str(e)
+        }
+    cert = conn.getpeercert(binary_form=True)
+    result = drop_null_values({
+        "alpn_protocol": conn.selected_alpn_protocol(),
+        "tls_version": conn.version(),
+        "tls_cipher_name": conn.cipher()[0],
+        "tls_cipher_bits": conn.cipher()[2],
+        "cert": parse_cert(cert, domain)
+    })
     conn.close()
     return result
 
