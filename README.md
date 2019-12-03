@@ -124,38 +124,7 @@ $ npm i -g ajv
 $ ajv validate -s result-schema.json -d result-example.json
 ```
 
-#### SQL output
-
-An util to create SQL `INSERT`s from the crawler output is included in this repo.
-
-```
-$ dns-crawler-controller list.txt | python output_sql.py table_name
-INSERT INTO table_name VALUES …;
-INSERT INTO table_name VALUES …;
-```
-
-You can even pipe it right into `psql` or another DB client, which will save the results into DB continually, as they come from the workers:
-
-```
-$ dns-crawler-controller list.txt | python output_sql.py table_name | psql -d db_name …
-```
-
-It can also generate the table structure (`CREATE TABLE …`), taking the table name as a single argument (without piping anything to stdin):
-
-```
-$ python output_sql.py results
-CREATE TABLE results …;
-```
-
-The SQL output is tested only with PostgreSQL 11.
-
-There's also `output_sql.py`, useful for inserting big chunks of resuls (which would be slow to do one by one).
-
-#### Saving to Hadoop
-
-TODO
-
-#### Custom output formats
+#### Custom output format
 
 Since the main process just spits out JSONs to stdout, it's pretty easy to process it with almost anything.
 
