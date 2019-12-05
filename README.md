@@ -143,15 +143,13 @@ for line in sys.stdin:
 
 CSV is a different beast, since there's no obvious way to represent arrays…
 
-## Probing just a few domains (or a single one)
+## Usage in Python code
 
-It's possible to run just the crawl function without the rq/redis/worker machinery, which could come handy if you're interested in just a small number of domains. To run it, just import the `process_domain` function.
-
-Example:
+Just import and use the `process_domain` function like so:
 
 ```
 $ python
->>> from crawl import process_domain
+>>> from dns_crawler.crawl import process_domain
 >>> result = process_domain("nic.cz")
 >>> result
 {'domain': 'nic.cz', 'timestamp': '2019-09-13T09:21:10.136303', 'results': { …
@@ -163,7 +161,7 @@ $ python
 Formatted output, inline python code:
 
 ```
-$ python -c "from crawl import process_domain; import json; print(json.dumps(process_domain('nic.cz'), indent=2))"
+$ python -c "from dns_crawler.crawl import process_domain; import json; print(json.dumps(process_domain('nic.cz'), indent=2))"
 {
   "domain": "nic.cz",
   "timestamp": "2019-09-13T09:24:23.108941",
