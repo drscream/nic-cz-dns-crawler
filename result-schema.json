@@ -236,6 +236,11 @@
             "type": "string"
           }
         },
+        "serial": {
+          "description": "Certificate's serial number",
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
         "algorithm": {
           "description": "Certificate algorithm.",
           "type": "string",

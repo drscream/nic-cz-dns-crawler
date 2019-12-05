@@ -1,6 +1,6 @@
 {
   "domain": "nic.cz",
-  "timestamp": "2019-12-03 15:46:47",
+  "timestamp": "2019-12-05 09:33:59",
   "results": {
     "DNS_LOCAL": {
       "NS_AUTH": [
@@ -87,6 +87,10 @@
       ],
       "DNSKEY": [
         {
+          "value": "256 3 13 cctdUhdlIqhOWYtFnC41xII8RSmgsibt CF3/R8GCUdMyQckKie9GOJzId9q3PDTg 9C6I5DU7OVuUSw0dSAJsBA==",
+          "algorithm": "ECDSAP256SHA256"
+        },
+        {
           "value": "256 3 13 kg9LOAsy4nwTJoXRv/71gRmtB4Sb6qCD zikX8/pPO4n0IpmnTiz9WPVX8jKB1Hhz gYymDtG7Z6ygICrHQhBkRg==",
           "algorithm": "ECDSAP256SHA256"
         },
@@ -98,8 +102,8 @@
       "DNSSEC": {
         "valid": true,
         "rrsig": [
-          "nic.cz. 123 IN RRSIG DNSKEY 13 2 1800 20191216113233 20191203072158 61281 nic.cz. txwFvfElbHvOLt+xCYHLWC80IadHGsJ+ hF73GgZtNpgB7X/yVpLVvQyiC+sVf7rP ysIHsM7SesoVGrBLlhD8tg==",
-          "nic.cz. 123 IN RRSIG DNSKEY 13 2 1800 20191217060958 20191203072158 9334 nic.cz. NOGLhleb9IpfoUrdtWlIfhD/aHIedc2q /UGx7Yc1W0by6z2RxgffO8E3wbBRq7iN dC+vXhs85aVD0vWaVQhpoA=="
+          "nic.cz. 1038 IN RRSIG DNSKEY 13 2 1800 20191219034009 20191205071056 61281 nic.cz. qw0CivErunK8S1nWJIlhP/gTeA0W3VVq MNR1fAFXBPWTS5HpRXMzh3HSWMIQ7cfy 9yDj4alfdy9pSoLwgMlvkw==",
+          "nic.cz. 1038 IN RRSIG DNSKEY 13 2 1800 20191219065232 20191205071056 9334 nic.cz. 3+SD/71/j3YaWvpG6D9L2fRLxWrrAtG8 TN6rFdWh/7TABwxhYWZ2tegzkaeEmX2x ik2s/1kjdmWF+s2QNG1LWw=="
         ]
       }
     },
@@ -163,7 +167,7 @@
         },
         "HOSTNAMEBIND6": {
           "value": null,
-          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
         },
         "VERSIONBIND4": {
           "value": null,
@@ -171,7 +175,7 @@
         },
         "VERSIONBIND6": {
           "value": null,
-          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
         }
       },
       {
@@ -194,15 +198,14 @@
         },
         "HOSTNAMEBIND4": {
           "value": null,
-          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 193.29.206.1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
         },
         "HOSTNAMEBIND6": {
-          "value": null,
-          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
+          "value": "unidentified server"
         },
         "VERSIONBIND4": {
           "value": null,
-          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 193.29.206.1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
         },
         "VERSIONBIND6": {
           "value": null,
@@ -253,6 +256,8 @@
                 "CN": "Let's Encrypt Authority X3"
               },
               "version": 3,
+              "serial": "304746456035770369486508626536619704785928",
+              "algorithm": "sha256",
               "alt_names": [
                 "dsdng.nic.cz",
                 "edice.nic.cz",
@@ -267,8 +272,7 @@
                 "prihlasky.nic.cz",
                 "www.enum.nic.cz",
                 "www.nic.cz"
-              ],
-              "algorithm": "sha256"
+              ]
             }
           },
           "status": 301,
@@ -301,6 +305,8 @@
                 "CN": "Let's Encrypt Authority X3"
               },
               "version": 3,
+              "serial": "304746456035770369486508626536619704785928",
+              "algorithm": "sha256",
               "alt_names": [
                 "dsdng.nic.cz",
                 "edice.nic.cz",
@@ -315,8 +321,7 @@
                 "prihlasky.nic.cz",
                 "www.enum.nic.cz",
                 "www.nic.cz"
-              ],
-              "algorithm": "sha256"
+              ]
             }
           },
           "status": 200,
@@ -328,7 +333,7 @@
             "strict-transport-security": "max-age=31536000; includeSubdomains",
             "x-content-type-options": "nosniff"
           },
-          "content": "CZ.NIC \nObsah\nNavigace\nHledat\nk navigaci ↓ \nČesky \nEnglish \nDomény \nRegistrátoři \nO nás \nProjekty \nk obsahu ↑ \nVyhledávání v registru \nPro vyhledání údajů vložte doménové jméno jakojmeno.cz(bez www) nebo identifikátor kontaktu nebo sady jmenných serverů.\nÚčel použití poskytovaných dat a informací \nStatistiky \nRegistrovaných domén CZ:1 331 414 \nZabezpečeno technologiíDNSSEC :765 040 \nChcete se jako první dozvědět o aktivitách sdružení CZ.NIC? \nChcete být první, kteří se dozvědí více o projektech sdružení a o novinkách týkajících se internetových technologií? \nPřihlaste se do e-mailové konference sdružení. \nRegistrovat doménu \nJak se stát registrátorem \nStatistiky \nZprávy on-line \nNejnovější zajímavosti ze světa domén, DNS a internetu najdete na:\nNovinky \n03.12.2019 12:40 \nVypsali jsme první běh nového kurzu věnovaného forenzní analýze \nBezpečnostní analytik Filip Pokorný působící v Národním bezpečnostním týmu CSIRT.CZ připravil proAkademii CZ.NICkurzÚvod do forenzní analýzy paměti . V něm se účastníci seznámí především s principy fungování paměti a její analýzou za pomoci nástroje Volatility. Mimo to bude součástí kurzu například také ukázka způsobů, díky nimž je možné získat informace o bezpečnostním incidentu.\nDalší novinky \nBlog \n2. prosince 2019 9:15 \nTurris ochrání i vaše servery \nTrochu historie Co je projekt Turris, to asi není třeba v Čechách představovat. Ale pojďme si jen pro úplnost zrekapitulovat, jak celý projekt vznikl a jak se v průběhu doby vyvinul. Vše začalo zkoumáním, jak probíhají útoky na běžné domácnosti. […]\nvíce » \nDalší texty na blogu . \nNahoru \n© 2019 CZ.NIC, z. s. p. o. \nOstatní weby: \nmojeID \nFRED \nDNSSEC \nCZ.NIC-CSIRT \nCSIRT.CZ \nLaboratoře \nAkademie \nEdice CZ.NIC \nDoménový prohlížeč \nKontakt \nČesky \nEnglish"
+          "content": "CZ.NIC \nObsah\nNavigace\nHledat\nk navigaci ↓ \nČesky \nEnglish \nDomény \nRegistrátoři \nO nás \nProjekty \nk obsahu ↑ \nVyhledávání v registru \nPro vyhledání údajů vložte doménové jméno jakojmeno.cz(bez www) nebo identifikátor kontaktu nebo sady jmenných serverů.\nÚčel použití poskytovaných dat a informací \nStatistiky \nRegistrovaných domén CZ:1 331 622 \nZabezpečeno technologiíDNSSEC :765 174 \nChcete se jako první dozvědět o aktivitách sdružení CZ.NIC? \nChcete být první, kteří se dozvědí více o projektech sdružení a o novinkách týkajících se internetových technologií? \nPřihlaste se do e-mailové konference sdružení. \nRegistrovat doménu \nJak se stát registrátorem \nStatistiky \nZprávy on-line \nNejnovější zajímavosti ze světa domén, DNS a internetu najdete na:\nNovinky \n04.12.2019 14:30 \nKolegium zvolilo staronové členy představenstva \nNa dnešním jednání kolegia sdružení CZ.NIC byli na další tříleté\nfunkční období znovuzvoleni členy představenstvaMarek Antoš, Tomáš Košňar a Martin Kukačka.\nDalší novinky \nBlog \n4. prosince 2019 15:35 \nUpozornění před filmem „Kto je další“ \nV uplynulém týdnu jsme jako národní koordinátor pro oblast bezpečnějšího Internetu a člen mezinárodní sítě INSAFE obdrželi několik varování souvisejících se slovenským filmem „Kto je další„. Film se prostřednictvím tří příběhů snaží upozornit na aktuální témata spojená s dospíváním mladých […]\nvíce » \nDalší texty na blogu . \nNahoru \n© 2019 CZ.NIC, z. s. p. o. \nOstatní weby: \nmojeID \nFRED \nDNSSEC \nCZ.NIC-CSIRT \nCSIRT.CZ \nLaboratoře \nAkademie \nEdice CZ.NIC \nDoménový prohlížeč \nKontakt \nČesky \nEnglish"
         }
       ],
       "WEB6_80": [
@@ -373,6 +378,8 @@
                 "CN": "Let's Encrypt Authority X3"
               },
               "version": 3,
+              "serial": "304746456035770369486508626536619704785928",
+              "algorithm": "sha256",
               "alt_names": [
                 "dsdng.nic.cz",
                 "edice.nic.cz",
@@ -387,8 +394,7 @@
                 "prihlasky.nic.cz",
                 "www.enum.nic.cz",
                 "www.nic.cz"
-              ],
-              "algorithm": "sha256"
+              ]
             }
           },
           "status": 301,
@@ -421,6 +427,8 @@
                 "CN": "Let's Encrypt Authority X3"
               },
               "version": 3,
+              "serial": "304746456035770369486508626536619704785928",
+              "algorithm": "sha256",
               "alt_names": [
                 "dsdng.nic.cz",
                 "edice.nic.cz",
@@ -435,8 +443,7 @@
                 "prihlasky.nic.cz",
                 "www.enum.nic.cz",
                 "www.nic.cz"
-              ],
-              "algorithm": "sha256"
+              ]
             }
           },
           "status": 200,
@@ -448,7 +455,7 @@
             "strict-transport-security": "max-age=31536000; includeSubdomains",
             "x-content-type-options": "nosniff"
           },
-          "content": "CZ.NIC \nObsah\nNavigace\nHledat\nk navigaci ↓ \nČesky \nEnglish \nDomény \nRegistrátoři \nO nás \nProjekty \nk obsahu ↑ \nVyhledávání v registru \nPro vyhledání údajů vložte doménové jméno jakojmeno.cz(bez www) nebo identifikátor kontaktu nebo sady jmenných serverů.\nÚčel použití poskytovaných dat a informací \nStatistiky \nRegistrovaných domén CZ:1 331 414 \nZabezpečeno technologiíDNSSEC :765 040 \nChcete se jako první dozvědět o aktivitách sdružení CZ.NIC? \nChcete být první, kteří se dozvědí více o projektech sdružení a o novinkách týkajících se internetových technologií? \nPřihlaste se do e-mailové konference sdružení. \nRegistrovat doménu \nJak se stát registrátorem \nStatistiky \nZprávy on-line \nNejnovější zajímavosti ze světa domén, DNS a internetu najdete na:\nNovinky \n03.12.2019 12:40 \nVypsali jsme první běh nového kurzu věnovaného forenzní analýze \nBezpečnostní analytik Filip Pokorný působící v Národním bezpečnostním týmu CSIRT.CZ připravil proAkademii CZ.NICkurzÚvod do forenzní analýzy paměti . V něm se účastníci seznámí především s principy fungování paměti a její analýzou za pomoci nástroje Volatility. Mimo to bude součástí kurzu například také ukázka způsobů, díky nimž je možné získat informace o bezpečnostním incidentu.\nDalší novinky \nBlog \n2. prosince 2019 9:15 \nTurris ochrání i vaše servery \nTrochu historie Co je projekt Turris, to asi není třeba v Čechách představovat. Ale pojďme si jen pro úplnost zrekapitulovat, jak celý projekt vznikl a jak se v průběhu doby vyvinul. Vše začalo zkoumáním, jak probíhají útoky na běžné domácnosti. […]\nvíce » \nDalší texty na blogu . \nNahoru \n© 2019 CZ.NIC, z. s. p. o. \nOstatní weby: \nmojeID \nFRED \nDNSSEC \nCZ.NIC-CSIRT \nCSIRT.CZ \nLaboratoře \nAkademie \nEdice CZ.NIC \nDoménový prohlížeč \nKontakt \nČesky \nEnglish"
+          "content": "CZ.NIC \nObsah\nNavigace\nHledat\nk navigaci ↓ \nČesky \nEnglish \nDomény \nRegistrátoři \nO nás \nProjekty \nk obsahu ↑ \nVyhledávání v registru \nPro vyhledání údajů vložte doménové jméno jakojmeno.cz(bez www) nebo identifikátor kontaktu nebo sady jmenných serverů.\nÚčel použití poskytovaných dat a informací \nStatistiky \nRegistrovaných domén CZ:1 331 622 \nZabezpečeno technologiíDNSSEC :765 174 \nChcete se jako první dozvědět o aktivitách sdružení CZ.NIC? \nChcete být první, kteří se dozvědí více o projektech sdružení a o novinkách týkajících se internetových technologií? \nPřihlaste se do e-mailové konference sdružení. \nRegistrovat doménu \nJak se stát registrátorem \nStatistiky \nZprávy on-line \nNejnovější zajímavosti ze světa domén, DNS a internetu najdete na:\nNovinky \n04.12.2019 14:30 \nKolegium zvolilo staronové členy představenstva \nNa dnešním jednání kolegia sdružení CZ.NIC byli na další tříleté\nfunkční období znovuzvoleni členy představenstvaMarek Antoš, Tomáš Košňar a Martin Kukačka.\nDalší novinky \nBlog \n4. prosince 2019 15:35 \nUpozornění před filmem „Kto je další“ \nV uplynulém týdnu jsme jako národní koordinátor pro oblast bezpečnějšího Internetu a člen mezinárodní sítě INSAFE obdrželi několik varování souvisejících se slovenským filmem „Kto je další„. Film se prostřednictvím tří příběhů snaží upozornit na aktuální témata spojená s dospíváním mladých […]\nvíce » \nDalší texty na blogu . \nNahoru \n© 2019 CZ.NIC, z. s. p. o. \nOstatní weby: \nmojeID \nFRED \nDNSSEC \nCZ.NIC-CSIRT \nCSIRT.CZ \nLaboratoře \nAkademie \nEdice CZ.NIC \nDoménový prohlížeč \nKontakt \nČesky \nEnglish"
         }
       ]
     }
