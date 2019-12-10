@@ -235,7 +235,7 @@ Examples: dns-crawler-controller domains.txt
 
 The controller process uses threads (4 for each CPU core) to create the jobs faster when you give it a lot of domains (>1000× CPU core count).
 
-It's *much* faster on (more) modern machines – eg. i7-7600U (with HT) in a laptop does about 7k jobs/s, while server with Xeon X3430 (without HT) does just about ~2.5k (both using 16 threads, as they both appear as 4 core to the system).
+It's *much* faster on (more) modern machines – eg. i7-7600U (with HT) in a laptop does about 97k jobs/s, while server with Xeon X3430 (without HT) does just about ~7k (both using 16 threads, as they both appear as 4 core to the system).
 
 To cancel the process, just send a kill signal or hit `Ctrl-C` any time. The process will perform cleanup and exit.
 
