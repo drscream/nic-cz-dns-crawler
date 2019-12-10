@@ -98,12 +98,16 @@ def check_dnssec(domain, resolver):
         else:
             return {"valid": None, "message": f"Missing DS or DNSKEY, answer contains: '{answer[0]}'."}
 
-    if answer[0].rdtype == dns.rdatatype.RRSIG:
-        rrsig, rrset = answer
-    elif answer[1].rdtype == dns.rdatatype.RRSIG:
-        rrset, rrsig = answer
-    else:
-        return {"valid": None, "error": "something weird happened"}
+    try:
+        if answer[0].rdtype == dns.rdatatype.RRSIG:
+            rrsig, rrset = answer
+        elif answer[1].rdtype == dns.rdatatype.RRSIG:
+            rrset, rrsig = answer
+        else:
+            return {"valid": None, "error": "something weird happened"}
+    except ValueError as e:
+        return {"valid": None, "error": str(e)}
+
     keys = {sub: rrset}
 
     try:
