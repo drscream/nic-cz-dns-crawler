@@ -128,7 +128,8 @@ def main():
                     try:
                         finished_job = job.Job.fetch(domain, connection=redis)
                         result = finished_job.result
-                        print(json.dumps(result))
+                        json.dump(result, sys.stdout, ensure_ascii=False, check_circular=False, separators=(",", ":"))
+                        sys.stdout.write("\n")
                         finished_job.delete()
                     except rq.exceptions.NoSuchJobError as e:
                         sys.stderr.write(str(e) + "\n")
