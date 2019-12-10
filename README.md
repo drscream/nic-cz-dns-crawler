@@ -1,4 +1,4 @@
-<img alt="CZ.NIC" src="https://www.nic.cz/static/www.nic.cz/images/logo_en.png" align="right" /><br/><br/>
+[<img alt="CZ.NIC" src="https://www.nic.cz/static/www.nic.cz/images/logo_en.png" align="right" />](https://www.nic.cz/)<br/><br/>
 
 # `dns-crawler`
 
