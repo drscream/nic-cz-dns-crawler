@@ -1,4 +1,4 @@
-[<img alt="CZ.NIC" src="https://www.nic.cz/static/www.nic.cz/images/logo_en.png" align="right" />](https://www.nic.cz/)<br/><br/>
+<img alt="CZ.NIC" src="https://www.nic.cz/static/www.nic.cz/images/logo_en.png" align="right" /><br/><br/>
 
 # `dns-crawler`
 
@@ -190,7 +190,7 @@ job_timeout: 80  # max. duration for a single domain (seconds)
 dns_timeout: 2  # seconds
 http_timeout: 2  # seconds
 save_web_content: False  # beware, setting to True will output HUGE files
-strip_html: False  # when saving web content, strip HTML tags, scripts, and CSS
+strip_html: True  # when saving web content, strip HTML tags, scripts, and CSS
 ```
 
 Using free (GeoLite2) Country and ASN DBs instead of commercial ones:
@@ -283,27 +283,23 @@ Since all communication between the controller and workers is done through Redis
 
 ```
 machine-1                     machine-1
-┬───────────────────────────┐         ┬────────────────────┐
-│    dns-crawler-controller │         │ dns-crawler-workers│
-│        +                  │ ------- │          +         │
-│      redis                │         │    DNS resolver    │
-└───────────────────────────┘         └────────────────────┘
-
+┬───────────────────────────┐         ┬─────────────────────┐
+│    dns-crawler-controller │ ------- │ dns-crawler-workers │
+│             +             │         └─────────────────────┘
+│           redis           │
+│             +             │
+│        DNS resolver       │
+└───────────────────────────┘
                                       machine-2
                                       ┬─────────────────────┐
-                                      │ dns-crawler-workers │
-                              ------- │          +          │
-                                      │    DNS resolver     │
+                              ------- │ dns-crawler-workers │
                                       └─────────────────────┘
-
                                       …
                                       …
 
                                       machine-n
                                       ┬─────────────────────┐
-                                      │ dns-crawler-workers │
-                              _______ │          +          │
-                                      │    DNS resolver     │
+                              _______ │ dns-crawler-workers │
                                       └─────────────────────┘
 ```
 
@@ -316,6 +312,8 @@ $ dns-crawler-workers 24 192.168.0.2:6379
 ```
 
 Make sure to run the workers with ~same Python version on these machines, otherwise you'll get `unsupported pickle protocol` errors. See the [pickle protocol versions in Python docs](https://docs.python.org/3.8/library/pickle.html#data-stream-format).
+
+The DNS resolver doesn't have to be on a same machine as the `dns-crawler-controller`, of course – just set it's IP in `config.yml`. Same goes for Redis, you can point both controller and workers to a separate machine running Redis (don't forget to point them to an empty DB if you're using Redis for other things than the dns-crawler).
 
 ## Monitoring
 
