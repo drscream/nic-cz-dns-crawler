@@ -1,6 +1,6 @@
 {
   "domain": "nic.cz",
-  "timestamp": "2019-12-06 13:58:17",
+  "timestamp": "2019-12-10 12:46:34",
   "results": {
     "DNS_LOCAL": {
       "NS_AUTH": [
@@ -59,10 +59,6 @@
           "algorithm": "ECDSAP256SHA256"
         },
         {
-          "value": "256 3 13 kg9LOAsy4nwTJoXRv/71gRmtB4Sb6qCD zikX8/pPO4n0IpmnTiz9WPVX8jKB1Hhz gYymDtG7Z6ygICrHQhBkRg==",
-          "algorithm": "ECDSAP256SHA256"
-        },
-        {
           "value": "257 3 13 LM4zvjUgZi2XZKsYooDE0HFYGfWp242f KB+O8sLsuox8S6MJTowY8lBDjZD7JKbm aNot3+1H8zU9TrDzWmmHwQ==",
           "algorithm": "ECDSAP256SHA256"
         }
@@ -70,8 +66,8 @@
       "DNSSEC": {
         "valid": true,
         "rrsig": [
-          "nic.cz. 1306 IN RRSIG DNSKEY 13 2 1800 20191219161855 20191206071319 61281 nic.cz. +5O1b3AqI0mKJE2IbQCTwI1T8iO2XwVC 1QZjJGAufkva8KRydfj4CYTg0HdZKdan jYeuJAUpt78Wud1JZfcQ+Q==",
-          "nic.cz. 1306 IN RRSIG DNSKEY 13 2 1800 20191219210430 20191206071319 9334 nic.cz. T4w6Fbwa2AVx0cdHHwYVEI+WWX82MQRm prMkZKs6N8o952xGJ3Z72oCPFnZXzEDO Lfpobu5ipkqbufAzIL+Quw=="
+          "nic.cz. 919 IN RRSIG DNSKEY 13 2 1800 20191222105122 20191209061807 61281 nic.cz. OgjLj92WMlso1jCz/2DKaEdP4Uonz8Sa 2jqHtBuTsDKi72tgjm70dalsjVUDsuKd cuhacLoKooCVL5yHrZGw2A==",
+          "nic.cz. 919 IN RRSIG DNSKEY 13 2 1800 20191223023923 20191209061807 28695 nic.cz. +Wgf16ojkZPEnDjtbGm2WQZqtguLy+iW jD1ecOu8VVjUH31X9QnEs8AW+kou8a+c pXYHOlUxl5gbV51Zx/7vzg=="
         ]
       }
     },
@@ -100,7 +96,7 @@
         },
         "VERSIONBIND6": {
           "value": null,
-          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
         }
       },
       {
@@ -119,7 +115,7 @@
         },
         "HOSTNAMEBIND6": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
+          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"
         },
         "VERSIONBIND4": {
           "value": null,
@@ -142,15 +138,12 @@
         },
         "HOSTNAMEBIND4": {
           "value": null,
-          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 193.29.206.1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
         },
-        "HOSTNAMEBIND6": {
-          "value": null,
-          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:1::1 UDP port 53 answered REFUSED"
-        },
+        "HOSTNAMEBIND6": { "value": "unidentified server" },
         "VERSIONBIND4": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
+          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 193.29.206.1 UDP port 53 answered REFUSED"
         },
         "VERSIONBIND6": {
           "value": null,
@@ -268,7 +261,7 @@
             "strict-transport-security": "max-age=31536000; includeSubdomains",
             "x-content-type-options": "nosniff"
           },
-          "content": "CZ.NIC \nObsah\nNavigace\nHledat\nk navigaci \u2193 \n\u010cesky \nEnglish \nDom\u00e9ny \nRegistr\u00e1to\u0159i \nO n\u00e1s \nProjekty \nk obsahu \u2191 \nVyhled\u00e1v\u00e1n\u00ed v registru \nPro vyhled\u00e1n\u00ed \u00fadaj\u016f vlo\u017ete dom\u00e9nov\u00e9 jm\u00e9no jakojmeno.cz(bez www) nebo identifik\u00e1tor kontaktu nebo sady jmenn\u00fdch server\u016f.\n\u00da\u010del pou\u017eit\u00ed poskytovan\u00fdch dat a informac\u00ed \nStatistiky \nRegistrovan\u00fdch dom\u00e9n CZ:1\u00a0331\u00a0710 \nZabezpe\u010deno technologi\u00edDNSSEC :765\u00a0270 \nChcete se jako prvn\u00ed dozv\u011bd\u011bt o aktivit\u00e1ch sdru\u017een\u00ed CZ.NIC? \nChcete b\u00fdt prvn\u00ed, kte\u0159\u00ed se dozv\u011bd\u00ed v\u00edce o projektech sdru\u017een\u00ed a o novink\u00e1ch t\u00fdkaj\u00edc\u00edch se internetov\u00fdch technologi\u00ed? \nP\u0159ihlaste se do e-mailov\u00e9 konference sdru\u017een\u00ed. \nRegistrovat dom\u00e9nu \nJak se st\u00e1t registr\u00e1torem \nStatistiky \nZpr\u00e1vy on-line \nNejnov\u011bj\u0161\u00ed zaj\u00edmavosti ze sv\u011bta dom\u00e9n, DNS a internetu najdete na:\nNovinky \n04.12.2019 14:30 \nKolegium zvolilo staronov\u00e9 \u010dleny p\u0159edstavenstva \nNa dne\u0161n\u00edm jedn\u00e1n\u00ed kolegia sdru\u017een\u00ed CZ.NIC byli na dal\u0161\u00ed t\u0159\u00edlet\u00e9\nfunk\u010dn\u00ed obdob\u00ed znovuzvoleni \u010dleny p\u0159edstavenstvaMarek Anto\u0161, Tom\u00e1\u0161 Ko\u0161\u0148ar a Martin Kuka\u010dka.\nDal\u0161\u00ed novinky \nBlog \n5. prosince 2019 13:42 \nTerm\u00edn vypnut\u00ed star\u00e9ho ODVR \nJak jsme ji\u017e informovali v d\u0159\u00edv\u011bj\u0161\u00edch blogpostech, zprovoznili jsme novou instanci na\u0161ich Otev\u0159en\u00fdch DNSSEC Validuj\u00edc\u00edch Resolver\u016f a sna\u017e\u00edme se na ni p\u0159ev\u00e9st provoz. Jen opakuji, \u017ee ODVR, jak n\u00e1zev t\u00e9to slu\u017eby zkracujeme, je nejzn\u00e1m\u011bj\u0161\u00ed \u010deskou alternativou k resolver\u016fm, kter\u00e9 jsou [\u2026]\nv\u00edce\u00a0\u00bb \nDal\u0161\u00ed texty na blogu . \nNahoru \n\u00a9 2019 CZ.NIC, z. s. p. o. \nOstatn\u00ed weby: \nmojeID \nFRED \nDNSSEC \nCZ.NIC-CSIRT \nCSIRT.CZ \nLaborato\u0159e \nAkademie \nEdice CZ.NIC \nDom\u00e9nov\u00fd prohl\u00ed\u017ee\u010d \nKontakt \n\u010cesky \nEnglish"
+          "content": "CZ.NIC \nObsah\nNavigace\nHledat\nk navigaci \u2193 \n\u010cesky \nEnglish \nDom\u00e9ny \nRegistr\u00e1to\u0159i \nO n\u00e1s \nProjekty \nk obsahu \u2191 \nVyhled\u00e1v\u00e1n\u00ed v registru \nPro vyhled\u00e1n\u00ed \u00fadaj\u016f vlo\u017ete dom\u00e9nov\u00e9 jm\u00e9no jakojmeno.cz(bez www) nebo identifik\u00e1tor kontaktu nebo sady jmenn\u00fdch server\u016f.\n\u00da\u010del pou\u017eit\u00ed poskytovan\u00fdch dat a informac\u00ed \nStatistiky \nRegistrovan\u00fdch dom\u00e9n CZ:1\u00a0331\u00a0595 \nZabezpe\u010deno technologi\u00edDNSSEC :765\u00a0164 \nChcete se jako prvn\u00ed dozv\u011bd\u011bt o aktivit\u00e1ch sdru\u017een\u00ed CZ.NIC? \nChcete b\u00fdt prvn\u00ed, kte\u0159\u00ed se dozv\u011bd\u00ed v\u00edce o projektech sdru\u017een\u00ed a o novink\u00e1ch t\u00fdkaj\u00edc\u00edch se internetov\u00fdch technologi\u00ed? \nP\u0159ihlaste se do e-mailov\u00e9 konference sdru\u017een\u00ed. \nRegistrovat dom\u00e9nu \nJak se st\u00e1t registr\u00e1torem \nStatistiky \nZpr\u00e1vy on-line \nNejnov\u011bj\u0161\u00ed zaj\u00edmavosti ze sv\u011bta dom\u00e9n, DNS a internetu najdete na:\nNovinky \n05.12.2019 6:00 \nVolby do kolegia sdru\u017een\u00ed \nNa valn\u00e9 hromad\u011b sdru\u017een\u00ed CZ.NIC, kter\u00e1 se konala 4. prosince, byli \u010dleny kolegia spr\u00e1vce \u010desk\u00e9 n\u00e1rodn\u00ed dom\u00e9ny zvoleni Tom\u00e1\u0161 Ko\u0161\u0148ar a Zbyn\u011bk Posp\u00edchal (oba komora ISP), Bed\u0159ich Ko\u0161ata a Dan Ohnesorg (oba komora dr\u017eitel\u016f jmen dom\u00e9n) a v komo\u0159e registr\u00e1tor\u016f obh\u00e1jili sv\u00e9 \u010dlenstv\u00ed Tom\u00e1\u0161 Fiala a Stanislav Kysela. V\u0161ichni jmenovan\u00ed byli zvoleni na n\u00e1sleduj\u00edc\u00ed t\u0159i roky s \u00fa\u010dinnost\u00ed od 19. prosince.\nDal\u0161\u00ed novinky \nBlog \n10. prosince 2019 12:05 \nJak vid\u00ed mlad\u00ed Internet? \nKdy\u017e jsem byla vybr\u00e1na jako doprovod pro \u010desk\u00e9ho z\u00e1stupce student\u016f na presti\u017en\u00ed akci Big Youth Panel, velmi mne to pot\u011b\u0161ilo, i kdy\u017e to z\u00e1rove\u0148 znamenalo velkou zodpov\u011bdnost spo\u010d\u00edvaj\u00edc\u00ed jak v samotn\u00e9 funkci doprovodu, tak tak\u00e9 v d\u016fstojn\u00e9 reprezentaci projektu Bezpe\u010dn\u011b [\u2026]\nv\u00edce\u00a0\u00bb \nDal\u0161\u00ed texty na blogu . \nNahoru \n\u00a9 2019 CZ.NIC, z. s. p. o. \nOstatn\u00ed weby: \nmojeID \nFRED \nDNSSEC \nCZ.NIC-CSIRT \nCSIRT.CZ \nLaborato\u0159e \nAkademie \nEdice CZ.NIC \nDom\u00e9nov\u00fd prohl\u00ed\u017ee\u010d \nKontakt \n\u010cesky \nEnglish"
         }
       ],
       "WEB6_80": [
@@ -380,7 +373,7 @@
             "strict-transport-security": "max-age=31536000; includeSubdomains",
             "x-content-type-options": "nosniff"
           },
-          "content": "CZ.NIC \nObsah\nNavigace\nHledat\nk navigaci \u2193 \n\u010cesky \nEnglish \nDom\u00e9ny \nRegistr\u00e1to\u0159i \nO n\u00e1s \nProjekty \nk obsahu \u2191 \nVyhled\u00e1v\u00e1n\u00ed v registru \nPro vyhled\u00e1n\u00ed \u00fadaj\u016f vlo\u017ete dom\u00e9nov\u00e9 jm\u00e9no jakojmeno.cz(bez www) nebo identifik\u00e1tor kontaktu nebo sady jmenn\u00fdch server\u016f.\n\u00da\u010del pou\u017eit\u00ed poskytovan\u00fdch dat a informac\u00ed \nStatistiky \nRegistrovan\u00fdch dom\u00e9n CZ:1\u00a0331\u00a0710 \nZabezpe\u010deno technologi\u00edDNSSEC :765\u00a0270 \nChcete se jako prvn\u00ed dozv\u011bd\u011bt o aktivit\u00e1ch sdru\u017een\u00ed CZ.NIC? \nChcete b\u00fdt prvn\u00ed, kte\u0159\u00ed se dozv\u011bd\u00ed v\u00edce o projektech sdru\u017een\u00ed a o novink\u00e1ch t\u00fdkaj\u00edc\u00edch se internetov\u00fdch technologi\u00ed? \nP\u0159ihlaste se do e-mailov\u00e9 konference sdru\u017een\u00ed. \nRegistrovat dom\u00e9nu \nJak se st\u00e1t registr\u00e1torem \nStatistiky \nZpr\u00e1vy on-line \nNejnov\u011bj\u0161\u00ed zaj\u00edmavosti ze sv\u011bta dom\u00e9n, DNS a internetu najdete na:\nNovinky \n04.12.2019 14:30 \nKolegium zvolilo staronov\u00e9 \u010dleny p\u0159edstavenstva \nNa dne\u0161n\u00edm jedn\u00e1n\u00ed kolegia sdru\u017een\u00ed CZ.NIC byli na dal\u0161\u00ed t\u0159\u00edlet\u00e9\nfunk\u010dn\u00ed obdob\u00ed znovuzvoleni \u010dleny p\u0159edstavenstvaMarek Anto\u0161, Tom\u00e1\u0161 Ko\u0161\u0148ar a Martin Kuka\u010dka.\nDal\u0161\u00ed novinky \nBlog \n5. prosince 2019 13:42 \nTerm\u00edn vypnut\u00ed star\u00e9ho ODVR \nJak jsme ji\u017e informovali v d\u0159\u00edv\u011bj\u0161\u00edch blogpostech, zprovoznili jsme novou instanci na\u0161ich Otev\u0159en\u00fdch DNSSEC Validuj\u00edc\u00edch Resolver\u016f a sna\u017e\u00edme se na ni p\u0159ev\u00e9st provoz. Jen opakuji, \u017ee ODVR, jak n\u00e1zev t\u00e9to slu\u017eby zkracujeme, je nejzn\u00e1m\u011bj\u0161\u00ed \u010deskou alternativou k resolver\u016fm, kter\u00e9 jsou [\u2026]\nv\u00edce\u00a0\u00bb \nDal\u0161\u00ed texty na blogu . \nNahoru \n\u00a9 2019 CZ.NIC, z. s. p. o. \nOstatn\u00ed weby: \nmojeID \nFRED \nDNSSEC \nCZ.NIC-CSIRT \nCSIRT.CZ \nLaborato\u0159e \nAkademie \nEdice CZ.NIC \nDom\u00e9nov\u00fd prohl\u00ed\u017ee\u010d \nKontakt \n\u010cesky \nEnglish"
+          "content": "CZ.NIC \nObsah\nNavigace\nHledat\nk navigaci \u2193 \n\u010cesky \nEnglish \nDom\u00e9ny \nRegistr\u00e1to\u0159i \nO n\u00e1s \nProjekty \nk obsahu \u2191 \nVyhled\u00e1v\u00e1n\u00ed v registru \nPro vyhled\u00e1n\u00ed \u00fadaj\u016f vlo\u017ete dom\u00e9nov\u00e9 jm\u00e9no jakojmeno.cz(bez www) nebo identifik\u00e1tor kontaktu nebo sady jmenn\u00fdch server\u016f.\n\u00da\u010del pou\u017eit\u00ed poskytovan\u00fdch dat a informac\u00ed \nStatistiky \nRegistrovan\u00fdch dom\u00e9n CZ:1\u00a0331\u00a0595 \nZabezpe\u010deno technologi\u00edDNSSEC :765\u00a0164 \nChcete se jako prvn\u00ed dozv\u011bd\u011bt o aktivit\u00e1ch sdru\u017een\u00ed CZ.NIC? \nChcete b\u00fdt prvn\u00ed, kte\u0159\u00ed se dozv\u011bd\u00ed v\u00edce o projektech sdru\u017een\u00ed a o novink\u00e1ch t\u00fdkaj\u00edc\u00edch se internetov\u00fdch technologi\u00ed? \nP\u0159ihlaste se do e-mailov\u00e9 konference sdru\u017een\u00ed. \nRegistrovat dom\u00e9nu \nJak se st\u00e1t registr\u00e1torem \nStatistiky \nZpr\u00e1vy on-line \nNejnov\u011bj\u0161\u00ed zaj\u00edmavosti ze sv\u011bta dom\u00e9n, DNS a internetu najdete na:\nNovinky \n05.12.2019 6:00 \nVolby do kolegia sdru\u017een\u00ed \nNa valn\u00e9 hromad\u011b sdru\u017een\u00ed CZ.NIC, kter\u00e1 se konala 4. prosince, byli \u010dleny kolegia spr\u00e1vce \u010desk\u00e9 n\u00e1rodn\u00ed dom\u00e9ny zvoleni Tom\u00e1\u0161 Ko\u0161\u0148ar a Zbyn\u011bk Posp\u00edchal (oba komora ISP), Bed\u0159ich Ko\u0161ata a Dan Ohnesorg (oba komora dr\u017eitel\u016f jmen dom\u00e9n) a v komo\u0159e registr\u00e1tor\u016f obh\u00e1jili sv\u00e9 \u010dlenstv\u00ed Tom\u00e1\u0161 Fiala a Stanislav Kysela. V\u0161ichni jmenovan\u00ed byli zvoleni na n\u00e1sleduj\u00edc\u00ed t\u0159i roky s \u00fa\u010dinnost\u00ed od 19. prosince.\nDal\u0161\u00ed novinky \nBlog \n10. prosince 2019 12:05 \nJak vid\u00ed mlad\u00ed Internet? \nKdy\u017e jsem byla vybr\u00e1na jako doprovod pro \u010desk\u00e9ho z\u00e1stupce student\u016f na presti\u017en\u00ed akci Big Youth Panel, velmi mne to pot\u011b\u0161ilo, i kdy\u017e to z\u00e1rove\u0148 znamenalo velkou zodpov\u011bdnost spo\u010d\u00edvaj\u00edc\u00ed jak v samotn\u00e9 funkci doprovodu, tak tak\u00e9 v d\u016fstojn\u00e9 reprezentaci projektu Bezpe\u010dn\u011b [\u2026]\nv\u00edce\u00a0\u00bb \nDal\u0161\u00ed texty na blogu . \nNahoru \n\u00a9 2019 CZ.NIC, z. s. p. o. \nOstatn\u00ed weby: \nmojeID \nFRED \nDNSSEC \nCZ.NIC-CSIRT \nCSIRT.CZ \nLaborato\u0159e \nAkademie \nEdice CZ.NIC \nDom\u00e9nov\u00fd prohl\u00ed\u017ee\u010d \nKontakt \n\u010cesky \nEnglish"
         }
       ]
     }

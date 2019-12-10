@@ -28,13 +28,8 @@ import urllib3
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 
-from .config_loader import load_config
 from .ip_utils import is_valid_ip_address
 
-config = load_config("config.yml")
-http_timeout = int(config["http_timeout"])
-save_content = config["save_web_content"] == "True"
-strip_html = config["strip_html"] == "True"
 alpn_protocols = ['h3', 'h3-Q046', 'h3-Q043', 'h3-Q039', 'h3-24', 'h3-23',
                   'h2', 'spdy/3.1', 'spdy/3', 'spdy/2', 'spdy/1', 'http/1.1']
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -92,7 +87,7 @@ def parse_cert(cert, domain):
     return drop_null_values(result)
 
 
-def get_tls_info(domain, ip, ipv6=False, port=443):
+def get_tls_info(domain, ip, http_timeout, ipv6=False, port=443):
     ctx = ssl.create_default_context()
     ctx.load_verify_locations(certifi.where())
     ctx.check_hostname = False
@@ -183,9 +178,12 @@ def get_response_headers(headers):
     })
 
 
-def get_webserver_info(domain, ips, ipv6=False, tls=False):
+def get_webserver_info(domain, ips, config, ipv6=False, tls=False):
     if not ips or len(ips) < 1:
         return None
+    http_timeout = int(config["http_timeout"])
+    save_content = config["save_web_content"] == "True"
+    strip_html = config["strip_html"] == "True"
     results = []
     for ip in ips:
         ip = ip["value"]
@@ -196,7 +194,7 @@ def get_webserver_info(domain, ips, ipv6=False, tls=False):
         }
         protocol = "http://"
         if tls:
-            result["tls"] = get_tls_info(domain, ip, ipv6)
+            result["tls"] = get_tls_info(domain, ip, http_timeout, ipv6)
             protocol = "https://"
         host = ip
         if ipv6:

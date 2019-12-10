@@ -207,36 +207,49 @@ The free `GeoLite2-Country` seems to be a bit inaccurate, especially for IPv6 (i
 
 ## Command line parameters
 
+### dns-crawler
+
+```
+dns-crawler - a single-threaded crawler to process a small number of domains without a need for Redis
+
+Usage: dns-crawler <file>
+       file - plaintext domain list, one domain per line, empty lines are ignored
+```
+
 ### dns-crawler-controller
 
 ```
-dns-crawler <file>
-       file - plaintext domain list, one domain per line (separated by \n)
+dns-crawler-controller - the main process controlling the job queue and printing results.
+
+Usage: dns-crawler-controller <file> [redis]
+       file - plaintext domain list, one domain per line, empty lines are ignored
+       redis - redis host:port:db, localhost:6379:0 by default
+
+Examples: dns-crawler-controller domains.txt
+          dns-crawler-controller domains.txt 192.168.0.22:4444:0
+          dns-crawler-controller domains.txt redis.foo.bar:7777:2
+          dns-crawler-controller domains.txt redis.foo.bar # port 6379 and DB 0 will be used if not specified
 ```
 
-### dns-crawler-controller
+The controller process uses threads (4 for each CPU core) to create the jobs faster when you give it a lot of domains (>1000× CPU core count).
 
-```
-dns-crawler-controller <file>
-       file - plaintext domain list, one domain per line (separated by \n)
-```
-
-The controller process uses threads (2 for each CPU core) to create the jobs faster when you give it a lot of domains (>1000× CPU core count).
-
-It's *much* faster on (more) modern machines – eg. i7-7600U in a laptop does about 7k jobs/s, while server with Xeon X3430 does just about ~2.5k (both using 8 threads, as they both appear as 4 core to the system).
+It's *much* faster on (more) modern machines – eg. i7-7600U (with HT) in a laptop does about 7k jobs/s, while server with Xeon X3430 (without HT) does just about ~2.5k (both using 16 threads, as they both appear as 4 core to the system).
 
 To cancel the process, just send a kill signal or hit `Ctrl-C` any time. The process will perform cleanup and exit.
 
 ### dns-crawler-workers
 
 ```
+dns-crawler-workers - a process that spawns crawler workers.
+
 Usage: dns-crawler-workers [count] [redis]
        count - worker count, 8 workers per CPU core by default
-       redis - redis host, localhost:6379 by default
+       redis - redis host:port:db, localhost:6379:0 by default
 
 Examples: dns-crawler-workers 8
-          dns-crawler-workers 24 192.168.0.22:4444
-          dns-crawler-workers 16 redis.foo.bar
+          dns-crawler-workers 24 192.168.0.22:4444:0
+          dns-crawler-workers 16 redis.foo.bar:7777:2
+          dns-crawler-workers 16 redis.foo.bar # port 6379 and DB 0 will be used if not specified
 ```
 
 Trying to use more than 24 workers per CPU core will result in a warning (and countdown before it actually starts the workers):
@@ -252,13 +265,11 @@ Cancel now (Ctrl-C) or have a fire extinguisher ready.
 
 Stopping works the same way as with the controller process – `Ctrl-C` (or kill signal) will finish the current job(s) and exit.
 
-> The workers will shout at you that *"Result will never expire, clean up result key manually"*. This is perfectly fine, results are continually cleaned by the controller. Unfortunately there's no easy way to disable this message in `rq` without setting a fixed TTL.
-
 ## Resuming work
 
 Stopping the workers won't delete the jobs from Redis. So, if you stop the `dns-crawler-workers` process and then start a new one (perhaps to use different worker count…), it will pick up the unfinished jobs and continue.
 
-This can also be used change the worker count if it turns out to be too low or hight for your machine or network:
+This can also be used change the worker count if it turns out to be too low or high for your machine or network:
 
 - to reduce the worker count, just stop the `dns-crawler-workers` process and start a new one with a new count
 - to increase the worker count, either use the same approach, or just start a second `dns-crawler-workers` process in another shell, the worker count will just add up

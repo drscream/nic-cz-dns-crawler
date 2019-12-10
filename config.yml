@@ -6,5 +6,5 @@ dns:
 job_timeout: 80
 dns_timeout: 2
 http_timeout: 2
-save_web_content: True
+save_web_content: False
 strip_html: True

@@ -1,13 +1,34 @@
+# Copyright © 2019 CZ.NIC, z. s. p. o.
+#
+# This file is part of dns-crawler.
+#
+# dns-crawler is free software: you can redistribute it and/or modify it under the
+# terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation, either version 3 of the License, or (at your option) any
+# later version.
+#
+# This software is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License. If not,
+# see <http://www.gnu.org/licenses/>.
+
 import json
 import sys
+from os.path import basename
 
 from .crawl import process_domain
 from .timestamp import timestamp
 
 
 def print_help():
-    sys.stderr.write(f"Usage: {sys.argv[0]} <file>\n")
-    sys.stderr.write(f"       file - plaintext domain list, one domain per line (separated by \\n)\n")
+    exe = basename(sys.argv[0])
+    sys.stderr.write(
+        f"{exe} - a single-threaded crawler to process a small number of domains without a need for Redis\n\n")
+    sys.stderr.write(f"Usage: {exe} <file>\n")
+    sys.stderr.write(f"       file - plaintext domain list, one domain per line, empty lines are ignored\n")
     sys.exit(1)
 
 

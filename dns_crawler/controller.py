@@ -19,6 +19,7 @@ import json
 import sys
 import threading
 from multiprocessing import cpu_count
+from os.path import basename
 from time import sleep
 
 import rq
@@ -28,12 +29,22 @@ from rq.registry import FinishedJobRegistry
 
 from .config_loader import load_config
 from .crawl import process_domain
+from .redis_utils import get_redis_host
 from .timestamp import timestamp
+
+POLL_INTERVAL = 5
 
 
 def print_help():
-    sys.stderr.write(f"Usage: {sys.argv[0]} <file>\n")
-    sys.stderr.write(f"       file - plaintext domain list, one domain per line (separated by \\n)\n")
+    exe = basename(sys.argv[0])
+    sys.stderr.write(f"{exe} - the main process controlling the job queue and printing results.\n\n")
+    sys.stderr.write(f"Usage: {exe} <file> [redis]\n")
+    sys.stderr.write(f"       file - plaintext domain list, one domain per line, empty lines are ignored\n")
+    sys.stderr.write(f"       redis - redis host:port:db, localhost:6379:0 by default\n\n")
+    sys.stderr.write(f"Examples: {exe} domains.txt\n")
+    sys.stderr.write(f"          {exe} domains.txt 192.168.0.22:4444:0\n")
+    sys.stderr.write(f"          {exe} domains.txt redis.foo.bar:7777:2\n")
+    sys.stderr.write(f"          {exe} domains.txt redis.foo.bar # port 6379 and DB 0 will be used if not specified\n")
     sys.exit(1)
 
 
@@ -49,10 +60,20 @@ def create_job(domain, function, queue, timeout):
 
 
 def main():
-    POLL_INTERVAL = 5
+    if "-h" in sys.argv or "--help" in sys.argv or len(sys.argv) < 2:
+        print_help()
+
     cpus = cpu_count()
     config = load_config("config.yml")
-    redis = Redis()
+
+    try:
+        redis_host = get_redis_host(sys.argv, 2)
+    except Exception as e:
+        sys.stderr.write(str(e) + "\n")
+        exit(1)
+    redis = Redis(host=redis_host[0], port=redis_host[1], db=redis_host[2])
+
+    redis.flushdb()
     queue = Queue(connection=redis)
     finished_registry = FinishedJobRegistry(connection=redis)
     stop_threads = False
@@ -70,7 +91,7 @@ def main():
             sys.stderr.write(f"{timestamp()} Read {domain_count} domain{('s' if domain_count > 1 else '')}.\n")
             finished_count = 0
             created_count = 0
-            parts = cpus * 8
+            parts = cpus * 4
             if parts * 1000 > domain_count:
                 parts = 1
             domains_per_part = int(domain_count / parts)
@@ -109,8 +130,8 @@ def main():
                         result = finished_job.result
                         print(json.dumps(result))
                         finished_job.delete()
-                    except rq.exceptions.NoSuchJobError:
-                        pass
+                    except rq.exceptions.NoSuchJobError as e:
+                        sys.stderr.write(str(e) + "\n")
                 sleep(POLL_INTERVAL)
             queue.delete(delete_jobs=True)
             sys.exit(0)

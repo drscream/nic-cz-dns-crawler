@@ -126,6 +126,9 @@
           "ip": { "$ref": "#/definitions/webserver_ip" },
           "status": { "$ref": "#/definitions/http_status" },
           "headers": { "$ref": "#/definitions/http_headers" },
+          "content": {
+            "type": "string"
+          },
           "error": {
             "type": "string"
           }
@@ -142,6 +145,9 @@
           "tls": { "$ref": "#/definitions/tls_info" },
           "status": { "$ref": "#/definitions/http_status" },
           "headers": { "$ref": "#/definitions/http_headers" },
+          "content": {
+            "type": "string"
+          },
           "error": {
             "type": "string"
           }

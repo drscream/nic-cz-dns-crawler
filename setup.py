@@ -16,6 +16,7 @@ setup(
         "console_scripts": [
             "dns-crawler-controller=dns_crawler.controller:main",
             "dns-crawler-workers=dns_crawler.workers:main",
+            "dns-crawler-worker=dns_crawler.worker:main",
             "dns-crawler=dns_crawler.single:main"
         ]
     },
@@ -26,7 +27,7 @@ setup(
         "pyaml==19.4.1",
         "pycryptodome==3.9.0",
         "ecdsa==0.13.3",
-        "certifi==2019.9.11",
+        "certifi==2019.11.28",
         "requests==2.22.0",
         "cryptography==2.8",
         "pyopenssl==19.1.0",

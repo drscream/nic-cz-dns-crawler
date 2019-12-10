@@ -21,13 +21,9 @@ import dns.dnssec
 import dns.name
 import dns.resolver
 
-from .config_loader import load_config
-
-config = load_config("config.yml")
-dns_timeout = int(config["http_timeout"])
-
 
 def get_local_resolver(config):
+    dns_timeout = int(config["dns_timeout"])
     use_custom_dns = "dns" in config and len(config["dns"]) > 0
 
     local_resolver = dns.resolver.Resolver(configure=(not use_custom_dns))
@@ -215,12 +211,13 @@ def get_txt(regex, items, key):
     return filtered
 
 
-def get_txtbind(nameserver, qname, timeout=dns_timeout):
+def get_txtbind(nameserver, qname, timeout):
     result = None
     try:
         resolver = dns.resolver.Resolver(configure=False)
         resolver.nameservers = [nameserver]
-        resolver.timeout = resolver.lifetime = timeout
+        resolver.timeout = timeout
+        resolver.lifetime = timeout
         answers = resolver.query(qname, rdtype="TXT", rdclass="CHAOS", lifetime=timeout)
         result = {"value": str(answers[0]).replace('"', "")}
     except Exception as e:

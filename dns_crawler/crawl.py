@@ -19,12 +19,12 @@ import re
 from copy import deepcopy
 from datetime import datetime
 
-from .config_loader import load_config
 from .dns_utils import (annotate_dns_algorithm, check_dnssec,
                         get_local_resolver, get_record, get_txt, get_txtbind,
                         parse_dmarc, parse_spf)
 from .geoip_utils import annotate_geoip, init_geoip
 from .web_utils import get_webserver_info
+from .config_loader import load_config
 
 config = load_config("config.yml")
 geoip_dbs = init_geoip(config)
@@ -53,6 +53,7 @@ def get_dns_local(domain):
 
 
 def get_dns_auth(domain, nameservers):
+    timeout = int(config["dns_timeout"])
     if not nameservers or len(nameservers) < 1:
         return None
     results = []
@@ -68,10 +69,10 @@ def get_dns_auth(domain, nameservers):
             "ns": ns,
             "ns_ipv4": annotate_geoip([{"value": ns_ipv4}], "value", geoip_dbs)[0] if ns_ipv4 else ns_ipv4,
             "ns_ipv6": annotate_geoip([{"value": ns_ipv6}], "value", geoip_dbs)[0] if ns_ipv6 else ns_ipv6,
-            "HOSTNAMEBIND4": get_txtbind(ns_ipv4, "hostname.bind") if ns_ipv4 else None,
-            "HOSTNAMEBIND6": get_txtbind(ns_ipv6, "hostname.bind") if ns_ipv6 else None,
-            "VERSIONBIND4": get_txtbind(ns_ipv4, "version.bind") if ns_ipv4 else None,
-            "VERSIONBIND6": get_txtbind(ns_ipv6, "version.bind") if ns_ipv6 else None,
+            "HOSTNAMEBIND4": get_txtbind(ns_ipv4, "hostname.bind", timeout) if ns_ipv4 else None,
+            "HOSTNAMEBIND6": get_txtbind(ns_ipv6, "hostname.bind", timeout) if ns_ipv6 else None,
+            "VERSIONBIND4": get_txtbind(ns_ipv4, "version.bind", timeout) if ns_ipv4 else None,
+            "VERSIONBIND6": get_txtbind(ns_ipv6, "version.bind", timeout) if ns_ipv6 else None,
         }
         results.append(result)
     return results
@@ -79,14 +80,14 @@ def get_dns_auth(domain, nameservers):
 
 def get_web_status(domain, dns):
     return {
-        "WEB4_80": get_webserver_info(domain, dns["WEB4"]),
-        "WEB4_80_www": get_webserver_info(f"www.{domain}", dns["WEB4"]),
-        "WEB4_443": get_webserver_info(domain, dns["WEB4"], tls=True),
-        "WEB4_443_www": get_webserver_info(f"www.{domain}", dns["WEB4"], tls=True),
-        "WEB6_80": get_webserver_info(domain, dns["WEB6"], ipv6=True),
-        "WEB6_80_www": get_webserver_info(f"www.{domain}", dns["WEB6"], ipv6=True),
-        "WEB6_443": get_webserver_info(domain, dns["WEB6"], ipv6=True, tls=True),
-        "WEB6_443_www": get_webserver_info(f"www.{domain}", dns["WEB6"], ipv6=True, tls=True)
+        "WEB4_80": get_webserver_info(domain, dns["WEB4"], config),
+        "WEB4_80_www": get_webserver_info(f"www.{domain}", dns["WEB4"], config),
+        "WEB4_443": get_webserver_info(domain, dns["WEB4"], config, tls=True),
+        "WEB4_443_www": get_webserver_info(f"www.{domain}", dns["WEB4"], config, tls=True),
+        "WEB6_80": get_webserver_info(domain, dns["WEB6"], config, ipv6=True),
+        "WEB6_80_www": get_webserver_info(f"www.{domain}", dns["WEB6"], config, ipv6=True),
+        "WEB6_443": get_webserver_info(domain, dns["WEB6"], config,  ipv6=True, tls=True),
+        "WEB6_443_www": get_webserver_info(f"www.{domain}", dns["WEB6"], config, ipv6=True, tls=True)
     }
 
 

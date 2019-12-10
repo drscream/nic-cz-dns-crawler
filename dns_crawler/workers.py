@@ -18,22 +18,26 @@
 import subprocess
 import sys
 from multiprocessing import cpu_count
+from os.path import basename
 from socket import gethostname
 from time import sleep
 
 from redis import Redis
-from redis.exceptions import ConnectionError
 
+from .redis_utils import get_redis_host
 from .timestamp import timestamp
 
 
 def print_help():
-    sys.stderr.write(f"Usage: {sys.argv[0]} [count] [redis]\n")
+    exe = basename(sys.argv[0])
+    sys.stderr.write(f"{exe} - a process that spawns crawler workers.\n\n")
+    sys.stderr.write(f"Usage: {exe} [count] [redis]\n")
     sys.stderr.write(f"       count - worker count, 8 workers per CPU core by default\n")
-    sys.stderr.write(f"       redis - redis host:port, localhost:6379 by default\n\n")
-    sys.stderr.write(f"Examples: {sys.argv[0]} 8\n")
-    sys.stderr.write(f"          {sys.argv[0]} 24 192.168.0.22:4444\n")
-    sys.stderr.write(f"          {sys.argv[0]} 16 redis.foo.bar\n")
+    sys.stderr.write(f"       redis - redis host:port:db, localhost:6379:0 by default\n\n")
+    sys.stderr.write(f"Examples: {exe} 8\n")
+    sys.stderr.write(f"          {exe} 24 192.168.0.22:4444:0\n")
+    sys.stderr.write(f"          {exe} 16 redis.foo.bar:7777:2\n")
+    sys.stderr.write(f"          {exe} 16 redis.foo.bar # port 6379 and DB 0 will be used if not specified\n")
     sys.exit(1)
 
 
@@ -41,7 +45,6 @@ def main():
     cpus = cpu_count()
     worker_count = cpus * 8
     hostname = gethostname()
-    redis_host = "localhost:6379"
     if "-h" in sys.argv or "--help" in sys.argv:
         print_help()
 
@@ -73,27 +76,22 @@ def main():
         except KeyboardInterrupt:
             sys.exit(1)
 
-    if len(sys.argv) > 2:
-        redis_host = sys.argv[2]
-
     try:
-        redis_param = redis_host.split(":")
-        redis_host = redis_param[0]
-        redis_port = redis_param[1]
-    except IndexError:
-        redis_port = "6379"
-
-    try:
-        redis = Redis(host=redis_host, port=redis_port)
-        redis.ping()
-    except (ConnectionError, ConnectionRefusedError, ConnectionAbortedError, ConnectionResetError):
-        sys.stderr.write(f"Can't connect to Redis at {redis_host}:{redis_port}.\n")
+        redis_host = get_redis_host(sys.argv, 2)
+    except Exception as e:
+        sys.stderr.write(str(e) + "\n")
         exit(1)
+    redis = Redis(host=redis_host[0], port=redis_host[1], db=redis_host[2])
 
     commands = []
 
     for n in range(worker_count):
-        commands += [["rq", "worker", "--burst", "-n", f"{hostname}-{n+1}", "-u", f"redis://{redis_host}"]]
+        commands.append(["dns-crawler-worker",
+                         redis_host[0],
+                         str(redis_host[1]),
+                         str(redis_host[2]),
+                         f"{hostname}-{n+1}"
+                         ])
 
     while redis.get("locked") == b"1":
         sys.stderr.write(f"{timestamp()} Waiting for the main process to unlock the queue.\n")
