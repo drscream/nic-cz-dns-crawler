@@ -1,3 +1,5 @@
+<img alt="CZ.NIC" src="https://www.nic.cz/static/www.nic.cz/images/logo_en.png" align="right" /><br/><br/>
+
 # `dns-crawler`
 
 > A crawler for getting info about *(possibly a huge number of)* DNS domains
