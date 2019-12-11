@@ -69,6 +69,10 @@ def parse_cert_name(name):
     return {k: v for k, v in [s.rfc4514_string().split("=") for s in name.rdns]}
 
 
+def format_cert_serial_number(serial):
+    return serial.to_bytes(((serial.bit_length() + 7) // 8), "big").hex()
+
+
 def parse_cert(cert, domain):
     cert = x509.load_der_x509_certificate(cert, default_backend())
     result = {}
@@ -77,7 +81,7 @@ def parse_cert(cert, domain):
     result["subject"] = parse_cert_name(cert.subject)
     result["issuer"] = parse_cert_name(cert.issuer)
     result["version"] = int(str(cert.version)[-1])
-    result["serial"] = cert.serial_number
+    result["serial"] = format_cert_serial_number(cert.serial_number)
     result["algorithm"] = cert.signature_hash_algorithm.name
     try:
         result["alt_names"] = [str(name.value) for name in cert.extensions.get_extension_for_oid(

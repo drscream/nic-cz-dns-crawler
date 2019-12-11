@@ -243,8 +243,9 @@
           }
         },
         "serial": {
-          "description": "Certificate's serial number",
-          "type": "integer"
+          "description": "Certificate's serial number (hexadecimal, without colons)",
+          "type": "string",
+          "pattern": "[0-9a-f]+"
         },
         "algorithm": {
           "description": "Certificate algorithm.",
