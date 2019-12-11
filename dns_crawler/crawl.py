@@ -30,6 +30,9 @@ from .geoip_utils import annotate_geoip, init_geoip
 from .hsts_utils import get_hsts_status
 from .mail_utils import get_mx_info
 from .web_utils import get_webserver_info
+from .screenshot import get_browser_info
+import asyncio
+import pyppeteer
 
 config = load_config("config.yml")
 geoip_dbs = init_geoip(config)
@@ -104,6 +107,8 @@ def process_domain(domain):
     mail = get_mx_info(dns_local["MAIL"], config["timeouts"]["mail"], local_resolver, redis)
     web = get_web_status(domain, dns_local)
     hsts = get_hsts_status(domain)
+    chrome = await pyppeteer.launch(headless=True)
+    browser = await get_browser_info(domain, web, chrome)
 
     return {
         "domain": domain,
@@ -112,11 +117,13 @@ def process_domain(domain):
             "DNS_LOCAL": dns_local,
             "DNS_AUTH": dns_auth,
             "MAIL": mail,
+            "HSTS": hsts,
             "WEB": web,
-            "HSTS": hsts
+            "BROWSER": browser
         }
     }
 
 
 def get_json_result(domain):
-    return json.dumps(process_domain(domain), ensure_ascii=False, check_circular=False, separators=(",", ":"))
+    result = asyncio.get_event_loop().run_until_complete(process_domain(domain))
+    return json.dumps(result, ensure_ascii=False, check_circular=False, separators=(",", ":"))
