@@ -15,16 +15,17 @@
 # You should have received a copy of the GNU Lesser General Public License. If not,
 # see <http://www.gnu.org/licenses/>.
 
+import json
 import re
 from copy import deepcopy
 from datetime import datetime
 
+from .config_loader import load_config
 from .dns_utils import (annotate_dns_algorithm, check_dnssec,
                         get_local_resolver, get_record, get_txt, get_txtbind,
                         parse_dmarc, parse_spf)
 from .geoip_utils import annotate_geoip, init_geoip
 from .web_utils import get_webserver_info
-from .config_loader import load_config
 
 config = load_config("config.yml")
 geoip_dbs = init_geoip(config)
@@ -105,3 +106,7 @@ def process_domain(domain):
             "WEB": web
         }
     }
+
+
+def crawl_domain(domain):
+    return json.dumps(process_domain(domain), ensure_ascii=False, check_circular=False, separators=(",", ":"))

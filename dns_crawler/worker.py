@@ -22,7 +22,7 @@ from os.path import basename
 from redis import Redis
 from rq import Connection, Worker
 
-from .crawl import process_domain  # noqa F401
+from .crawl import process_domain, crawl_domain  # noqa F401
 
 logger = logging.getLogger("rq.worker")
 

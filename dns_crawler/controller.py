@@ -15,20 +15,18 @@
 # You should have received a copy of the GNU Lesser General Public License. If not,
 # see <http://www.gnu.org/licenses/>.
 
-import json
 import sys
 import threading
 from multiprocessing import cpu_count
 from os.path import basename
 from time import sleep
 
-import rq
 from redis import Redis
 from rq import Queue, job
 from rq.registry import FinishedJobRegistry
 
 from .config_loader import load_config
-from .crawl import process_domain
+from .crawl import crawl_domain
 from .redis_utils import get_redis_host
 from .timestamp import timestamp
 
@@ -99,7 +97,7 @@ def main():
             redis.set("locked", 1)
 
             if parts == 1:
-                create_jobs(domains, process_domain, queue, config["job_timeout"], lambda: False)
+                create_jobs(domains, crawl_domain, queue, config["job_timeout"], lambda: False)
             else:
                 for thread_num in range(parts):
                     if thread_num == parts - 1:  # last one
@@ -108,7 +106,7 @@ def main():
                         end = (thread_num + 1) * domains_per_part
                     part = domains[(thread_num * domains_per_part):end]
                     t = threading.Thread(target=create_jobs,
-                                         args=(part, process_domain, queue,
+                                         args=(part, crawl_domain, queue,
                                                config["job_timeout"], lambda: stop_threads))
                     t.start()
 
@@ -128,9 +126,7 @@ def main():
                 for finished_job in finished_jobs:
                     if not finished_job:
                         continue
-                    result = finished_job.result
-                    json.dump(result, sys.stdout, ensure_ascii=False, check_circular=False, separators=(",", ":"))
-                    sys.stdout.write("\n")
+                    print(finished_job.result)
                     finished_job.delete()
                 sleep(POLL_INTERVAL)
             queue.delete(delete_jobs=True)
