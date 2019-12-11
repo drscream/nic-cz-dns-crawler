@@ -124,15 +124,14 @@ def main():
                 finished_domains = finished_registry.get_job_ids()
                 finished_count = finished_count + len(finished_domains)
                 sys.stderr.write(f"{timestamp()} {finished_count}/{domain_count}\n")
-                for domain in finished_domains:
-                    try:
-                        finished_job = job.Job.fetch(domain, connection=redis)
-                        result = finished_job.result
-                        json.dump(result, sys.stdout, ensure_ascii=False, check_circular=False, separators=(",", ":"))
-                        sys.stdout.write("\n")
-                        finished_job.delete()
-                    except rq.exceptions.NoSuchJobError as e:
-                        sys.stderr.write(str(e) + "\n")
+                finished_jobs = job.Job.fetch_many(finished_domains, connection=redis)
+                for finished_job in finished_jobs:
+                    if not finished_job:
+                        continue
+                    result = finished_job.result
+                    json.dump(result, sys.stdout, ensure_ascii=False, check_circular=False, separators=(",", ":"))
+                    sys.stdout.write("\n")
+                    finished_job.delete()
                 sleep(POLL_INTERVAL)
             queue.delete(delete_jobs=True)
             sys.exit(0)
