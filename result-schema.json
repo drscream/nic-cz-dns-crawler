@@ -184,6 +184,9 @@
         "location": {
           "type": "string"
         },
+        "content-length": {
+          "type": "integer"
+        },
         "server": {
           "type": "string"
         },
@@ -208,7 +211,8 @@
         "access-control-allow-origin": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "tls_info": {
       "type": "object",

@@ -141,6 +141,7 @@ def strip_newlines(text):
 def get_response_headers(headers):
     return drop_null_values({
         "location": headers.get("location"),
+        "content-length": int(headers.get("content-length")),
         "server": headers.get("server"),
         "x-frame-options": headers.get("x-frame-options"),
         "content-security-policy": headers.get("content-security-policy"),
