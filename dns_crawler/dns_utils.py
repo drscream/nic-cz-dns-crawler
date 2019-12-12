@@ -247,6 +247,11 @@ def get_record(domain, record, resolver):
     except dns.message.Truncated:
         response = dns.query.tcp(request, resolver.nameservers[0], resolver.timeout)
     except (
+        dns.query.UnexpectedSource,
+        dns.query.BadResponse
+    ):
+        return get_record(domain, record, resolver)
+    except (
         dns.resolver.NoAnswer,
         dns.rdatatype.UnknownRdatatype,
         dns.resolver.NoNameservers,
