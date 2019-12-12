@@ -70,7 +70,7 @@ def parse_cert_name(name):
 
 
 def format_cert_serial_number(serial):
-    return serial.to_bytes(((serial.bit_length() + 7) // 8), "big").hex()
+    return f"{serial:016x}"
 
 
 def parse_cert(cert, domain):
