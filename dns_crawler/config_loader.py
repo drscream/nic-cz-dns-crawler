@@ -47,7 +47,10 @@ def merge_dicts(source, destination):
             node = destination.setdefault(key, {})
             merge_dicts(value, node)
         else:
-            destination[key] = value
+            if isinstance(value, str) and value.isdigit():
+                destination[key] = int(value)
+            else:
+                destination[key] = value
     return destination
 
 
