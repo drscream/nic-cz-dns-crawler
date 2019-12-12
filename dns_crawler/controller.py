@@ -136,12 +136,7 @@ def main():
         created_count = queue.count
         sys.stderr.write(f"{timestamp()} Cancelled. Deleting {created_count} jobs…\n")
         stop_threads = True
-        redis.delete("locked")
-        queue.delete(delete_jobs=True)
-        while 0 < created_count:
-            sleep(POLL_INTERVAL)
-            created_count = queue.count
-            sys.stderr.write(f"{timestamp()} {created_count} jobs remaining.\n")
+        redis.flushdb()
         sys.stderr.write(f"{timestamp()} All jobs deleted, exiting.\n")
         sys.exit(1)
 
