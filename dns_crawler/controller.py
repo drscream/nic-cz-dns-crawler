@@ -22,6 +22,7 @@ from os.path import basename
 from time import sleep
 
 from redis import Redis
+from redis.exceptions import ConnectionError as RedisConnectionError
 from rq import Queue, job
 from rq.registry import FinishedJobRegistry
 
@@ -47,10 +48,13 @@ def print_help():
 
 
 def create_jobs(domains, function, queue, timeout, should_stop):
-    for domain in domains:
-        if should_stop():
-            break
-        create_job(domain, function, queue, timeout)
+    try:
+        for domain in domains:
+            if should_stop():
+                break
+            create_job(domain, function, queue, timeout)
+    except RedisConnectionError:
+        return
 
 
 def create_job(domain, function, queue, timeout):
@@ -67,8 +71,8 @@ def main():
     try:
         redis_host = get_redis_host(sys.argv, 2)
     except Exception as e:
-        sys.stderr.write(str(e) + "\n")
-        exit(1)
+        sys.stderr.write(f"{timestamp()} {str(e)}\n")
+        sys.exit(1)
     redis = Redis(host=redis_host[0], port=redis_host[1], db=redis_host[2])
 
     redis.flushdb()
@@ -138,6 +142,10 @@ def main():
         stop_threads = True
         redis.flushdb()
         sys.stderr.write(f"{timestamp()} All jobs deleted, exiting.\n")
+        sys.exit(1)
+
+    except RedisConnectionError:
+        sys.stderr.write(f"{timestamp()} Connection to Redis lost. :(\n")
         sys.exit(1)
 
     except FileNotFoundError:
