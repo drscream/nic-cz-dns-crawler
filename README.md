@@ -93,7 +93,7 @@ Since the crawler is designed to be parallel, the actual speed depends almost en
 
 ### Redis configuration
 
-No special config needed, but increase the memory limit if you have a lot of domains to process (eg. `maxmemory 1G`). You can also disable disk snapshots to save some I/O time (comment out the `save …` lines).
+No special config needed, but increase the memory limit if you have a lot of domains to process (eg. `maxmemory 1G`). You can also disable disk snapshots to save some I/O time (comment out the `save …` lines). If you're not already using Redis for other things, read its log – there are often some recommendations for performance improvements.
 
 ### Output formats
 
@@ -191,6 +191,22 @@ dns_timeout: 2  # seconds
 http_timeout: 2  # seconds
 save_web_content: False  # beware, setting to True will output HUGE files
 strip_html: True  # when saving web content, strip HTML tags, scripts, and CSS
+
+geoip:
+  country: /usr/share/GeoIP/GeoIP2-Country.mmdb
+  isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb
+resolvers:
+  - 193.17.47.1  # https://www.nic.cz/odvr/
+timeouts:
+  job: 80  # seconds, overall job (one domain crawl) duration when using dns-crawler-controller, jobs will fail after that and you can retry/abort them as needed
+  dns: 2  # seconds, timeout for dns queries
+  http: 2  # seconds, timeout for HTTP(S)/TLS requests
+web:
+  save_content: False  # save website content – beware, setting to True will output HUGE files for higher domain counts
+  strip_html: True   # when saving web content, save just text (strip HTML tags, scripts, CSS, and abundant whitespace)
+  user_agent: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36  # User-Agent header to use for HTTP(S) requests
+  accept_language: en-US;q=0.9,en;q=0.8  # Accept-Language header to use for HTTP(S) requests
+
 ```
 
 Using free (GeoLite2) Country and ASN DBs instead of commercial ones:
@@ -198,7 +214,8 @@ Using free (GeoLite2) Country and ASN DBs instead of commercial ones:
 ```yaml
 geoip:
   country: /usr/share/GeoIP/GeoLite2-Country.mmdb
-  asn: /usr/share/GeoIP/GeoLite2-ASN.mmdb
+  asn: /usr/share/GeoIP/GeoLite2-ASN.mmdb  # 'asn' is the free DB
+  # isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb  # 'isp' is the commercial one
 ```
 
 (use either absolute paths or relative to the working directory)
@@ -313,7 +330,9 @@ $ dns-crawler-workers 24 192.168.0.2:6379
 
 Make sure to run the workers with ~same Python version on these machines, otherwise you'll get `unsupported pickle protocol` errors. See the [pickle protocol versions in Python docs](https://docs.python.org/3.8/library/pickle.html#data-stream-format).
 
-The DNS resolver doesn't have to be on a same machine as the `dns-crawler-controller`, of course – just set it's IP in `config.yml`. Same goes for Redis, you can point both controller and workers to a separate machine running Redis (don't forget to point them to an empty DB if you're using Redis for other things than the dns-crawler).
+The DNS resolver doesn't have to be on a same machine as the `dns-crawler-controller`, of course – just set it's IP in `config.yml`. The crawler is tested primarily with CZ.NIC's [Knot Resolver](https://www.knot-resolver.cz/), but should work with any sane resolver supporting DNSSEC.
+
+Same goes for Redis, you can point both controller and workers to a separate machine running Redis (don't forget to point them to an empty DB if you're using Redis for other things than the dns-crawler, it uses `0` by default).
 
 ## Monitoring
 
