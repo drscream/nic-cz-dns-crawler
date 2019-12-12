@@ -119,41 +119,55 @@
       "required": ["value"]
     },
     "webserver_info_80": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "ip": { "$ref": "#/definitions/webserver_ip" },
-          "status": { "$ref": "#/definitions/http_status" },
-          "headers": { "$ref": "#/definitions/http_headers" },
-          "content": {
-            "type": "string"
-          },
-          "error": {
-            "type": "string"
-          }
+      "oneOf": [
+        {
+          "type": "null"
         },
-        "required": ["ip"]
-      }
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ip": { "$ref": "#/definitions/webserver_ip" },
+              "status": { "$ref": "#/definitions/http_status" },
+              "headers": { "$ref": "#/definitions/http_headers" },
+              "content": {
+                "type": "string"
+              },
+              "error": {
+                "type": "string"
+              }
+            },
+            "required": ["ip"]
+          }
+        }
+      ]
     },
     "webserver_info_443": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "ip": { "$ref": "#/definitions/webserver_ip" },
-          "tls": { "$ref": "#/definitions/tls_info" },
-          "status": { "$ref": "#/definitions/http_status" },
-          "headers": { "$ref": "#/definitions/http_headers" },
-          "content": {
-            "type": "string"
-          },
-          "error": {
-            "type": "string"
-          }
+      "oneOf": [
+        {
+          "type": "null"
         },
-        "required": ["tls", "ip"]
-      }
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ip": { "$ref": "#/definitions/webserver_ip" },
+              "tls": { "$ref": "#/definitions/tls_info" },
+              "status": { "$ref": "#/definitions/http_status" },
+              "headers": { "$ref": "#/definitions/http_headers" },
+              "content": {
+                "type": "string"
+              },
+              "error": {
+                "type": "string"
+              }
+            },
+            "required": ["tls", "ip"]
+          }
+        }
+      ]
     },
     "http_headers": {
       "description": "Headers received from the webserver.",
@@ -243,9 +257,9 @@
           }
         },
         "serial": {
-          "description": "Certificate's serial number (hexadecimal, without colons)",
+          "description": "Certificate's serial number",
           "type": "string",
-          "pattern": "[0-9a-f]+"
+          "pattern": "-?[0-9a-f]+"
         },
         "algorithm": {
           "description": "Certificate algorithm.",
