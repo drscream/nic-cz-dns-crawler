@@ -34,7 +34,7 @@ def init_geoip(config):
     if "isp" in config["geoip"]:
         geoip_isp = geoip2.database.Reader(path.join(pwd, config["geoip"]["isp"]))
 
-    if "asn" in config["geoip"]:
+    if "asn" in config["geoip"] and not ("isp" in config["geoip"]):
         geoip_asn = geoip2.database.Reader(path.join(pwd, config["geoip"]["asn"]))
 
     return (geoip_country, geoip_isp, geoip_asn)
