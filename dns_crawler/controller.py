@@ -26,7 +26,7 @@ from rq import Queue, job
 from rq.registry import FinishedJobRegistry
 
 from .config_loader import load_config
-from .crawl import crawl_domain
+from .crawl import get_json_result
 from .redis_utils import get_redis_host
 from .timestamp import timestamp
 
@@ -97,7 +97,7 @@ def main():
             redis.set("locked", 1)
 
             if parts == 1:
-                create_jobs(domains, crawl_domain, queue, config["timeouts"]["job"], lambda: False)
+                create_jobs(domains, get_json_result, queue, config["timeouts"]["job"], lambda: False)
             else:
                 for thread_num in range(parts):
                     if thread_num == parts - 1:  # last one
@@ -106,7 +106,7 @@ def main():
                         end = (thread_num + 1) * domains_per_part
                     part = domains[(thread_num * domains_per_part):end]
                     t = threading.Thread(target=create_jobs,
-                                         args=(part, crawl_domain, queue,
+                                         args=(part, get_json_result, queue,
                                                config["timeouts"]["job"], lambda: stop_threads))
                     t.start()
 

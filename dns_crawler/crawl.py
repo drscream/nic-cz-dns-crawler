@@ -108,5 +108,5 @@ def process_domain(domain):
     }
 
 
-def crawl_domain(domain):
+def get_json_result(domain):
     return json.dumps(process_domain(domain), ensure_ascii=False, check_circular=False, separators=(",", ":"))

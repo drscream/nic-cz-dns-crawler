@@ -55,6 +55,12 @@ $ cat results.json
 
 If you want formatted JSONs, just pipe the output through [jq](https://stedolan.github.io/jq/) or your tool of choice: `dns-crawler domain-list.txt | jq`.
 
+## How fast is it anyway?
+
+A single fairly modern laptop on ~50Mbps connection can crawl the entire *.cz* zone overnight, give or take (with `save_web_content` disabled), using 8 workers per CPU thread.
+
+Since the crawler is designed to be parallel, the actual speed depends almost entirely on the worker count. And it can scale accross multiple machines almost infinitely, so should you need a million domains crawled in an hour, you can always just throw more hardware at it (see below).
+
 ## Multithreaded crawling
 
 The crawler can run with multiple threads to speed things up when you have a lot of domains to go through. Communication betweeen the controller and workers is done through Redis (this makes it easy to run workers on multiple machines if needed, see below).
@@ -73,29 +79,11 @@ $ dns-crawler-controller domain-list.txt > result.json
 $ dns-crawler-workers
 ```
 
-## How fast is it anyway?
-
-A single fairly modern laptop on ~50Mbps connection can crawl the entire *.cz* zone overnight, give or take (with `save_web_content` disabled), using 8 workers per CPU thread.
-
-Since the crawler is designed to be parallel, the actual speed depends almost entirely on the worker count. And it can scale accross multiple machines almost infinitely, so should you need a million domains crawled in an hour, you can always just throw more hardware at it.
-
-## Installation
-
-### Requirements
-
-- Python 3.6+
-- [requests](https://python-requests.org/)
-- [pyaml](https://pyyaml.org/) (for config loading)
-- [dnspython](http://www.dnspython.org/) + [pycryptodome](https://pycryptodome.readthedocs.io/) & [python-ecdsa](https://github.com/warner/python-ecdsa) (for DNSSEC validation)
-- [geoip2](https://geoip2.readthedocs.io/en/latest/) + up-to-date Country and ISP (or ASN) databases (mmdb format, works with both free and commercial ones)
-- [rq](https://python-rq.org/) and [redis](https://redis.io/) if you want to process a huge number of domains and even run the crawler across multiple machines
-
-
 ### Redis configuration
 
 No special config needed, but increase the memory limit if you have a lot of domains to process (eg. `maxmemory 1G`). You can also disable disk snapshots to save some I/O time (comment out the `save …` lines). If you're not already using Redis for other things, read its log – there are often some recommendations for performance improvements.
 
-### Output formats
+## Output formats
 
 Results are printed to the main process' (`dns-crawler` or `dns-crawler-controller`) stdout – JSON for every domain, separated by `\n`:
 
@@ -154,24 +142,23 @@ $ python
 >>> from dns_crawler.crawl import process_domain
 >>> result = process_domain("nic.cz")
 >>> result
-{'domain': 'nic.cz', 'timestamp': '2019-09-13T09:21:10.136303', 'results': { …
+{'domain': 'nic.cz', 'timestamp': '2019-09-13T09:21:10.136303', 'results': { … 
 >>>
 >>> result["results"]["DNS_LOCAL"]["DNS_AUTH"]
 [{'value': 'a.ns.nic.cz.'}, {'value': 'b.ns.nic.cz.'}, {'value': 'd.ns.nic.cz.'}]
 ```
 
-Formatted output, inline python code:
+The `process_domain` function returns Python `dict`s. If you want json, use `from dns_crawler.crawl import get_json_result` instead:
 
 ```
-$ python -c "from dns_crawler.crawl import process_domain; import json; print(json.dumps(process_domain('nic.cz'), indent=2))"
-{
-  "domain": "nic.cz",
-  "timestamp": "2019-09-13T09:24:23.108941",
-  "results": {
-    "DNS_LOCAL": {
-      "DNS_AUTH": [
-        …
+$ python
+>>> from dns_crawler.crawl import get_json_result
+>>> result = get_json_result("nic.cz")
+>>> result
+# same as above, just converted to JSON
 ```
+
+This function just calls `crawl_domain` and converts the `dict` to JSON string. It's used by the workers, so the conversion is done by them to take some pressure off the controller process.
 
 
 ## Config file
@@ -181,17 +168,6 @@ GeoIP DB paths, DNS resolver IP(s), and timeouts are read from `config.yml` in t
 The default values are:
 
 ```yaml
-geoip:
-  country: /usr/share/GeoIP/GeoIP2-Country.mmdb
-  isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb
-dns:
-  - 193.17.47.1  # https://www.nic.cz/odvr/
-job_timeout: 80  # max. duration for a single domain (seconds) 
-dns_timeout: 2  # seconds
-http_timeout: 2  # seconds
-save_web_content: False  # beware, setting to True will output HUGE files
-strip_html: True  # when saving web content, strip HTML tags, scripts, and CSS
-
 geoip:
   country: /usr/share/GeoIP/GeoIP2-Country.mmdb
   isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb
@@ -206,7 +182,6 @@ web:
   strip_html: True   # when saving web content, save just text (strip HTML tags, scripts, CSS, and abundant whitespace)
   user_agent: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36  # User-Agent header to use for HTTP(S) requests
   accept_language: en-US;q=0.9,en;q=0.8  # Accept-Language header to use for HTTP(S) requests
-
 ```
 
 Using free (GeoLite2) Country and ASN DBs instead of commercial ones:
