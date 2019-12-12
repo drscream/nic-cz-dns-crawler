@@ -138,7 +138,7 @@ def parse_dmarc(items, key):
     for item in items:
         record = item[key].strip("\"").strip(" ")
         raw_tags = [t.split("=") for t in record.split(';') if t]
-        output = {t[0].strip(): t[1].strip() for t in raw_tags}
+        output = {t[0].strip(): t[1].strip() for t in raw_tags if len(t) >= 2}
         item = {k: v for k, v in output.items() if v is not None}
         parsed.append(item)
     if len(parsed) == 0:
