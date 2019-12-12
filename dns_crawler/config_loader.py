@@ -21,8 +21,8 @@ import yaml
 
 defaults = {
     "geoip": {
-        "country": "/usr/share/GeoIP/GeoIP2-Country.mmdb",
-        "isp": "/usr/share/GeoIP/GeoIP2-ISP.mmdb"
+        "country": "/usr/share/GeoIP/GeoLite2-Country.mmdb",
+        "asn": "/usr/share/GeoIP/GeoLite2-ASN.mmdb"
     },
     "resolvers": [
         "193.17.47.1"

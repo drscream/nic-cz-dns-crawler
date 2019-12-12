@@ -169,8 +169,8 @@ The default values are:
 
 ```yaml
 geoip:
-  country: /usr/share/GeoIP/GeoIP2-Country.mmdb
-  isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb
+  country: /usr/share/GeoIP/GeoLite2-Country.mmdb
+  asn: /usr/share/GeoIP/GeoLite2-ASN.mmdb
 resolvers:
   - 193.17.47.1  # https://www.nic.cz/odvr/
 timeouts:
@@ -178,19 +178,19 @@ timeouts:
   dns: 2  # seconds, timeout for dns queries
   http: 2  # seconds, timeout for HTTP(S)/TLS requests
 web:
-  save_content: False  # save website content – beware, setting to True will output HUGE files for higher domain counts
+  save_content: False  # save website content – beware, setting this to True will output HUGE files for higher domain counts
   strip_html: True   # when saving web content, save just text (strip HTML tags, scripts, CSS, and abundant whitespace)
   user_agent: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36  # User-Agent header to use for HTTP(S) requests
   accept_language: en-US;q=0.9,en;q=0.8  # Accept-Language header to use for HTTP(S) requests
 ```
 
-Using free (GeoLite2) Country and ASN DBs instead of commercial ones:
+Using commercial (GeoIP2 Country and ISP) DBs instead of free (GeoLite2 Country and ASN) ones:
 
 ```yaml
 geoip:
   country: /usr/share/GeoIP/GeoLite2-Country.mmdb
-  asn: /usr/share/GeoIP/GeoLite2-ASN.mmdb  # 'asn' is the free DB
-  # isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb  # 'isp' is the commercial one
+  #  asn: /usr/share/GeoIP/GeoLite2-ASN.mmdb  # 'asn' is the free DB
+  isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb  # 'isp' is the commercial one
 ```
 
 (use either absolute paths or relative to the working directory)
