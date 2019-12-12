@@ -22,7 +22,8 @@ import yaml
 defaults = {
     "geoip": {
         "country": "/usr/share/GeoIP/GeoIP2-Country.mmdb",
-        "isp": "/usr/share/GeoIP/GeoIP2-ISP.mmdb"},
+        "isp": "/usr/share/GeoIP/GeoIP2-ISP.mmdb"
+    },
     "resolvers": [
         "193.17.47.1"
     ],
@@ -55,7 +56,7 @@ def load_config(filename):
     try:
         with open(path.join(pwd, filename), "r") as conf_file:
             config_from_file = yaml.load(conf_file, Loader=yaml.BaseLoader)
-            config = merge_dicts(defaults, config_from_file)
+            config = merge_dicts(config_from_file, defaults)
     except FileNotFoundError:
         config = defaults
     return config
