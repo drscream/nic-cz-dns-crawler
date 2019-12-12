@@ -1,11 +1,15 @@
 geoip:
   country: GeoLite2-Country.mmdb
   asn: GeoLite2-ASN.mmdb
-dns:
+resolvers:
   - 193.17.47.1
   - 185.43.135.1
-job_timeout: 60
-dns_timeout: 2
-http_timeout: 2
-save_web_content: False
-strip_html: True
+timeouts:
+  job: 80
+  dns: 2
+  http: 2
+web:
+  save_content: False
+  strip_html: True
+  user_agent: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36
+  accept_language: en-US;q=0.9,en;q=0.8
