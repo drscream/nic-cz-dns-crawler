@@ -23,13 +23,13 @@ import dns.resolver
 
 
 def get_local_resolver(config):
-    dns_timeout = int(config["dns_timeout"])
-    use_custom_dns = "dns" in config and len(config["dns"]) > 0
+    dns_timeout = config["timeouts"]["dns"]
+    use_custom_dns = "dns" in config and len(config["resolvers"]) > 0
 
     local_resolver = dns.resolver.Resolver(configure=(not use_custom_dns))
     local_resolver.timeout = local_resolver.lifetime = dns_timeout
     if use_custom_dns:
-        local_resolver.nameservers = config["dns"]
+        local_resolver.nameservers = config["resolvers"]
     return local_resolver
 
 

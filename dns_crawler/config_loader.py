@@ -23,15 +23,31 @@ defaults = {
     "geoip": {
         "country": "/usr/share/GeoIP/GeoIP2-Country.mmdb",
         "isp": "/usr/share/GeoIP/GeoIP2-ISP.mmdb"},
-    "dns": [
+    "resolvers": [
         "193.17.47.1"
     ],
-    "job_timeout": "80",
-    "dns_timeout": "2",
-    "http_timeout": "2",
-    "save_web_content": "False",
-    "strip_html": "True"
+    "timeouts": {
+        "job": 80,
+        "dns": 2,
+        "http": 2
+    },
+    "web": {
+        "save_content": False,
+        "strip_html": True,
+        "user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
+        "accept_language": "en-US;q=0.9,en;q=0.8"
+    }
 }
+
+
+def merge_dicts(source, destination):
+    for key, value in source.items():
+        if isinstance(value, dict):
+            node = destination.setdefault(key, {})
+            merge_dicts(value, node)
+        else:
+            destination[key] = value
+    return destination
 
 
 def load_config(filename):
@@ -39,7 +55,7 @@ def load_config(filename):
     try:
         with open(path.join(pwd, filename), "r") as conf_file:
             config_from_file = yaml.load(conf_file, Loader=yaml.BaseLoader)
-            config = {**defaults, **config_from_file}
+            config = merge_dicts(defaults, config_from_file)
     except FileNotFoundError:
         config = defaults
     return config

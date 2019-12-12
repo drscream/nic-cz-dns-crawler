@@ -39,15 +39,15 @@ def drop_null_values(orig_dict):
     return {k: v for k, v in orig_dict.items() if v is not None}
 
 
-def create_request_headers(domain):
+def create_request_headers(domain, user_agent, accept_language):
     return {
         "Host": idna.encode(domain).decode("ascii"),
         "Connection": "close",
         "Upgrade-Insecure-Requests": "1",
-        "User-Agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
+        "User-Agent": user_agent,
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
         "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "cs-CZ,cs;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Accept-Language": accept_language,
     }
 
 
@@ -185,9 +185,8 @@ def get_response_headers(headers):
 def get_webserver_info(domain, ips, config, ipv6=False, tls=False):
     if not ips or len(ips) < 1:
         return None
-    http_timeout = int(config["http_timeout"])
-    save_content = config["save_web_content"] == "True"
-    strip_html = config["strip_html"] == "True"
+    http_timeout = config["timeouts"]["http"]
+    save_content = config["web"]["save_content"]
     results = []
     for ip in ips:
         ip = ip["value"]
@@ -208,8 +207,17 @@ def get_webserver_info(domain, ips, config, ipv6=False, tls=False):
         else:
             r = requests.head
         try:
-            response = r(f"{protocol}{host}/", headers=create_request_headers(domain),
-                         allow_redirects=False, verify=False, timeout=http_timeout, stream=False)
+            response = r(f"{protocol}{host}/",
+                         headers=create_request_headers(
+                             domain,
+                             user_agent=config["web"]["user_agent"],
+                             accept_language=config["web"]["accept_language"]
+                         ),
+                         allow_redirects=False,
+                         verify=False,
+                         timeout=http_timeout,
+                         stream=False
+                         )
             response.close()
         except Exception as e:
             result["error"] = str(e)
@@ -217,7 +225,7 @@ def get_webserver_info(domain, ips, config, ipv6=False, tls=False):
             result["status"] = response.status_code
             result["headers"] = get_response_headers(response.headers)
             if save_content:
-                if not strip_html:
+                if not config["web"]["strip_html"]:
                     result["content"] = response.text
                 else:
                     result["content"] = strip_newlines(strip_tags(response.text))

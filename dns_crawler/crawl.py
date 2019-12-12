@@ -54,7 +54,7 @@ def get_dns_local(domain):
 
 
 def get_dns_auth(domain, nameservers):
-    timeout = int(config["dns_timeout"])
+    timeout = config["timeouts"]["dns"]
     if not nameservers or len(nameservers) < 1:
         return None
     results = []

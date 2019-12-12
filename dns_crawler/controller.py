@@ -97,7 +97,7 @@ def main():
             redis.set("locked", 1)
 
             if parts == 1:
-                create_jobs(domains, crawl_domain, queue, config["job_timeout"], lambda: False)
+                create_jobs(domains, crawl_domain, queue, config["timeouts"]["job"], lambda: False)
             else:
                 for thread_num in range(parts):
                     if thread_num == parts - 1:  # last one
@@ -107,7 +107,7 @@ def main():
                     part = domains[(thread_num * domains_per_part):end]
                     t = threading.Thread(target=create_jobs,
                                          args=(part, crawl_domain, queue,
-                                               config["job_timeout"], lambda: stop_threads))
+                                               config["timeouts"]["job"], lambda: stop_threads))
                     t.start()
 
             while created_count < domain_count:
