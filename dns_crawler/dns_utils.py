@@ -235,9 +235,9 @@ def value_from_record(record, data):
     return re.sub(r".*" + re.escape(record) + " ", "", data)
 
 
-def get_record(domain, record, resolver):
+def get_record(domain_name, record, resolver):
     results = []
-    domain = dns.name.from_text(domain)
+    domain = dns.name.from_text(domain_name)
     if not domain.is_absolute():
         domain = domain.concatenate(dns.name.root)
     request = dns.message.make_query(domain, record)
@@ -250,7 +250,7 @@ def get_record(domain, record, resolver):
         dns.query.UnexpectedSource,
         dns.query.BadResponse
     ):
-        return get_record(domain, record, resolver)
+        return get_record(domain_name, record, resolver)
     except (
         dns.resolver.NoAnswer,
         dns.rdatatype.UnknownRdatatype,
