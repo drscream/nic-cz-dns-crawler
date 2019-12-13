@@ -66,7 +66,7 @@ def cert_datetime_to_iso(cert_date):
 
 
 def parse_cert_name(name):
-    return {k: v for k, v in [s.rfc4514_string().split("=") for s in name.rdns]}
+    return {k: v for k, v in [s.rfc4514_string().split("=", 1) for s in name.rdns]}
 
 
 def format_cert_serial_number(serial):
