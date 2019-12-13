@@ -65,8 +65,12 @@ def cert_datetime_to_iso(cert_date):
     return cert_date.strftime("%Y-%m-%d %H:%M:%S")
 
 
-def parse_cert_name(name):
-    return {k: v for k, v in [s.rfc4514_string().split("=", 1) for s in name.rdns]}
+def parse_cert_name(cert, field):
+    try:
+        name = getattr(cert, field)
+        return {k: v for k, v in [s.rfc4514_string().split("=", 1) for s in name.rdns]}
+    except ValueError as e:
+        return {"error": str(e)}
 
 
 def format_cert_serial_number(serial):
@@ -78,8 +82,8 @@ def parse_cert(cert, domain):
     result = {}
     result["not_before"] = cert_datetime_to_iso(cert.not_valid_before)
     result["not_after"] = cert_datetime_to_iso(cert.not_valid_after)
-    result["subject"] = parse_cert_name(cert.subject)
-    result["issuer"] = parse_cert_name(cert.issuer)
+    result["subject"] = parse_cert_name(cert, "subject")
+    result["issuer"] = parse_cert_name(cert, "issuer")
     result["version"] = int(str(cert.version)[-1])
     result["serial"] = format_cert_serial_number(cert.serial_number)
     result["algorithm"] = cert.signature_hash_algorithm.name

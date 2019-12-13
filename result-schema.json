@@ -291,28 +291,41 @@
       "additionalProperties": false
     },
     "certificate_name": {
-      "type": "object",
-      "properties": {
-        "C": {
-          "type": "string"
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "error": {
+              "type": "string"
+            }
+          },
+          "required": ["error"]
         },
-        "O": {
-          "type": "string"
-        },
-        "CN": {
-          "type": "string"
-        },
-        "OU": {
-          "type": "string"
-        },
-        "L": {
-          "type": "string"
-        },
-        "S": {
-          "type": "string"
+        {
+          "type": "object",
+          "properties": {
+            "C": {
+              "type": "string"
+            },
+            "O": {
+              "type": "string"
+            },
+            "CN": {
+              "type": "string"
+            },
+            "OU": {
+              "type": "string"
+            },
+            "L": {
+              "type": "string"
+            },
+            "S": {
+              "type": "string"
+            }
+          },
+          "required": ["CN"]
         }
-      },
-      "required": ["CN"]
+      ]
     },
     "http_status": {
       "description": "Status code received from the webserver.",
