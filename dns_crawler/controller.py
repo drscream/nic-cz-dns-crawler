@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License. If not,
 # see <http://www.gnu.org/licenses/>.
 
+import pickle
 import sys
 import threading
 from multiprocessing import cpu_count
@@ -23,7 +24,7 @@ from time import sleep
 
 from redis import Redis
 from redis.exceptions import ConnectionError as RedisConnectionError
-from rq import Queue, job
+from rq import Queue
 from rq.registry import FinishedJobRegistry
 
 from .config_loader import load_config
@@ -124,14 +125,24 @@ def main():
 
             while finished_count < domain_count:
                 finished_domains = finished_registry.get_job_ids()
-                finished_count = finished_count + len(finished_domains)
+                if len(finished_domains) > 0:
+                    pipe = redis.pipeline()
+                    hashes = []
+                    for domain in finished_domains:
+                        hash = f"rq:job:{domain}"
+                        hashes.append(hash)
+                        pipe.hget(hash, "result")
+                    results = pipe.execute()
+                    pipe = redis.pipeline()
+                    count = 0
+                    for index, result in enumerate(results):
+                        if result:
+                            count = count + 1
+                            print(pickle.loads(result))
+                            pipe.delete(hashes[index])
+                    pipe.execute()
+                    finished_count = finished_count + count
                 sys.stderr.write(f"{timestamp()} {finished_count}/{domain_count}\n")
-                finished_jobs = job.Job.fetch_many(finished_domains, connection=redis)
-                for finished_job in finished_jobs:
-                    if not finished_job:
-                        continue
-                    print(finished_job.result)
-                    finished_job.delete()
                 sleep(POLL_INTERVAL)
             queue.delete(delete_jobs=True)
             sys.exit(0)
