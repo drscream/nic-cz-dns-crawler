@@ -15,9 +15,12 @@
 # You should have received a copy of the GNU Lesser General Public License. If not,
 # see <http://www.gnu.org/licenses/>.
 
-from os import path, getcwd
+import sys
+from os import getcwd, path
 
 import yaml
+
+from .timestamp import timestamp
 
 defaults = {
     "geoip": {
@@ -66,7 +69,14 @@ def load_config(filename):
     try:
         with open(path.join(pwd, filename), "r") as conf_file:
             config_from_file = yaml.load(conf_file, Loader=yaml.BaseLoader)
-            config = merge_dicts(config_from_file, defaults)
+            if "http_timeout" in config_from_file or \
+               "dns_timeout" in config_from_file or \
+               "save_web_content" in config_from_file:
+                sys.stderr.write(f"{timestamp()} Incompatible config file loaded (the format" +
+                                 "changed with v1.2, see README). Using defaults instead.\n")
+                config = defaults
+            else:
+                config = merge_dicts(config_from_file, defaults)
     except FileNotFoundError:
         config = defaults
     return config
