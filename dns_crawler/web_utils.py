@@ -90,7 +90,7 @@ def parse_cert(cert, domain):
     try:
         result["alt_names"] = [str(name.value) for name in cert.extensions.get_extension_for_oid(
             x509.oid.ExtensionOID.SUBJECT_ALTERNATIVE_NAME).value]
-    except x509.extensions.ExtensionNotFound:
+    except (x509.extensions.ExtensionNotFound, ValueError):
         pass
     return drop_null_values(result)
 
