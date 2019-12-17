@@ -96,6 +96,7 @@ def parse_cert(cert, domain):
 
 
 def get_tls_info(domain, ip, http_timeout, ipv6=False, port=443):
+    socket.setdefaulttimeout(float(http_timeout))
     ctx = ssl.create_default_context()
     ctx.load_verify_locations(certifi.where())
     ctx.check_hostname = False
@@ -108,28 +109,32 @@ def get_tls_info(domain, ip, http_timeout, ipv6=False, port=443):
         inet = socket.AF_INET6
     sock = socket.socket(inet, socket.SOCK_STREAM)
     conn = ctx.wrap_socket(sock, server_hostname=domain)
-    conn.settimeout(float(http_timeout))
 
     try:
-        conn.connect((ip, port))
+        r = conn.connect_ex((ip, port))
     except (OSError, socket.timeout) as e:
         result = {
             "error": str(e)
         }
-    try:
-        cert = conn.getpeercert(binary_form=True)
-    except (OSError, AttributeError) as e:
+    if r != 0:
         result = {
-            "error": str(e)
+            "error": f"errno {r}"
         }
     else:
-        result = drop_null_values({
-            "alpn_protocol": conn.selected_alpn_protocol(),
-            "tls_version": conn.version(),
-            "tls_cipher_name": conn.cipher()[0],
-            "tls_cipher_bits": conn.cipher()[2],
-            "cert": parse_cert(cert, domain)
-        })
+        try:
+            cert = conn.getpeercert(binary_form=True)
+        except (OSError, AttributeError) as e:
+            result = {
+                "error": str(e)
+            }
+        else:
+            result = drop_null_values({
+                "alpn_protocol": conn.selected_alpn_protocol(),
+                "tls_version": conn.version(),
+                "tls_cipher_name": conn.cipher()[0],
+                "tls_cipher_bits": conn.cipher()[2],
+                "cert": parse_cert(cert, domain)
+            })
     conn.close()
     return result
 
