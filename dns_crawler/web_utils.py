@@ -60,6 +60,7 @@ def parse_alt_svc(header):
 def get_tls_info(domain, ip, http_timeout, ipv6=False, port=443):
     socket.setdefaulttimeout(float(http_timeout))
     ctx = ssl.create_default_context()
+    ctx.options &= ~(ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1)
     ctx.load_verify_locations(certifi.where())
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
