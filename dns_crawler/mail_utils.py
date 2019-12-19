@@ -45,28 +45,32 @@ def get_mx_info(mx_records, timeout):
                 except (OSError, socket.timeout) as e:
                     result["error"] = str(e)
                 else:
-                    result["helo"] = parse_helo(s.helo())
-                    result["ehlo"] = parse_helo(s.ehlo())
-                    if "STARTTLS" in result["ehlo"]:
-                        ctx = ssl.create_default_context()
-                        ctx.options &= ~(ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1)
-                        ctx.load_verify_locations(certifi.where())
-                        ctx.check_hostname = False
-                        ctx.verify_mode = ssl.CERT_NONE
-                        try:
-                            s.starttls(context=ctx)
-                        except smtplib.SMTPNotSupportedError:
-                            pass
-                        except (smtplib.SMTPResponseException) as e:
-                            result["tls"] = {}
-                            result["tls"]["error"] = str(e)
-                        else:
-                            result["tls"] = {}
-                            result["tls"]["tls_version"] = s.sock.version()
-                            result["tls"]["tls_cipher_name"] = s.sock.cipher()[0]
-                            result["tls"]["tls_cipher_bits"] = s.sock.cipher()[2]
-                            cert = s.sock.getpeercert(binary_form=True)
-                            result["tls"]["cert"] = parse_cert(cert, host)
+                    try:
+                        result["helo"] = parse_helo(s.helo())
+                        result["ehlo"] = parse_helo(s.ehlo())
+                    except smtplib.SMTPServerDisconnected as e:
+                        result["error"] = str(e)
+                    else:
+                        if "STARTTLS" in result["ehlo"]:
+                            ctx = ssl.create_default_context()
+                            ctx.options &= ~(ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1)
+                            ctx.load_verify_locations(certifi.where())
+                            ctx.check_hostname = False
+                            ctx.verify_mode = ssl.CERT_NONE
+                            try:
+                                s.starttls(context=ctx)
+                            except smtplib.SMTPNotSupportedError:
+                                pass
+                            except (smtplib.SMTPResponseException) as e:
+                                result["tls"] = {}
+                                result["tls"]["error"] = str(e)
+                            else:
+                                result["tls"] = {}
+                                result["tls"]["tls_version"] = s.sock.version()
+                                result["tls"]["tls_cipher_name"] = s.sock.cipher()[0]
+                                result["tls"]["tls_cipher_bits"] = s.sock.cipher()[2]
+                                cert = s.sock.getpeercert(binary_form=True)
+                                result["tls"]["cert"] = parse_cert(cert, host)
                     s.quit()
                 results.append(result)
     return results
