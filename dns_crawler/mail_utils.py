@@ -48,7 +48,6 @@ def get_mx_info(mx_records, timeout):
                     result["helo"] = parse_helo(s.helo())
                     result["ehlo"] = parse_helo(s.ehlo())
                     if "STARTTLS" in result["ehlo"]:
-                        result["tls"] = {}
                         ctx = ssl.create_default_context()
                         ctx.load_verify_locations(certifi.where())
                         ctx.check_hostname = False
@@ -57,7 +56,11 @@ def get_mx_info(mx_records, timeout):
                             s.starttls(context=ctx)
                         except smtplib.SMTPNotSupportedError:
                             pass
+                        except (smtplib.SMTPResponseException) as e:
+                            result["tls"] = {}
+                            result["tls"]["error"] = str(e)
                         else:
+                            result["tls"] = {}
                             result["tls"]["tls_version"] = s.sock.version()
                             result["tls"]["tls_cipher_name"] = s.sock.cipher()[0]
                             result["tls"]["tls_cipher_bits"] = s.sock.cipher()[2]
