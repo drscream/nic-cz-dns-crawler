@@ -38,7 +38,7 @@ def get_mx_info(mx_records, timeout):
         result = {}
         if mx and mx["value"]:
             host = mx["value"].split(" ")[-1]
-            if host:
+            if host and host != ".":
                 result["host"] = host
                 try:
                     s = smtplib.SMTP(host, 25, timeout)
