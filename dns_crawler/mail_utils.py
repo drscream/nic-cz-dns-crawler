@@ -68,6 +68,7 @@ def get_mx_info(mx_records, timeout):
                                 should_get_cert = False
                             except ssl.SSLError as e:
                                 if e.reason in ["UNSUPPORTED_PROTOCOL", "DH_KEY_TOO_SMALL"]:
+                                    s.connect()
                                     s.starttls(context=ctx)
                             if should_get_cert:
                                 result["tls"] = {}
