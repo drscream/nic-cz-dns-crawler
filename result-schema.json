@@ -657,7 +657,7 @@
                       "type": "string"
                     }
                   },
-                  "cert": { "$ref": "#/definitions/certificate" },
+                  "tls": { "$ref": "#/definitions/tls_info" },
                   "error": {
                     "type": "string"
                   }

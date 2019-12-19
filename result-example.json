@@ -1,6 +1,6 @@
 {
   "domain": "nic.cz",
-  "timestamp": "2019-12-19 01:53:21",
+  "timestamp": "2019-12-19 06:50:23",
   "results": {
     "DNS_LOCAL": {
       "NS_AUTH": [
@@ -66,8 +66,8 @@
       "DNSSEC": {
         "valid": true,
         "rrsig": [
-          "nic.cz. 721 IN RRSIG DNSKEY 13 2 1800 20191231210555 20191218055649 61281 nic.cz. zGSGf5/jWNbrYN3Vp9Af/jxi/tV4ib5s h5zIOxWwj3ir9v8XNEQ1Yy2M6mqRdY34 pqdDzy1xk9DIln6AB8DGXQ==",
-          "nic.cz. 721 IN RRSIG DNSKEY 13 2 1800 20200101041556 20191218055649 28695 nic.cz. 1Kl5KAVSja0PwSc5LnheakpV39AtPeCA coedsi9deSYnCqzvsMYgHiBM1YSTDgHA U0U+qY/1xmoq0LxCNRldCw=="
+          "nic.cz. 161 IN RRSIG DNSKEY 13 2 1800 20191231210555 20191218055649 61281 nic.cz. zGSGf5/jWNbrYN3Vp9Af/jxi/tV4ib5s h5zIOxWwj3ir9v8XNEQ1Yy2M6mqRdY34 pqdDzy1xk9DIln6AB8DGXQ==",
+          "nic.cz. 161 IN RRSIG DNSKEY 13 2 1800 20200101041556 20191218055649 28695 nic.cz. 1Kl5KAVSja0PwSc5LnheakpV39AtPeCA coedsi9deSYnCqzvsMYgHiBM1YSTDgHA U0U+qY/1xmoq0LxCNRldCw=="
         ]
       }
     },
@@ -88,7 +88,7 @@
         },
         "HOSTNAMEBIND6": {
           "value": null,
-          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
         },
         "VERSIONBIND4": {
           "value": null,
@@ -115,7 +115,7 @@
         },
         "HOSTNAMEBIND6": {
           "value": null,
-          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
         },
         "VERSIONBIND4": {
           "value": null,
@@ -142,7 +142,7 @@
         },
         "HOSTNAMEBIND6": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
+          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:1::1 UDP port 53 answered REFUSED"
         },
         "VERSIONBIND4": {
           "value": null,
@@ -169,24 +169,29 @@
           "DSN",
           "SMTPUTF8"
         ],
-        "cert": {
-          "not_before": "2019-11-20 13:09:57",
-          "not_after": "2020-02-18 13:09:57",
-          "subject": { "CN": "mail.nic.cz" },
-          "issuer": {
-            "C": "US",
-            "O": "Let's Encrypt",
-            "CN": "Let's Encrypt Authority X3"
-          },
-          "version": 3,
-          "serial": "46bfc3071353296601560c4818f58312049",
-          "algorithm": "sha256",
-          "alt_names": [
-            "jabber.nic.cz",
-            "lists.nic.cz",
-            "mail.nic.cz",
-            "nic.cz"
-          ]
+        "tls": {
+          "tls_version": "TLSv1.2",
+          "tls_cipher_name": "ECDHE-RSA-AES256-GCM-SHA384",
+          "tls_cipher_bits": 256,
+          "cert": {
+            "not_before": "2019-11-20 13:09:57",
+            "not_after": "2020-02-18 13:09:57",
+            "subject": { "CN": "mail.nic.cz" },
+            "issuer": {
+              "C": "US",
+              "O": "Let's Encrypt",
+              "CN": "Let's Encrypt Authority X3"
+            },
+            "version": 3,
+            "serial": "46bfc3071353296601560c4818f58312049",
+            "algorithm": "sha256",
+            "alt_names": [
+              "jabber.nic.cz",
+              "lists.nic.cz",
+              "mail.nic.cz",
+              "nic.cz"
+            ]
+          }
         }
       },
       {
@@ -203,31 +208,36 @@
           "8BITMIME",
           "DSN"
         ],
-        "cert": {
-          "not_before": "2019-02-06 10:19:04",
-          "not_after": "2021-02-05 10:19:04",
-          "subject": {
-            "C": "CZ",
-            "L": "Prague",
-            "O": "CZ.NIC",
-            "OU": "Techdep",
-            "CN": "mx.nic.cz",
-            "1.2.840.113549.1.9.1": "root@nic.cz"
-          },
-          "issuer": {
-            "C": "CZ",
-            "L": "Prague",
-            "O": "CZ.NIC\\, z.s.p.o.",
-            "CN": "CZ.NIC SHA2 Root Certification Authority",
-            "1.2.840.113549.1.9.1": "ca@nic.cz"
-          },
-          "version": 3,
-          "serial": "000000000000020f",
-          "algorithm": "sha256",
-          "alt_names": ["mx.nic.cz"]
+        "tls": {
+          "tls_version": "TLSv1.2",
+          "tls_cipher_name": "ECDHE-RSA-AES256-GCM-SHA384",
+          "tls_cipher_bits": 256,
+          "cert": {
+            "not_before": "2019-02-06 10:19:04",
+            "not_after": "2021-02-05 10:19:04",
+            "subject": {
+              "C": "CZ",
+              "L": "Prague",
+              "O": "CZ.NIC",
+              "OU": "Techdep",
+              "CN": "mx.nic.cz",
+              "1.2.840.113549.1.9.1": "root@nic.cz"
+            },
+            "issuer": {
+              "C": "CZ",
+              "L": "Prague",
+              "O": "CZ.NIC\\, z.s.p.o.",
+              "CN": "CZ.NIC SHA2 Root Certification Authority",
+              "1.2.840.113549.1.9.1": "ca@nic.cz"
+            },
+            "version": 3,
+            "serial": "000000000000020f",
+            "algorithm": "sha256",
+            "alt_names": ["mx.nic.cz"]
+          }
         }
       },
-      { "host": "bh.nic.cz.", "error": "[Errno 110] Connection timed out" }
+      { "host": "bh.nic.cz.", "error": "timed out" }
     ],
     "WEB": {
       "WEB4_80": [
