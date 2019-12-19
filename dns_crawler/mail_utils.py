@@ -42,7 +42,7 @@ def get_mx_info(mx_records, timeout):
                 result["host"] = host
                 try:
                     s = smtplib.SMTP(host, 25, timeout)
-                except Exception as e:
+                except (OSError, socket.timeout) as e:
                     result["error"] = str(e)
                 else:
                     result["helo"] = parse_helo(s.helo())
