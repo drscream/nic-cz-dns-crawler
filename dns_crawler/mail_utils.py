@@ -27,9 +27,11 @@ def parse_helo(h):
 
 def get_mx_info(mx_records, timeout):
     results = []
+    if not mx_records:
+        return None
     for mx in mx_records:
         result = {}
-        if mx["value"]:
+        if mx and mx["value"]:
             host = mx["value"].split(" ")[-1]
             if host:
                 result["host"] = host
