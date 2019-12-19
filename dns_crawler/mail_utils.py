@@ -41,7 +41,7 @@ def get_mx_info(mx_records, timeout):
             if host and host != ".":
                 result["host"] = host
                 try:
-                    s = smtplib.SMTP(host, 25, timeout)
+                    s = smtplib.SMTP(host=host, port=25, timeout=timeout)
                 except (OSError, socket.timeout) as e:
                     result["error"] = str(e)
                 else:
@@ -52,6 +52,7 @@ def get_mx_info(mx_records, timeout):
                         result["error"] = str(e)
                     else:
                         if "STARTTLS" in result["ehlo"]:
+                            should_get_cert = True
                             ctx = ssl.create_default_context()
                             ctx.options &= ~(ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1)
                             ctx.load_verify_locations(certifi.where())
@@ -60,11 +61,15 @@ def get_mx_info(mx_records, timeout):
                             try:
                                 s.starttls(context=ctx)
                             except smtplib.SMTPNotSupportedError:
-                                pass
+                                should_get_cert = False
                             except (smtplib.SMTPResponseException) as e:
                                 result["tls"] = {}
                                 result["tls"]["error"] = str(e)
-                            else:
+                                should_get_cert = False
+                            except ssl.SSLError as e:
+                                if e.reason in ["UNSUPPORTED_PROTOCOL", "DH_KEY_TOO_SMALL"]:
+                                    s.starttls(context=ctx)
+                            if should_get_cert:
                                 result["tls"] = {}
                                 result["tls"]["tls_version"] = s.sock.version()
                                 result["tls"]["tls_cipher_name"] = s.sock.cipher()[0]
