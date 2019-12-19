@@ -25,18 +25,14 @@ import certifi
 import idna
 import requests
 import urllib3
-from cryptography import x509
-from cryptography.hazmat.backends import default_backend
 
 from .ip_utils import is_valid_ip_address
+from .utils import drop_null_values
+from .certificate import parse_cert
 
 alpn_protocols = ['h3', 'h3-Q046', 'h3-Q043', 'h3-Q039', 'h3-24', 'h3-23',
                   'h2', 'spdy/3.1', 'spdy/3', 'spdy/2', 'spdy/1', 'http/1.1']
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-
-def drop_null_values(orig_dict):
-    return {k: v for k, v in orig_dict.items() if v is not None}
 
 
 def create_request_headers(domain, user_agent, accept_language):
@@ -59,40 +55,6 @@ def parse_alt_svc(header):
         list = unquote(pair).split("=")
         result[list[0]] = list[1]
     return result
-
-
-def cert_datetime_to_iso(cert_date):
-    return cert_date.strftime("%Y-%m-%d %H:%M:%S")
-
-
-def parse_cert_name(cert, field):
-    try:
-        name = getattr(cert, field)
-        return {k: v for k, v in [s.rfc4514_string().split("=", 1) for s in name.rdns]}
-    except ValueError as e:
-        return {"error": str(e)}
-
-
-def format_cert_serial_number(serial):
-    return f"{serial:016x}"
-
-
-def parse_cert(cert, domain):
-    cert = x509.load_der_x509_certificate(cert, default_backend())
-    result = {}
-    result["not_before"] = cert_datetime_to_iso(cert.not_valid_before)
-    result["not_after"] = cert_datetime_to_iso(cert.not_valid_after)
-    result["subject"] = parse_cert_name(cert, "subject")
-    result["issuer"] = parse_cert_name(cert, "issuer")
-    result["version"] = int(str(cert.version)[-1])
-    result["serial"] = format_cert_serial_number(cert.serial_number)
-    result["algorithm"] = cert.signature_hash_algorithm.name
-    try:
-        result["alt_names"] = [str(name.value) for name in cert.extensions.get_extension_for_oid(
-            x509.oid.ExtensionOID.SUBJECT_ALTERNATIVE_NAME).value]
-    except (x509.extensions.ExtensionNotFound, ValueError):
-        pass
-    return drop_null_values(result)
 
 
 def get_tls_info(domain, ip, http_timeout, ipv6=False, port=443):

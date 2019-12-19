@@ -33,7 +33,8 @@ defaults = {
     "timeouts": {
         "job": 80,
         "dns": 2,
-        "http": 2
+        "http": 2,
+        "mail": 2
     },
     "web": {
         "save_content": False,

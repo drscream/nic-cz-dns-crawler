@@ -634,6 +634,36 @@
             }
           ]
         },
+        "MAIL": {
+          "description": "Info about mail servers from domain's MX records.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "host": {
+                "type": "string"
+              },
+              "helo": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "ehlo": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "cert": { "$ref": "#/definitions/certificate" },
+              "error": {
+                "type": "string"
+              }
+            },
+            "required": ["host"],
+            "additionalProperties": false
+          }
+        },
         "WEB": {
           "description": "Info about webservers from domain's A/AAAA records.",
           "type": "object",

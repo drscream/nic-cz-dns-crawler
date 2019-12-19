@@ -26,6 +26,8 @@ from .dns_utils import (annotate_dns_algorithm, check_dnssec,
                         parse_dmarc, parse_spf)
 from .geoip_utils import annotate_geoip, init_geoip
 from .web_utils import get_webserver_info
+from .mail_utils import get_mx_info
+
 
 config = load_config("config.yml")
 geoip_dbs = init_geoip(config)
@@ -95,6 +97,7 @@ def get_web_status(domain, dns):
 def process_domain(domain):
     dns_local = get_dns_local(domain)
     dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"])
+    mail = get_mx_info(dns_local["MAIL"], config["timeouts"]["mail"])
     web = get_web_status(domain, dns_local)
 
     return {
@@ -103,6 +106,7 @@ def process_domain(domain):
         "results": {
             "DNS_LOCAL": dns_local,
             "DNS_AUTH": dns_auth,
+            "MAIL": mail,
             "WEB": web
         }
     }

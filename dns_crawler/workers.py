@@ -63,8 +63,8 @@ def main():
             f"Whoa. You are trying to run {worker_count} workers on {cpus} CPU "
             f"core{('s' if cpus > 1 else '')}. It's easy to scale \n"
             f"across multiple machines, if you need to. See README.md for details.\n\n"
-            f"Cancel now (Ctrl-C) or have a fire extinguisher ready.\n")
-        )
+            f"Cancel now (Ctrl-C) or have a fire extinguisher ready.\n"
+        ))
         try:
             for s in reversed(range(0, 5)):
                 sleep(1)

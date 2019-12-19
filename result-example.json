@@ -1,6 +1,6 @@
 {
   "domain": "nic.cz",
-  "timestamp": "2019-12-12 14:10:56",
+  "timestamp": "2019-12-19 01:53:21",
   "results": {
     "DNS_LOCAL": {
       "NS_AUTH": [
@@ -66,8 +66,8 @@
       "DNSSEC": {
         "valid": true,
         "rrsig": [
-          "nic.cz. 575 IN RRSIG DNSKEY 13 2 1800 20191225152716 20191212094001 28695 nic.cz. VfFOUt6NLbAB8KNful16oy9UMVnW7OIA 4yVf/w/OBSH+XZIYKlOPSd6OImr277jK bkLi9XCJv9I2CE/n8/ttjg==",
-          "nic.cz. 575 IN RRSIG DNSKEY 13 2 1800 20191225195057 20191212094001 61281 nic.cz. 9DlzT4z4vBCfJl4125PG/Prw2OoDdelF mKo2ooXkVd9+5A5gGfn51g7fOXb8SMvd kC9dmMAo8gzb0u7BN+Lt4Q=="
+          "nic.cz. 721 IN RRSIG DNSKEY 13 2 1800 20191231210555 20191218055649 61281 nic.cz. zGSGf5/jWNbrYN3Vp9Af/jxi/tV4ib5s h5zIOxWwj3ir9v8XNEQ1Yy2M6mqRdY34 pqdDzy1xk9DIln6AB8DGXQ==",
+          "nic.cz. 721 IN RRSIG DNSKEY 13 2 1800 20200101041556 20191218055649 28695 nic.cz. 1Kl5KAVSja0PwSc5LnheakpV39AtPeCA coedsi9deSYnCqzvsMYgHiBM1YSTDgHA U0U+qY/1xmoq0LxCNRldCw=="
         ]
       }
     },
@@ -88,7 +88,7 @@
         },
         "HOSTNAMEBIND6": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
+          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"
         },
         "VERSIONBIND4": {
           "value": null,
@@ -96,7 +96,7 @@
         },
         "VERSIONBIND6": {
           "value": null,
-          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
         }
       },
       {
@@ -138,11 +138,11 @@
         },
         "HOSTNAMEBIND4": {
           "value": null,
-          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 193.29.206.1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
         },
         "HOSTNAMEBIND6": {
           "value": null,
-          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:1::1 UDP port 53 answered REFUSED"
+          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
         },
         "VERSIONBIND4": {
           "value": null,
@@ -154,21 +154,94 @@
         }
       }
     ],
+    "MAIL": [
+      {
+        "host": "mail.nic.cz.",
+        "helo": ["mail.nic.cz"],
+        "ehlo": [
+          "mail.nic.cz",
+          "PIPELINING",
+          "SIZE 62914560",
+          "ETRN",
+          "STARTTLS",
+          "ENHANCEDSTATUSCODES",
+          "8BITMIME",
+          "DSN",
+          "SMTPUTF8"
+        ],
+        "cert": {
+          "not_before": "2019-11-20 13:09:57",
+          "not_after": "2020-02-18 13:09:57",
+          "subject": { "CN": "mail.nic.cz" },
+          "issuer": {
+            "C": "US",
+            "O": "Let's Encrypt",
+            "CN": "Let's Encrypt Authority X3"
+          },
+          "version": 3,
+          "serial": "46bfc3071353296601560c4818f58312049",
+          "algorithm": "sha256",
+          "alt_names": [
+            "jabber.nic.cz",
+            "lists.nic.cz",
+            "mail.nic.cz",
+            "nic.cz"
+          ]
+        }
+      },
+      {
+        "host": "mx.nic.cz.",
+        "helo": ["mx.nic.cz"],
+        "ehlo": [
+          "mx.nic.cz",
+          "PIPELINING",
+          "SIZE 10240000",
+          "VRFY",
+          "ETRN",
+          "STARTTLS",
+          "ENHANCEDSTATUSCODES",
+          "8BITMIME",
+          "DSN"
+        ],
+        "cert": {
+          "not_before": "2019-02-06 10:19:04",
+          "not_after": "2021-02-05 10:19:04",
+          "subject": {
+            "C": "CZ",
+            "L": "Prague",
+            "O": "CZ.NIC",
+            "OU": "Techdep",
+            "CN": "mx.nic.cz",
+            "1.2.840.113549.1.9.1": "root@nic.cz"
+          },
+          "issuer": {
+            "C": "CZ",
+            "L": "Prague",
+            "O": "CZ.NIC\\, z.s.p.o.",
+            "CN": "CZ.NIC SHA2 Root Certification Authority",
+            "1.2.840.113549.1.9.1": "ca@nic.cz"
+          },
+          "version": 3,
+          "serial": "000000000000020f",
+          "algorithm": "sha256",
+          "alt_names": ["mx.nic.cz"]
+        }
+      },
+      { "host": "bh.nic.cz.", "error": "[Errno 110] Connection timed out" }
+    ],
     "WEB": {
       "WEB4_80": [
         {
           "ip": "217.31.205.50",
           "status": 301,
-          "headers": { "location": "https://nic.cz/", "server": "nginx" },
-          "content": "301 Moved Permanently \n301 Moved Permanently \nnginx"
+          "headers": { "location": "https://nic.cz/", "server": "nginx" }
         }
       ],
       "WEB4_80_www": [
         {
           "ip": "217.31.205.50",
           "status": 301,
-          "headers": { "location": "https://www.nic.cz/", "server": "nginx" },
-          "content": "301 Moved Permanently \n301 Moved Permanently \nnginx"
+          "headers": { "location": "https://www.nic.cz/", "server": "nginx" }
         }
       ],
       "WEB4_443": [
@@ -214,8 +287,7 @@
             "server": "nginx",
             "content-security-policy": "default-src 'none'; script-src 'self' 'unsafe-inline' https://onlinechat2.nic.cz https://test-ipv6.nic.cz https://*.test-ipv6.nic.cz https://piwik.nic.cz/piwik.js https://platform.twitter.com https://cdn.syndication.twimg.com https://s.ytimg.com https://*.googleapis.com https://*.google.com https://connect.facebook.net https://*.mapy.cz; object-src 'self'; style-src 'self' 'unsafe-inline' https://platform.twitter.com https://*.nic.cz https://fonts.googleapis.com https://api.mapy.cz; img-src *; media-src *; frame-src *; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.test-ipv6.nic.cz https://*.labs.nic.cz https://rdap.nic.cz https://www.rhybar.cz https://akademie.nic.cz https://piwik.nic.cz/piwik.php https://www.nic.cz/files/CORS/projects-bar/ https://mojeid.cz https://syndication.twitter.com; report-uri https://csp.nic.cz/report/",
             "strict-transport-security": "max-age=31536000"
-          },
-          "content": "301 Moved Permanently \n301 Moved Permanently \nnginx"
+          }
         }
       ],
       "WEB4_443_www": [
@@ -263,24 +335,21 @@
             "x-xss-protection": "1; mode=block",
             "strict-transport-security": "max-age=31536000; includeSubdomains",
             "x-content-type-options": "nosniff"
-          },
-          "content": "CZ.NIC \nObsah\nNavigace\nHledat\nk navigaci ↓ \nČesky \nEnglish \nDomény \nRegistrátoři \nO nás \nProjekty \nk obsahu ↑ \nVyhledávání v registru \nPro vyhledání údajů vložte doménové jméno jakojmeno.cz(bez www) nebo identifikátor kontaktu nebo sady jmenných serverů.\nÚčel použití poskytovaných dat a informací \nStatistiky \nRegistrovaných domén CZ:1 331 729 \nZabezpečeno technologiíDNSSEC :765 257 \nChcete se jako první dozvědět o aktivitách sdružení CZ.NIC? \nChcete být první, kteří se dozvědí více o projektech sdružení a o novinkách týkajících se internetových technologií? \nPřihlaste se do e-mailové konference sdružení. \nRegistrovat doménu \nJak se stát registrátorem \nStatistiky \nZprávy on-line \nNejnovější zajímavosti ze světa domén, DNS a internetu najdete na:\nNovinky \n11.12.2019 9:00 \nOznámení o odstávce \nDne 13. 12. 2019 od 0:00 do 4:00 proběhne plánovaná odstávka systému centrálního registru správy domén .cz.\nvíce » \nDalší novinky \nBlog \n10. prosince 2019 12:05 \nJak vidí mladí Internet? \nKdyž jsem byla vybrána jako doprovod pro českého zástupce studentů na prestižní akci BIK Youth Panel, velmi mne to potěšilo, i když to zároveň znamenalo velkou zodpovědnost spočívající jak v samotné funkci doprovodu, tak také v důstojné reprezentaci projektu Bezpečně […]\nvíce » \nDalší texty na blogu . \nNahoru \n© 2019 CZ.NIC, z. s. p. o. \nOstatní weby: \nmojeID \nFRED \nDNSSEC \nCZ.NIC-CSIRT \nCSIRT.CZ \nLaboratoře \nAkademie \nEdice CZ.NIC \nDoménový prohlížeč \nKontakt \nČesky \nEnglish"
+          }
         }
       ],
       "WEB6_80": [
         {
           "ip": "2001:1488:0:3::2",
           "status": 301,
-          "headers": { "location": "https://nic.cz/", "server": "nginx" },
-          "content": "301 Moved Permanently \n301 Moved Permanently \nnginx"
+          "headers": { "location": "https://nic.cz/", "server": "nginx" }
         }
       ],
       "WEB6_80_www": [
         {
           "ip": "2001:1488:0:3::2",
           "status": 301,
-          "headers": { "location": "https://www.nic.cz/", "server": "nginx" },
-          "content": "301 Moved Permanently \n301 Moved Permanently \nnginx"
+          "headers": { "location": "https://www.nic.cz/", "server": "nginx" }
         }
       ],
       "WEB6_443": [
@@ -326,8 +395,7 @@
             "server": "nginx",
             "content-security-policy": "default-src 'none'; script-src 'self' 'unsafe-inline' https://onlinechat2.nic.cz https://test-ipv6.nic.cz https://*.test-ipv6.nic.cz https://piwik.nic.cz/piwik.js https://platform.twitter.com https://cdn.syndication.twimg.com https://s.ytimg.com https://*.googleapis.com https://*.google.com https://connect.facebook.net https://*.mapy.cz; object-src 'self'; style-src 'self' 'unsafe-inline' https://platform.twitter.com https://*.nic.cz https://fonts.googleapis.com https://api.mapy.cz; img-src *; media-src *; frame-src *; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.test-ipv6.nic.cz https://*.labs.nic.cz https://rdap.nic.cz https://www.rhybar.cz https://akademie.nic.cz https://piwik.nic.cz/piwik.php https://www.nic.cz/files/CORS/projects-bar/ https://mojeid.cz https://syndication.twitter.com; report-uri https://csp.nic.cz/report/",
             "strict-transport-security": "max-age=31536000"
-          },
-          "content": "301 Moved Permanently \n301 Moved Permanently \nnginx"
+          }
         }
       ],
       "WEB6_443_www": [
@@ -375,8 +443,7 @@
             "x-xss-protection": "1; mode=block",
             "strict-transport-security": "max-age=31536000; includeSubdomains",
             "x-content-type-options": "nosniff"
-          },
-          "content": "CZ.NIC \nObsah\nNavigace\nHledat\nk navigaci ↓ \nČesky \nEnglish \nDomény \nRegistrátoři \nO nás \nProjekty \nk obsahu ↑ \nVyhledávání v registru \nPro vyhledání údajů vložte doménové jméno jakojmeno.cz(bez www) nebo identifikátor kontaktu nebo sady jmenných serverů.\nÚčel použití poskytovaných dat a informací \nStatistiky \nRegistrovaných domén CZ:1 331 729 \nZabezpečeno technologiíDNSSEC :765 257 \nChcete se jako první dozvědět o aktivitách sdružení CZ.NIC? \nChcete být první, kteří se dozvědí více o projektech sdružení a o novinkách týkajících se internetových technologií? \nPřihlaste se do e-mailové konference sdružení. \nRegistrovat doménu \nJak se stát registrátorem \nStatistiky \nZprávy on-line \nNejnovější zajímavosti ze světa domén, DNS a internetu najdete na:\nNovinky \n11.12.2019 9:00 \nOznámení o odstávce \nDne 13. 12. 2019 od 0:00 do 4:00 proběhne plánovaná odstávka systému centrálního registru správy domén .cz.\nvíce » \nDalší novinky \nBlog \n10. prosince 2019 12:05 \nJak vidí mladí Internet? \nKdyž jsem byla vybrána jako doprovod pro českého zástupce studentů na prestižní akci BIK Youth Panel, velmi mne to potěšilo, i když to zároveň znamenalo velkou zodpovědnost spočívající jak v samotné funkci doprovodu, tak také v důstojné reprezentaci projektu Bezpečně […]\nvíce » \nDalší texty na blogu . \nNahoru \n© 2019 CZ.NIC, z. s. p. o. \nOstatní weby: \nmojeID \nFRED \nDNSSEC \nCZ.NIC-CSIRT \nCSIRT.CZ \nLaboratoře \nAkademie \nEdice CZ.NIC \nDoménový prohlížeč \nKontakt \nČesky \nEnglish"
+          }
         }
       ]
     }
