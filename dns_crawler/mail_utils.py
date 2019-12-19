@@ -76,6 +76,9 @@ def get_mx_info(mx_records, timeout):
                                 result["tls"]["tls_cipher_bits"] = s.sock.cipher()[2]
                                 cert = s.sock.getpeercert(binary_form=True)
                                 result["tls"]["cert"] = parse_cert(cert, host)
-                        s.quit()
+                        try:
+                            s.quit()
+                        except smtplib.SMTPServerDisconnected:
+                            pass
                 results.append(result)
     return results
