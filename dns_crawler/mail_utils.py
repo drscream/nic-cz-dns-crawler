@@ -17,6 +17,7 @@
 
 
 import smtplib
+import socket
 
 from .certificate import parse_cert
 
@@ -26,6 +27,7 @@ def parse_helo(h):
 
 
 def get_mx_info(mx_records, timeout):
+    socket.setdefaulttimeout(float(timeout))
     results = []
     if not mx_records:
         return None
