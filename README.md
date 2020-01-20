@@ -309,6 +309,20 @@ The DNS resolver doesn't have to be on a same machine as the `dns-crawler-contro
 
 Same goes for Redis, you can point both controller and workers to a separate machine running Redis (don't forget to point them to an empty DB if you're using Redis for other things than the dns-crawler, it uses `0` by default).
 
+## Updating dependencies
+
+MaxMind updates GeoIP DBs on Tuesdays, so it may be a good idea to set a cron job to keep them fresh. More about that on [maxmind.com: Automatic Updates for GeoIP2](https://dev.maxmind.com/geoip/geoipupdate/).
+
+If you want reliable results for HSTS (= whether the given domain was included in the preload list at the time it was crawled), update the list regularly:
+
+```bash
+pip install -U hstspreload
+```
+
+The `utils/run-crawler.sh` example script does it for you on each run, feel free to adapt it to your environment.
+
+If you use multiple machines to run the workers, don't forget to update GeoIP and hstspreload on all of them.
+
 ## Monitoring
 
 ### Command line
