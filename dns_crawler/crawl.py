@@ -20,15 +20,16 @@ import re
 from copy import deepcopy
 from datetime import datetime
 
+from rq import get_current_connection
+
 from .config_loader import load_config
 from .dns_utils import (annotate_dns_algorithm, check_dnssec,
                         get_local_resolver, get_record, get_txt, get_txtbind,
                         parse_dmarc, parse_spf)
 from .geoip_utils import annotate_geoip, init_geoip
-from .web_utils import get_webserver_info
-from .mail_utils import get_mx_info
 from .hsts_utils import get_hsts_status
-
+from .mail_utils import get_mx_info
+from .web_utils import get_webserver_info
 
 config = load_config("config.yml")
 geoip_dbs = init_geoip(config)
@@ -55,7 +56,7 @@ def get_dns_local(domain):
     }
 
 
-def get_dns_auth(domain, nameservers):
+def get_dns_auth(domain, nameservers, redis):
     timeout = config["timeouts"]["dns"]
     if not nameservers or len(nameservers) < 1:
         return None
@@ -72,10 +73,10 @@ def get_dns_auth(domain, nameservers):
             "ns": ns,
             "ns_ipv4": annotate_geoip([{"value": ns_ipv4}], "value", geoip_dbs)[0] if ns_ipv4 else ns_ipv4,
             "ns_ipv6": annotate_geoip([{"value": ns_ipv6}], "value", geoip_dbs)[0] if ns_ipv6 else ns_ipv6,
-            "HOSTNAMEBIND4": get_txtbind(ns_ipv4, "hostname.bind", timeout) if ns_ipv4 else None,
-            "HOSTNAMEBIND6": get_txtbind(ns_ipv6, "hostname.bind", timeout) if ns_ipv6 else None,
-            "VERSIONBIND4": get_txtbind(ns_ipv4, "version.bind", timeout) if ns_ipv4 else None,
-            "VERSIONBIND6": get_txtbind(ns_ipv6, "version.bind", timeout) if ns_ipv6 else None,
+            "HOSTNAMEBIND4": get_txtbind(ns_ipv4, "hostname.bind", timeout, redis) if ns_ipv4 else None,
+            "HOSTNAMEBIND6": get_txtbind(ns_ipv6, "hostname.bind", timeout, redis) if ns_ipv6 else None,
+            "VERSIONBIND4": get_txtbind(ns_ipv4, "version.bind", timeout, redis) if ns_ipv4 else None,
+            "VERSIONBIND6": get_txtbind(ns_ipv6, "version.bind", timeout, redis) if ns_ipv6 else None,
         }
         results.append(result)
     return results
@@ -95,9 +96,10 @@ def get_web_status(domain, dns):
 
 
 def process_domain(domain):
+    redis = get_current_connection()
     dns_local = get_dns_local(domain)
-    dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"])
-    mail = get_mx_info(dns_local["MAIL"], config["timeouts"]["mail"], local_resolver)
+    dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"], redis)
+    mail = get_mx_info(dns_local["MAIL"], config["timeouts"]["mail"], local_resolver, redis)
     web = get_web_status(domain, dns_local)
     hsts = get_hsts_status(domain)
 

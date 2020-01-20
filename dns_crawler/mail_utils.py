@@ -16,16 +16,18 @@
 # see <http://www.gnu.org/licenses/>.
 
 
+import json
 import socket
 
 from .dns_utils import get_record
 
 
-def parse_helo(h):
-    return h[1].decode("utf-8").split("\n")
-
-
-def get_mailserver_info(host, timeout, resolver):
+def get_mailserver_info(host, timeout, resolver, redis):
+    cache_key = f"cache-mail-{host}"
+    if redis is not None:
+        cached = redis.get(cache_key)
+        if cached is not None:
+            return json.loads(cached.decode("utf-8"))
     result = {}
     result["host"] = host
     result["TLSA"] = get_record("_25._tcp." + host, "TLSA", resolver)
@@ -37,14 +39,16 @@ def get_mailserver_info(host, timeout, resolver):
         result["error"] = str(e)
     else:
         try:
-            result["banner"] = s.recv(1024).decode()
+            result["banner"] = s.recv(1024).decode().replace("\r\n", "")
         except Exception as e:
             result["error"] = str(e)
         s.close()
+    if redis is not None:
+        redis.set(cache_key, json.dumps(result))
     return result
 
 
-def get_mx_info(mx_records, timeout, resolver):
+def get_mx_info(mx_records, timeout, resolver, redis):
     results = []
     if not mx_records:
         return None
@@ -52,5 +56,5 @@ def get_mx_info(mx_records, timeout, resolver):
         if mx and mx["value"]:
             host = mx["value"].split(" ")[-1]
             if host and host != ".":
-                results.append(get_mailserver_info(host, timeout, resolver))
+                results.append(get_mailserver_info(host, timeout, resolver, redis))
     return results

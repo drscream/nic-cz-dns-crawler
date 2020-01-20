@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License. If not,
 # see <http://www.gnu.org/licenses/>.
 
+import json
 import re
 
 import dns.dnssec
@@ -215,7 +216,12 @@ def get_txt(regex, items, key):
     return filtered
 
 
-def get_txtbind(nameserver, qname, timeout):
+def get_txtbind(nameserver, qname, timeout, redis):
+    cache_key = f"cache-ns-{nameserver}-{qname}"
+    if redis is not None:
+        cached = redis.get(cache_key)
+        if cached is not None:
+            return json.loads(cached.decode("utf-8"))
     result = None
     try:
         resolver = dns.resolver.Resolver(configure=False)
@@ -226,6 +232,8 @@ def get_txtbind(nameserver, qname, timeout):
         result = {"value": str(answers[0]).replace('"', "")}
     except Exception as e:
         result = {"value": None, "error": str(e)}
+    if redis is not None:
+        redis.set(cache_key, json.dumps(result))
     return result
 
 
