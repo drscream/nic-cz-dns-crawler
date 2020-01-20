@@ -27,6 +27,7 @@ from .dns_utils import (annotate_dns_algorithm, check_dnssec,
 from .geoip_utils import annotate_geoip, init_geoip
 from .web_utils import get_webserver_info
 from .mail_utils import get_mx_info
+from .hsts_utils import get_hsts_status
 
 
 config = load_config("config.yml")
@@ -99,6 +100,7 @@ def process_domain(domain):
     dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"])
     mail = get_mx_info(dns_local["MAIL"], config["timeouts"]["mail"], local_resolver)
     web = get_web_status(domain, dns_local)
+    hsts = get_hsts_status(domain)
 
     return {
         "domain": domain,
@@ -107,7 +109,8 @@ def process_domain(domain):
             "DNS_LOCAL": dns_local,
             "DNS_AUTH": dns_auth,
             "MAIL": mail,
-            "WEB": web
+            "WEB": web,
+            "HSTS": hsts
         }
     }
 
