@@ -42,7 +42,7 @@ download_geoip:
     - echo "AccountID $GEOIP_ACCOUNTID" > /etc/GeoIP.conf
     - echo "LicenseKey $GEOIP_KEY" >> /etc/GeoIP.conf
     - echo "EditionIDs GeoLite2-ASN GeoLite2-Country" >> /etc/GeoIP.conf
-    - geoipupdate
+    - geoipupdate -v
   artifacts:
     paths:
       - /var/lib/GeoIP/*.mmdb
