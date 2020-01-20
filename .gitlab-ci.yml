@@ -31,6 +31,7 @@ validate_result_example:
     - jsonschema -i result-example.json result-schema.json
 
 download_geoip:
+  image: ubuntu
   stage: setup
   variables:
     GEOIP_ACCOUNTID: $GEOIP_ACCOUNTID
