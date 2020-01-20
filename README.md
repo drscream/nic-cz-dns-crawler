@@ -55,12 +55,6 @@ $ cat results.json
 
 If you want formatted JSONs, just pipe the output through [jq](https://stedolan.github.io/jq/) or your tool of choice: `dns-crawler domain-list.txt | jq`.
 
-## How fast is it anyway?
-
-A single fairly modern laptop on ~50Mbps connection can crawl the entire *.cz* zone overnight, give or take (with `save_web_content` disabled), using 8 workers per CPU thread.
-
-Since the crawler is designed to be parallel, the actual speed depends almost entirely on the worker count. And it can scale accross multiple machines almost infinitely, so should you need a million domains crawled in an hour, you can always just throw more hardware at it (see below).
-
 ## Multithreaded crawling
 
 The crawler can run with multiple threads to speed things up when you have a lot of domains to go through. Communication betweeen the controller and workers is done through Redis (this makes it easy to run workers on multiple machines if needed, see below).
@@ -78,6 +72,14 @@ $ dns-crawler-controller domain-list.txt > result.json
 ```
 $ dns-crawler-workers
 ```
+
+Using the controller also gives you caching of repeating queries (mailserver banners and hostname.bind/version.bind for nameservers) for free.
+
+## How fast is it anyway?
+
+A single fairly modern laptop on ~50Mbps connection can crawl the entire *.cz* zone overnight, give or take (with `save_web_content` disabled), using 8 workers per CPU thread.
+
+Since the crawler is designed to be parallel, the actual speed depends almost entirely on the worker count. And it can scale accross multiple machines almost infinitely, so should you need a million domains crawled in an hour, you can always just throw more hardware at it (see below).
 
 ### Redis configuration
 
