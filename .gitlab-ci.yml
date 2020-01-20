@@ -32,15 +32,19 @@ validate_result_example:
 
 download_geoip:
   stage: setup
+  variables:
+    GEOIP_ACCOUNTID: $GEOIP_ACCOUNTID
+    GEOIP_KEY: $GEOIP_KEY
   script:
-    - apt install wget
-    - wget -cq https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz
-    - tar zxf GeoLite2-Country.tar.gz
-    - tar zxf GeoLite2-ASN.tar.gz
-    - mv GeoLite2*/*.mmdb ./test/
+    - apt-get -yqq update
+    - apt-get install -yqq geoipupdate
+    - echo "AccountID $GEOIP_ACCOUNTID" > /etc/GeoIP.conf
+    - echo "LicenseKey $GEOIP_KEY" >> /etc/GeoIP.conf
+    - echo "EditionIDs GeoLite2-ASN GeoLite2-Country" >> /etc/GeoIP.conf
+    - geoipupdate
   artifacts:
     paths:
-      - ./test/*.mmdb
+      - /var/lib/GeoIP/*.mmdb
 
 test_odvr:
   stage: test
