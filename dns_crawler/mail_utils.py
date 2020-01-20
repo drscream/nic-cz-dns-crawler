@@ -16,67 +16,35 @@
 # see <http://www.gnu.org/licenses/>.
 
 
-import smtplib
 import socket
-import ssl
 
-import certifi
-
-from .certificate import parse_cert
+from .dns_utils import get_record
 
 
 def parse_helo(h):
     return h[1].decode("utf-8").split("\n")
 
 
-def get_mailserver_info(host, timeout):
+def get_mailserver_info(host, timeout, resolver):
     result = {}
     result["host"] = host
+    result["TLSA"] = get_record("_25._tcp." + host, "TLSA", resolver)
     try:
-        s = smtplib.SMTP(host=host, port=25, timeout=timeout)
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(timeout)
+        s.connect((host, 25))
     except (OSError, socket.timeout, ConnectionRefusedError) as e:
         result["error"] = str(e)
     else:
         try:
-            result["helo"] = parse_helo(s.helo())
-            result["ehlo"] = parse_helo(s.ehlo())
-        except smtplib.SMTPServerDisconnected as e:
+            result["banner"] = s.recv(1024).decode()
+        except Exception as e:
             result["error"] = str(e)
-        else:
-            if "STARTTLS" in result["ehlo"]:
-                should_get_cert = True
-                ctx = ssl.create_default_context()
-                ctx.options &= ~(ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1)
-                ctx.load_verify_locations(certifi.where())
-                ctx.check_hostname = False
-                ctx.verify_mode = ssl.CERT_NONE
-                try:
-                    s.starttls(context=ctx)
-                except smtplib.SMTPNotSupportedError:
-                    should_get_cert = False
-                except (smtplib.SMTPResponseException) as e:
-                    result["tls"] = {}
-                    result["tls"]["error"] = str(e)
-                    should_get_cert = False
-                except ssl.SSLError as e:
-                    if e.reason in ["UNSUPPORTED_PROTOCOL", "DH_KEY_TOO_SMALL"]:
-                        return get_mailserver_info(host, timeout)
-                if should_get_cert:
-                    result["tls"] = {}
-                    result["tls"]["tls_version"] = s.sock.version()
-                    result["tls"]["tls_cipher_name"] = s.sock.cipher()[0]
-                    result["tls"]["tls_cipher_bits"] = s.sock.cipher()[2]
-                    cert = s.sock.getpeercert(binary_form=True)
-                    result["tls"]["cert"] = parse_cert(cert, host)
-            try:
-                s.quit()
-            except smtplib.SMTPServerDisconnected:
-                pass
+        s.close()
     return result
 
 
-def get_mx_info(mx_records, timeout):
-    socket.setdefaulttimeout(float(timeout))
+def get_mx_info(mx_records, timeout, resolver):
     results = []
     if not mx_records:
         return None
@@ -84,5 +52,5 @@ def get_mx_info(mx_records, timeout):
         if mx and mx["value"]:
             host = mx["value"].split(" ")[-1]
             if host and host != ".":
-                results.append(get_mailserver_info(host, timeout))
+                results.append(get_mailserver_info(host, timeout, resolver))
     return results

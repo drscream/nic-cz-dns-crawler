@@ -97,7 +97,7 @@ def get_web_status(domain, dns):
 def process_domain(domain):
     dns_local = get_dns_local(domain)
     dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"])
-    mail = get_mx_info(dns_local["MAIL"], config["timeouts"]["mail"])
+    mail = get_mx_info(dns_local["MAIL"], config["timeouts"]["mail"], local_resolver)
     web = get_web_status(domain, dns_local)
 
     return {
