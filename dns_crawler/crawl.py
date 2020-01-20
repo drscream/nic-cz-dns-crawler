@@ -46,7 +46,6 @@ def get_dns_local(domain):
         "WEB6_www": annotate_geoip(get_record("www." + domain, "AAAA", local_resolver), "value", geoip_dbs),
         "WEB_TLSA": get_record("_443._tcp." + domain, "TLSA", local_resolver),
         "WEB_TLSA_www": get_record("_443._tcp.www." + domain, "TLSA", local_resolver),
-        "MAIL_TLSA": get_record("_25._tcp." + domain, "TLSA", local_resolver),
         "TXT": txt,
         "TXT_SPF": parse_spf(get_txt(re.compile("^\"?v=spf"), deepcopy(txt), "value"), "value"),
         "TXT_DMARC": parse_dmarc(get_record("_dmarc." + domain, "TXT", local_resolver), "value"),

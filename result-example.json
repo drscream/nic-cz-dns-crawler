@@ -1,6 +1,6 @@
 {
   "domain": "nic.cz",
-  "timestamp": "2019-12-19 06:50:23",
+  "timestamp": "2020-01-20 08:26:46",
   "results": {
     "DNS_LOCAL": {
       "NS_AUTH": [
@@ -43,7 +43,6 @@
           "value": "1 1 1 a1c442880eb3fdf5ea9978c3821b806520d39735cfa9fdfb0fc7b5c27c679db4"
         }
       ],
-      "MAIL_TLSA": null,
       "TXT": [{ "value": "\"MS=92011E91562E6FD18FF9C5FA1F053F90DD5B1892\"" }],
       "TXT_SPF": null,
       "TXT_DMARC": null,
@@ -55,7 +54,7 @@
       ],
       "DNSKEY": [
         {
-          "value": "256 3 13 cctdUhdlIqhOWYtFnC41xII8RSmgsibt CF3/R8GCUdMyQckKie9GOJzId9q3PDTg 9C6I5DU7OVuUSw0dSAJsBA==",
+          "value": "256 3 13 Jd4FLfUG99RR+OE007dEd1PclPzMo/6l 7Lx3Os1ONJi15q/ydlcm3RlTFzZ6F/M9 cBBWkXY4QR6RWMx4ljG6rQ==",
           "algorithm": "ECDSAP256SHA256"
         },
         {
@@ -66,8 +65,8 @@
       "DNSSEC": {
         "valid": true,
         "rrsig": [
-          "nic.cz. 161 IN RRSIG DNSKEY 13 2 1800 20191231210555 20191218055649 61281 nic.cz. zGSGf5/jWNbrYN3Vp9Af/jxi/tV4ib5s h5zIOxWwj3ir9v8XNEQ1Yy2M6mqRdY34 pqdDzy1xk9DIln6AB8DGXQ==",
-          "nic.cz. 161 IN RRSIG DNSKEY 13 2 1800 20200101041556 20191218055649 28695 nic.cz. 1Kl5KAVSja0PwSc5LnheakpV39AtPeCA coedsi9deSYnCqzvsMYgHiBM1YSTDgHA U0U+qY/1xmoq0LxCNRldCw=="
+          "nic.cz. 1800 IN RRSIG DNSKEY 13 2 1800 20200129040438 20200115124001 61281 nic.cz. jg5iz6qIWS7arl4vH7Ur66S+lJegA6Ve TY/0luskqYSmy2qnL5VZ0ZRnaCV6z+ix QjKGW1aAyZtiMoxajiV2ug==",
+          "nic.cz. 1800 IN RRSIG DNSKEY 13 2 1800 20200129112052 20200115124001 20199 nic.cz. G5A1+pQnFyLpmkngiEl+JPC3yRXs4elz HSYH03ihJBB4fAmOPJFIYyttMKURMx/t SNCXCGkYOYHC7smPWp4ywg=="
         ]
       }
     },
@@ -88,7 +87,7 @@
         },
         "HOSTNAMEBIND6": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: hostname.bind. CH TXT"
+          "error": "All nameservers failed to answer the query hostname.bind. CH TXT: Server 2001:678:f::1 UDP port 53 answered REFUSED"
         },
         "VERSIONBIND4": {
           "value": null,
@@ -123,7 +122,7 @@
         },
         "VERSIONBIND6": {
           "value": null,
-          "error": "The DNS response does not contain an answer to the question: version.bind. CH TXT"
+          "error": "All nameservers failed to answer the query version.bind. CH TXT: Server 2001:678:10::1 UDP port 53 answered REFUSED"
         }
       },
       {
@@ -157,87 +156,31 @@
     "MAIL": [
       {
         "host": "mail.nic.cz.",
-        "helo": ["mail.nic.cz"],
-        "ehlo": [
-          "mail.nic.cz",
-          "PIPELINING",
-          "SIZE 62914560",
-          "ETRN",
-          "STARTTLS",
-          "ENHANCEDSTATUSCODES",
-          "8BITMIME",
-          "DSN",
-          "SMTPUTF8"
-        ],
-        "tls": {
-          "tls_version": "TLSv1.2",
-          "tls_cipher_name": "ECDHE-RSA-AES256-GCM-SHA384",
-          "tls_cipher_bits": 256,
-          "cert": {
-            "not_before": "2019-11-20 13:09:57",
-            "not_after": "2020-02-18 13:09:57",
-            "subject": { "CN": "mail.nic.cz" },
-            "issuer": {
-              "C": "US",
-              "O": "Let's Encrypt",
-              "CN": "Let's Encrypt Authority X3"
-            },
-            "version": 3,
-            "serial": "46bfc3071353296601560c4818f58312049",
-            "algorithm": "sha256",
-            "alt_names": [
-              "jabber.nic.cz",
-              "lists.nic.cz",
-              "mail.nic.cz",
-              "nic.cz"
-            ]
+        "TLSA": [
+          {
+            "value": "3 1 1 4f9736249ab586f37fc110856f6a3358adadbf99db03628866466194f5bb2e09"
           }
-        }
+        ],
+        "banner": "220 mail.nic.cz ESMTP\r\n"
       },
       {
         "host": "mx.nic.cz.",
-        "helo": ["mx.nic.cz"],
-        "ehlo": [
-          "mx.nic.cz",
-          "PIPELINING",
-          "SIZE 10240000",
-          "VRFY",
-          "ETRN",
-          "STARTTLS",
-          "ENHANCEDSTATUSCODES",
-          "8BITMIME",
-          "DSN"
-        ],
-        "tls": {
-          "tls_version": "TLSv1.2",
-          "tls_cipher_name": "ECDHE-RSA-AES256-GCM-SHA384",
-          "tls_cipher_bits": 256,
-          "cert": {
-            "not_before": "2019-02-06 10:19:04",
-            "not_after": "2021-02-05 10:19:04",
-            "subject": {
-              "C": "CZ",
-              "L": "Prague",
-              "O": "CZ.NIC",
-              "OU": "Techdep",
-              "CN": "mx.nic.cz",
-              "1.2.840.113549.1.9.1": "root@nic.cz"
-            },
-            "issuer": {
-              "C": "CZ",
-              "L": "Prague",
-              "O": "CZ.NIC\\, z.s.p.o.",
-              "CN": "CZ.NIC SHA2 Root Certification Authority",
-              "1.2.840.113549.1.9.1": "ca@nic.cz"
-            },
-            "version": 3,
-            "serial": "000000000000020f",
-            "algorithm": "sha256",
-            "alt_names": ["mx.nic.cz"]
+        "TLSA": [
+          {
+            "value": "3 1 1 a9205f0936373d80ad8d480f72b0b6ad9b182fbf71bc64d670b5b519bf47a523"
           }
-        }
+        ],
+        "banner": "220 mx.nic.cz ESMTP\r\n"
       },
-      { "host": "bh.nic.cz.", "error": "timed out" }
+      {
+        "host": "bh.nic.cz.",
+        "TLSA": [
+          {
+            "value": "3 1 1 4f9736249ab586f37fc110856f6a3358adadbf99db03628866466194f5bb2e09"
+          }
+        ],
+        "error": "timed out"
+      }
     ],
     "WEB": {
       "WEB4_80": [
@@ -263,8 +206,8 @@
             "tls_cipher_name": "ECDHE-RSA-AES128-GCM-SHA256",
             "tls_cipher_bits": 128,
             "cert": {
-              "not_before": "2019-10-07 11:01:43",
-              "not_after": "2020-01-05 11:01:43",
+              "not_before": "2019-12-16 08:01:06",
+              "not_after": "2020-03-15 08:01:06",
               "subject": { "CN": "nic.cz" },
               "issuer": {
                 "C": "US",
@@ -272,7 +215,7 @@
                 "CN": "Let's Encrypt Authority X3"
               },
               "version": 3,
-              "serial": "37f91c083345e94214cf2ce610edf771c08",
+              "serial": "38c17af3252f66dceac193c05f818de013b",
               "algorithm": "sha256",
               "alt_names": [
                 "dsdng.nic.cz",
@@ -309,8 +252,8 @@
             "tls_cipher_name": "ECDHE-RSA-AES128-GCM-SHA256",
             "tls_cipher_bits": 128,
             "cert": {
-              "not_before": "2019-10-07 11:01:43",
-              "not_after": "2020-01-05 11:01:43",
+              "not_before": "2019-12-16 08:01:06",
+              "not_after": "2020-03-15 08:01:06",
               "subject": { "CN": "nic.cz" },
               "issuer": {
                 "C": "US",
@@ -318,7 +261,7 @@
                 "CN": "Let's Encrypt Authority X3"
               },
               "version": 3,
-              "serial": "37f91c083345e94214cf2ce610edf771c08",
+              "serial": "38c17af3252f66dceac193c05f818de013b",
               "algorithm": "sha256",
               "alt_names": [
                 "dsdng.nic.cz",
@@ -371,8 +314,8 @@
             "tls_cipher_name": "ECDHE-RSA-AES128-GCM-SHA256",
             "tls_cipher_bits": 128,
             "cert": {
-              "not_before": "2019-10-07 11:01:43",
-              "not_after": "2020-01-05 11:01:43",
+              "not_before": "2019-12-16 08:01:06",
+              "not_after": "2020-03-15 08:01:06",
               "subject": { "CN": "nic.cz" },
               "issuer": {
                 "C": "US",
@@ -380,7 +323,7 @@
                 "CN": "Let's Encrypt Authority X3"
               },
               "version": 3,
-              "serial": "37f91c083345e94214cf2ce610edf771c08",
+              "serial": "38c17af3252f66dceac193c05f818de013b",
               "algorithm": "sha256",
               "alt_names": [
                 "dsdng.nic.cz",
@@ -417,8 +360,8 @@
             "tls_cipher_name": "ECDHE-RSA-AES128-GCM-SHA256",
             "tls_cipher_bits": 128,
             "cert": {
-              "not_before": "2019-10-07 11:01:43",
-              "not_after": "2020-01-05 11:01:43",
+              "not_before": "2019-12-16 08:01:06",
+              "not_after": "2020-03-15 08:01:06",
               "subject": { "CN": "nic.cz" },
               "issuer": {
                 "C": "US",
@@ -426,7 +369,7 @@
                 "CN": "Let's Encrypt Authority X3"
               },
               "version": 3,
-              "serial": "37f91c083345e94214cf2ce610edf771c08",
+              "serial": "38c17af3252f66dceac193c05f818de013b",
               "algorithm": "sha256",
               "alt_names": [
                 "dsdng.nic.cz",
@@ -456,6 +399,7 @@
           }
         }
       ]
-    }
+    },
+    "HSTS": false
   }
 }

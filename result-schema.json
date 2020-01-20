@@ -458,15 +458,6 @@
                 { "$ref": "#/definitions/dns_record_array" }
               ]
             },
-            "MAIL_TLSA": {
-              "description": "TLSA record for '_25._tcp.domain'.",
-              "anyOf": [
-                {
-                  "type": "null"
-                },
-                { "$ref": "#/definitions/dns_record_array" }
-              ]
-            },
             "TXT": {
               "description": "TXT records",
               "anyOf": [
@@ -543,7 +534,6 @@
             "DNSSEC",
             "DS",
             "MAIL",
-            "MAIL_TLSA",
             "TXT",
             "TXT_SPF",
             "TXT_DMARC",
@@ -645,21 +635,14 @@
                   "host": {
                     "type": "string"
                   },
-                  "helo": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
+                  "banner": {
+                    "type": "string"
                   },
-                  "ehlo": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "tls": { "$ref": "#/definitions/tls_info" },
                   "error": {
                     "type": "string"
+                  },
+                  "TLSA": {
+                    "$ref": "#/definitions/dns_record_array"
                   }
                 },
                 "required": ["host"],
@@ -709,9 +692,12 @@
             "WEB6_80_www"
           ],
           "additionalProperties": false
+        },
+        "HSTS": {
+          "type": "boolean"
         }
       },
-      "required": ["DNS_AUTH", "DNS_LOCAL", "WEB"],
+      "required": ["DNS_AUTH", "DNS_LOCAL", "WEB", "MAIL", "HSTS"],
       "additionalProperties": false
     }
   },
