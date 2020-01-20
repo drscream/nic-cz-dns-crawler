@@ -31,6 +31,7 @@ setup(
         "requests==2.22.0",
         "cryptography==2.8",
         "pyopenssl==19.1.0",
+        "hstspreload==2020.1.17",
         "dnspython"
     ],
     keywords=["crawler", "dns", "http", "https"],

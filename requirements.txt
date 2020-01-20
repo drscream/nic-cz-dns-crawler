@@ -9,4 +9,5 @@ requests==2.22.0
 cryptography==2.8
 pyopenssl==19.1.0
 idna==2.8
+hstspreload==2020.1.17
 git+https://github.com/rthalley/dnspython.git
