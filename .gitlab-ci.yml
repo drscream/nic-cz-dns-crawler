@@ -42,10 +42,11 @@ download_geoip:
     - echo "AccountID $GEOIP_ACCOUNTID" > /etc/GeoIP.conf
     - echo "LicenseKey $GEOIP_KEY" >> /etc/GeoIP.conf
     - echo "EditionIDs GeoLite2-ASN GeoLite2-Country" >> /etc/GeoIP.conf
-    - geoipupdate -v
+    - geoipupdate -d .
+    - mv *.mmdb ./test/
   artifacts:
     paths:
-      - /var/lib/GeoIP/*.mmdb
+      - ./test/*.mmdb
 
 test_odvr:
   stage: test

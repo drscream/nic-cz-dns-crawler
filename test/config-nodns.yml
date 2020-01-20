@@ -1,6 +1,6 @@
 geoip:
-  country: /var/lib/GeoIP/GeoLite2-Country.mmdb
-  asn: /var/lib/GeoIP/GeoLite2-ASN.mmdb
+  country: GeoLite2-Country.mmdb
+  asn: GeoLite2-ASN.mmdb
 timeouts:
   job: 80
   dns: 2
