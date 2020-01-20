@@ -268,8 +268,9 @@ def get_record(domain_name, record, resolver):
     ):
         return None
     for item in response.answer:
-        for line in str(item).split("\n"):
-            results.append({"value": value_from_record(record, line)})
+        if item.rdtype == dns.rdatatype.from_text(record) and item.name == domain:
+            for line in str(item).split("\n"):
+                results.append({"value": value_from_record(record, line)})
     if len(results) > 0:
         return results
     else:
