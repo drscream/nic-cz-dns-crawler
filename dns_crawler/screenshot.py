@@ -25,6 +25,7 @@ async def get_browser_info(domain, web_results, browser):
         return {
             "error": str(e)
         }
+    await page.waitForNavigation()
     await page.screenshot({"path": f"{domain}.png"})
     cookies = await page.cookies()
     dom = await page.evaluate("document.documentElement.outerHTML")
