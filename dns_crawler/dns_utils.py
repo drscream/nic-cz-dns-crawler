@@ -229,7 +229,10 @@ def get_txtbind(nameserver, qname, timeout, redis):
         resolver.timeout = timeout
         resolver.lifetime = timeout
         answers = resolver.query(qname, rdtype="TXT", rdclass="CHAOS", lifetime=timeout)
-        result = {"value": str(answers[0]).replace('"', "")}
+        answers_l = []
+        for answer in answers:
+            answers_l.append(str(answer).replace('"', ""))
+        result = {"value": answers_l}
     except Exception as e:
         result = {"value": None, "error": str(e)}
     if redis is not None:

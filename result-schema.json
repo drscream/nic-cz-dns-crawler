@@ -110,7 +110,15 @@
       "type": "object",
       "properties": {
         "value": {
-          "type": ["null", "string"]
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          ]
         },
         "error": {
           "type": "string"
@@ -602,6 +610,22 @@
                     ]
                   },
                   "VERSIONBIND6": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      { "$ref": "#/definitions/value_null_error" }
+                    ]
+                  },
+                  "AUTHORSBIND4": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      { "$ref": "#/definitions/value_null_error" }
+                    ]
+                  },
+                  "AUTHORSBIND6": {
                     "anyOf": [
                       {
                         "type": "null"

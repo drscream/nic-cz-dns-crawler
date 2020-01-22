@@ -77,6 +77,8 @@ def get_dns_auth(domain, nameservers, redis):
             "HOSTNAMEBIND6": get_txtbind(ns_ipv6, "hostname.bind", timeout, redis) if ns_ipv6 else None,
             "VERSIONBIND4": get_txtbind(ns_ipv4, "version.bind", timeout, redis) if ns_ipv4 else None,
             "VERSIONBIND6": get_txtbind(ns_ipv6, "version.bind", timeout, redis) if ns_ipv6 else None,
+            "AUTHORSBIND4": get_txtbind(ns_ipv4, "authors.bind", timeout, redis) if ns_ipv4 else None,
+            "AUTHORSBIND6": get_txtbind(ns_ipv6, "authors.bind", timeout, redis) if ns_ipv6 else None,
         }
         results.append(result)
     return results
