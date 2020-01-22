@@ -1,3 +1,6 @@
+from pyppeteer.errors import PageError
+
+
 def get_coverage_bytes(coverage):
     total = 0
     used = 0
@@ -16,7 +19,12 @@ async def get_browser_info(domain, web_results, browser):
     })
     await page.coverage.startJSCoverage()
     await page.coverage.startCSSCoverage()
-    await page.goto(f"http://www.{domain}/")
+    try:
+        await page.goto(f"http://www.{domain}/")
+    except PageError as e:
+        return {
+            "error": str(e)
+        }
     await page.screenshot({"path": f"{domain}.png"})
     cookies = await page.cookies()
     dom = await page.evaluate("document.documentElement.outerHTML")
