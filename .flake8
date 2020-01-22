@@ -4,6 +4,7 @@ max-line-length = 120
 exclude =
   .vscode
   .git,
+  .eggs,
   *.pyc,
   .venv,
   __pycache__
