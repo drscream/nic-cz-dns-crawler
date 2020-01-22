@@ -109,6 +109,7 @@ async def process_domain(domain):
     hsts = get_hsts_status(domain)
     chrome = await pyppeteer.launch(headless=True, args=["--ignore-certificate-errors"])
     browser = await get_browser_info(domain, web, chrome)
+    chrome.close()
 
     return {
         "domain": domain,
