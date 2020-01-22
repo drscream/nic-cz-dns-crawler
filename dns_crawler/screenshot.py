@@ -20,15 +20,16 @@ async def get_browser_info(domain, web_results, browser):
     await page.coverage.startJSCoverage()
     await page.coverage.startCSSCoverage()
     try:
-        await page.goto(f"http://www.{domain}/")
+        await page.goto(f"http://www.{domain}/", {
+            "waitUntil": "networkidle2"
+        })
     except PageError as e:
         return {
             "error": str(e)
         }
-    await page.waitForNavigation()
+    dom = await page.evaluate("document.documentElement.outerHTML")
     await page.screenshot({"path": f"{domain}.png"})
     cookies = await page.cookies()
-    dom = await page.evaluate("document.documentElement.outerHTML")
     js_coverage = await page.coverage.stopJSCoverage()
     css_coverage = await page.coverage.stopCSSCoverage()
     await page.close()
