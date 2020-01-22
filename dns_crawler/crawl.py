@@ -107,7 +107,7 @@ async def process_domain(domain):
     mail = get_mx_info(dns_local["MAIL"], config["timeouts"]["mail"], local_resolver, redis)
     web = get_web_status(domain, dns_local)
     hsts = get_hsts_status(domain)
-    chrome = await pyppeteer.launch(headless=True)
+    chrome = await pyppeteer.launch(headless=True, args=["--ignore-certificate-errors"])
     browser = await get_browser_info(domain, web, chrome)
 
     return {
