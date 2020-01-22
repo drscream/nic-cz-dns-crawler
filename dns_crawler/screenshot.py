@@ -28,7 +28,7 @@ async def get_browser_info(domain, web_results, browser):
             "error": str(e)
         }
     dom = await page.evaluate("document.documentElement.outerHTML")
-    await page.screenshot({"path": f"{domain}.png"})
+    await page.screenshot({"path": f"{domain}.png", "fullPage": True})
     cookies = await page.cookies()
     js_coverage = await page.coverage.stopJSCoverage()
     css_coverage = await page.coverage.stopCSSCoverage()
