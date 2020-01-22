@@ -100,7 +100,7 @@ def get_web_status(domain, dns):
     }
 
 
-def process_domain(domain):
+async def process_domain(domain):
     redis = get_current_connection()
     dns_local = get_dns_local(domain)
     dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"], redis)
