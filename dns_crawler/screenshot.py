@@ -16,7 +16,7 @@ async def get_browser_info(domain, web_results, browser):
     })
     await page.coverage.startJSCoverage()
     await page.coverage.startCSSCoverage()
-    await page.goto(f"https://www.{domain}/")
+    await page.goto(f"http://www.{domain}/")
     await page.screenshot({"path": f"{domain}.png"})
     cookies = await page.cookies()
     dom = await page.evaluate("document.documentElement.outerHTML")
