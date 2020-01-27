@@ -1,4 +1,5 @@
-from pyppeteer.errors import PageError
+from pyppeteer.errors import TimeoutError, PageError, NetworkError
+import asyncio
 
 
 def get_coverage_bytes(coverage):
@@ -11,34 +12,76 @@ def get_coverage_bytes(coverage):
     return [used, total]
 
 
-async def get_browser_info(domain, web_results, browser):
+async def close_dialog(dialog):
+    await dialog.dismiss()
+
+
+async def get_browser_info(domain, web_results, dnssec_valid, browser):
+    if (
+        dnssec_valid is False
+        or not web_results
+        or all(v is None for v in web_results.values())
+        or all("error" in i for v in web_results.values() if v for i in v if i)
+    ):
+        return None
+    subdomain = ""
+    if (
+        web_results["WEB4_80_www"] or web_results["WEB6_80_www"]
+        or web_results["WEB4_443_www"] or web_results["WEB6_443_www"]
+    ):
+        subdomain = "www."
     page = await browser.newPage()
     await page.setViewport({
         "width": 1280,
         "height": 960
     })
-    await page.coverage.startJSCoverage()
-    await page.coverage.startCSSCoverage()
+    # await page.evaluateOnNewDocument("window.open = () => null; setTimeout(()=>window.close(), 7000);")
+    page.on(
+        "dialog",
+        lambda dialog: asyncio.ensure_future(close_dialog(dialog))
+    )
     try:
-        await page.goto(f"http://www.{domain}/", {
-            "waitUntil": "networkidle2"
-        })
-    except PageError as e:
+        await asyncio.gather(
+            page.goto(f"http://{subdomain}{domain}/", {
+                "waitUntil": "networkidle2"
+            }),
+            page.waitForNavigation({
+                "waitUntil": "networkidle2"
+            })
+        )
+    except (TimeoutError, PageError, NetworkError) as e:
         return {
             "error": str(e)
         }
-    dom = await page.evaluate("document.documentElement.outerHTML")
-    await page.screenshot({"path": f"{domain}.png", "fullPage": True})
-    cookies = await page.cookies()
-    js_coverage = await page.coverage.stopJSCoverage()
-    css_coverage = await page.coverage.stopCSSCoverage()
-    await page.close()
 
+    await page.screenshot({"path": f"{domain}.png", "fullPage": True})
+
+    # try:
+    url = page.url
+    # dom = await page.evaluate("document.documentElement.outerHTML")
+    # except (PageError, TimeoutError, NetworkError):
+    #     dom = None
+
+    # try:
+    # cookies = await page.cookies()
+    # except (PageError, TimeoutError, NetworkError):
+    #     cookies = None
+
+    # try:
+    # metrics = await page.metrics()
+    # except (PageError, TimeoutError, NetworkError):
+    #     metrics = None
+
+    # if not page.isClosed() and page._client._connection:
+    await page.close()
+    # return
     return {
-        "dom": dom,
-        "cookies": cookies,
-        "bytes_used": {
-            "js": get_coverage_bytes(js_coverage),
-            "css": get_coverage_bytes(css_coverage)
-        }
+        "url": url,
+        # "dom": dom,
+        # "cookies": cookies,
+        # "metrics": metrics
+        #     # "bytes_used": {
+        #     #     "js": get_coverage_bytes(js_coverage),
+        #     #     "css": get_coverage_bytes(css_coverage)
+        #     # }
     }

@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License. If not,
 # see <http://www.gnu.org/licenses/>.
 
+import asyncio
 import subprocess
 import sys
 from multiprocessing import cpu_count
@@ -22,6 +23,7 @@ from os.path import basename
 from socket import gethostname
 from time import sleep
 
+import pyppeteer
 from redis import Redis
 
 from .redis_utils import get_redis_host
@@ -41,7 +43,23 @@ def print_help():
     sys.exit(1)
 
 
-def main():
+async def start_chrome():
+    chrome = await pyppeteer.launch({
+        "executablePath": "/opt/chromium-browser/chrome",
+        "headless": True,
+        "args": [
+            "--ignore-certificate-errors",
+            "--disable-gpu",
+            "--disable-webgl",
+            "--disable-async-dns",
+            "--single-process",
+            "--disable-setuid-sandbox"
+        ],
+    })
+    return chrome
+
+
+async def run_workers():
     cpus = cpu_count()
     worker_count = cpus * 8
     hostname = gethostname()
@@ -93,6 +111,11 @@ def main():
                          f"{hostname}-{n+1}"
                          ])
 
+    chrome_ws_key = f"chrome-ws-{hostname}"
+    chrome = await start_chrome()
+    redis.set(chrome_ws_key, chrome.wsEndpoint)
+    sys.stderr.write(f"{timestamp()} Started headless Chromium at {chrome.wsEndpoint}\n")
+
     while redis.get("locked") == b"1":
         try:
             sys.stderr.write(f"{timestamp()} Waiting for the main process to unlock the queue.\n")
@@ -105,5 +128,12 @@ def main():
     try:
         for p in procs:
             p.wait()
+    except KeyboardInterrupt:
+        pass
+
+
+def main():
+    try:
+        asyncio.get_event_loop().run_until_complete(run_workers())
     except KeyboardInterrupt:
         pass

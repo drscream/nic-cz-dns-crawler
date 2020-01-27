@@ -19,7 +19,6 @@ import json
 import re
 from copy import deepcopy
 from datetime import datetime
-
 from rq import get_current_connection
 
 from .config_loader import load_config
@@ -33,6 +32,8 @@ from .web_utils import get_webserver_info
 from .screenshot import get_browser_info
 import asyncio
 import pyppeteer
+from socket import gethostname
+
 
 config = load_config("config.yml")
 geoip_dbs = init_geoip(config)
@@ -107,9 +108,26 @@ async def process_domain(domain):
     mail = get_mx_info(dns_local["MAIL"], config["timeouts"]["mail"], local_resolver, redis)
     web = get_web_status(domain, dns_local)
     hsts = get_hsts_status(domain)
-    chrome = await pyppeteer.launch(headless=True, args=["--ignore-certificate-errors"])
-    browser = await get_browser_info(domain, web, chrome)
-    await chrome.close()
+
+    if redis:
+        hostname = gethostname()
+        chrome_ws_key = f"chrome-ws-{hostname}"
+        chrome_ws = redis.get(chrome_ws_key).decode("utf-8")
+        chrome = await pyppeteer.connect({
+            "browserWSEndpoint": chrome_ws
+        })
+    else:
+        chrome = await pyppeteer.launch({
+            "headless": True,
+            "args": ["--ignore-certificate-errors", "--disable-gpu", "--disable-webgl", "--disable-async-dns", "--single-process"]
+        })
+
+    browser = await get_browser_info(domain, web, dns_local["DNSSEC"]["valid"], chrome)
+
+    if redis:
+        await chrome.disconnect()
+    else:
+        await chrome.close()
 
     return {
         "domain": domain,

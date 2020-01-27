@@ -38,10 +38,12 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 def create_request_headers(domain, user_agent, accept_language):
     return {
         "Host": idna.encode(domain).decode("ascii"),
-        "Connection": "close",
-        "Upgrade-Insecure-Requests": "1",
+        "Connection": "Keep-Alive",
+        # "Upgrade-Insecure-Requests": "1",
+        'Cache-Control': 'max-age=0',
         "User-Agent": user_agent,
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+        # "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+        "Accept": "*/*",
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": accept_language,
     }
