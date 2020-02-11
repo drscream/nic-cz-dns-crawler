@@ -236,7 +236,9 @@ def get_txtbind(nameserver, qname, timeout, redis):
     except Exception as e:
         result = {"value": None, "error": str(e)}
     if redis is not None:
-        redis.set(cache_key, json.dumps(result))
+        redis.set(cache_key, json.dumps(result), ex=900)
+    else:
+        redis.expire(cache_key, 900)
     return result
 
 

@@ -44,7 +44,9 @@ def get_mailserver_info(host, timeout, resolver, redis):
             result["error"] = str(e)
         s.close()
     if redis is not None:
-        redis.set(cache_key, json.dumps(result))
+        redis.set(cache_key, json.dumps(result), ex=900)
+    else:
+        redis.expire(cache_key, 900)
     return result
 
 
