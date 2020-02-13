@@ -27,6 +27,7 @@ def get_mailserver_info(host, timeout, resolver, redis):
     if redis is not None:
         cached = redis.get(cache_key)
         if cached is not None:
+            redis.expire(cache_key, 900)
             return json.loads(cached.decode("utf-8"))
     result = {}
     result["host"] = host
@@ -45,8 +46,6 @@ def get_mailserver_info(host, timeout, resolver, redis):
         s.close()
     if redis is not None:
         redis.set(cache_key, json.dumps(result), ex=900)
-    else:
-        redis.expire(cache_key, 900)
     return result
 
 

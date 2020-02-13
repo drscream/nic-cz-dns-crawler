@@ -221,6 +221,7 @@ def get_txtbind(nameserver, qname, timeout, redis):
     if redis is not None:
         cached = redis.get(cache_key)
         if cached is not None:
+            redis.expire(cache_key, 900)
             return json.loads(cached.decode("utf-8"))
     result = None
     try:
@@ -237,8 +238,6 @@ def get_txtbind(nameserver, qname, timeout, redis):
         result = {"value": None, "error": str(e)}
     if redis is not None:
         redis.set(cache_key, json.dumps(result), ex=900)
-    else:
-        redis.expire(cache_key, 900)
     return result
 
 
