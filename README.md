@@ -28,6 +28,8 @@ Despite the name, the crawler gets info for more services than just DNS:
   - HSTS preload list status for a domain
 
 Answers from name and mail servers are cached, so the crawler shouldn't flood hosting providers with repeating queries.
+ 
+If you need to configure a firewall, the crawler connects to ports `53` (both UDP and TCP), `25` (TCP), `80` (TCP), and `443` (TCP for now, but we might add UDP with HTTP3…).
 
 See [`result-example.json`](result-example.json) to get an idea what the resulting JSON looks like.
 
