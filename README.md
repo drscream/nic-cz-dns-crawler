@@ -4,6 +4,39 @@
 
 > A crawler for getting info about *(possibly a huge number of)* DNS domains
 
+# What does it do?
+
+Despite the name, the crawler gets info for more services than just DNS:
+
+- DNS:
+  - all A/AAAA records, annotated with GeoIP (for the 2nd level domain and `www.` subdomain)
+  - TXT records (with SPF and DMARC parsed for easier filtering)
+  - TLSA (for the 2nd level domain and `www.` subdomain)
+  - MX
+  - DNSSEC validation
+  - nameservers:
+    - annotated with GeoIP (for each server IP)
+    - HOSTNAME.BIND, VERSION.BIND, AUTHORS.BIND (also for all IPs)
+- E-mail (for every server from MX):
+  - SMTP server banners
+  - TLSA records
+- Web:
+  - HTTP status & headers (inc. parsed cookies) for ports 80 & 443 on each IP from A/AAAA records
+  - certificate info for HTTPS (optionally with an entire cert chain)
+  - webpage content (optional)
+  - everything of the above is saved for each _step_ in the redirect history – the crawler follows redirects until it gets a non-redirecting status or hits a configurable limit
+  - HSTS preload list status for a domain
+
+Answers from name and mail servers are cached, so the crawler shouldn't flood hosting providers with repeating queries.
+
+See [`result-example.json`](result-example.json) to get an idea what the resulting JSON looks like.
+
+## How fast is it anyway?
+
+A single fairly modern laptop on ~50Mbps connection can crawl the entire *.cz* zone overnight, give or take (with `save_web_content` disabled), using 8 workers per CPU thread.
+
+Since the crawler is designed to be parallel, the actual speed depends almost entirely on the worker count. And it can scale accross multiple machines almost infinitely, so should you need a million domains crawled in an hour, you can always just throw more hardware at it (see below).
+
 ## Installation
 
 Create and activate a virtual environment:
@@ -74,12 +107,6 @@ $ dns-crawler-workers
 ```
 
 Using the controller also gives you caching of repeating queries (mailserver banners and hostname.bind/version.bind for nameservers) for free.
-
-## How fast is it anyway?
-
-A single fairly modern laptop on ~50Mbps connection can crawl the entire *.cz* zone overnight, give or take (with `save_web_content` disabled), using 8 workers per CPU thread.
-
-Since the crawler is designed to be parallel, the actual speed depends almost entirely on the worker count. And it can scale accross multiple machines almost infinitely, so should you need a million domains crawled in an hour, you can always just throw more hardware at it (see below).
 
 ### Redis configuration
 
