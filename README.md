@@ -9,7 +9,7 @@
 Despite the name, the crawler gets info for more services than just DNS:
 
 - DNS:
-  - all A/AAAA records, annotated with GeoIP (for the 2nd level domain and `www.` subdomain)
+  - all A/AAAA records (for the 2nd level domain and `www.` subdomain), annotated with GeoIP
   - TXT records (with SPF and DMARC parsed for easier filtering)
   - TLSA (for the 2nd level domain and `www.` subdomain)
   - MX
