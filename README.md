@@ -15,8 +15,9 @@ Despite the name, the crawler gets info for more services than just DNS:
   - MX
   - DNSSEC validation
   - nameservers:
-    - annotated with GeoIP (for each server IP)
-    - HOSTNAME.BIND, VERSION.BIND, AUTHORS.BIND (also for all IPs)
+    - each server IP annotated with GeoIP
+    - HOSTNAME.BIND, VERSION.BIND, AUTHORS.BIND and fortune (also for all IPs)
+  - users can add custom additional RRs in the config file
 - E-mail (for every server from MX):
   - SMTP server banners
   - TLSA records
@@ -237,9 +238,9 @@ geoip:
 
 The free `GeoLite2-Country` seems to be a bit inaccurate, especially for IPv6 (it places some CZ.NIC nameservers in Ukraine etc.).
 
-### Getting additional DNS records:
+### Getting additional DNS resource records:
 
-You can easily get some additional records (for the 2nd level domain) which aren't included in the crawler by default:
+You can easily get some additional RRs (for the 2nd level domain) which aren't included in the crawler by default:
 
 ```yaml
 dns:

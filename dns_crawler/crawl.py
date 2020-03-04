@@ -24,8 +24,9 @@ from rq import get_current_connection
 
 from .config_loader import load_config
 from .dns_utils import (annotate_dns_algorithm, check_dnssec,
-                        get_local_resolver, get_record, get_txt, get_txtbind,
-                        parse_dmarc, parse_spf, parse_tlsa, get_record_parser)
+                        get_local_resolver, get_ns_info, get_record,
+                        get_record_parser, get_txt, parse_dmarc, parse_spf,
+                        parse_tlsa)
 from .geoip_utils import annotate_geoip, init_geoip
 from .hsts_utils import get_hsts_status
 from .mail_utils import get_mx_info
@@ -73,18 +74,18 @@ def get_dns_auth(domain, nameservers, redis, config, local_resolver, geoip_dbs):
             continue
         a = get_record(ns, "A", local_resolver)
         aaaa = get_record(ns, "AAAA", local_resolver)
-        ns_ipv4 = a[0]["value"] if a else None
-        ns_ipv6 = aaaa[0]["value"] if aaaa else None
+        ipv4_results = []
+        ipv6_results = []
+        if a is not None:
+            for ipv4 in a:
+                ipv4_results.append(get_ns_info(ipv4, geoip_dbs, timeout, redis))
+        if aaaa is not None:
+            for ipv6 in aaaa:
+                ipv6_results.append(get_ns_info(ipv6, geoip_dbs, timeout, redis))
         result = {
             "ns": ns,
-            "ns_ipv4": annotate_geoip([{"value": ns_ipv4}], geoip_dbs)[0] if ns_ipv4 else ns_ipv4,
-            "ns_ipv6": annotate_geoip([{"value": ns_ipv6}], geoip_dbs)[0] if ns_ipv6 else ns_ipv6,
-            "HOSTNAMEBIND4": get_txtbind(ns_ipv4, "hostname.bind", timeout, redis) if ns_ipv4 else None,
-            "HOSTNAMEBIND6": get_txtbind(ns_ipv6, "hostname.bind", timeout, redis) if ns_ipv6 else None,
-            "VERSIONBIND4": get_txtbind(ns_ipv4, "version.bind", timeout, redis) if ns_ipv4 else None,
-            "VERSIONBIND6": get_txtbind(ns_ipv6, "version.bind", timeout, redis) if ns_ipv6 else None,
-            "AUTHORSBIND4": get_txtbind(ns_ipv4, "authors.bind", timeout, redis) if ns_ipv4 else None,
-            "AUTHORSBIND6": get_txtbind(ns_ipv6, "authors.bind", timeout, redis) if ns_ipv6 else None,
+            "ipv4": ipv4_results,
+            "ipv6": ipv6_results
         }
         results.append(result)
     return results

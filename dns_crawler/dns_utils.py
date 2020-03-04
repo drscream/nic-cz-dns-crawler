@@ -22,6 +22,8 @@ import dns.dnssec
 import dns.name
 import dns.resolver
 
+from .geoip_utils import annotate_geoip
+
 
 def get_local_resolver(config):
     dns_timeout = config["timeouts"]["dns"]
@@ -234,13 +236,7 @@ def get_txt(regex, items, key="value"):
     return filtered
 
 
-def get_txtbind(nameserver, qname, timeout, redis):
-    cache_key = f"cache-ns-{nameserver}-{qname}"
-    if redis is not None:
-        cached = redis.get(cache_key)
-        if cached is not None:
-            redis.expire(cache_key, 900)
-            return json.loads(cached.decode("utf-8"))
+def get_chaostxt(nameserver, qname, timeout):
     result = None
     try:
         resolver = dns.resolver.Resolver(configure=False)
@@ -254,6 +250,23 @@ def get_txtbind(nameserver, qname, timeout, redis):
         result = {"value": answers_l}
     except Exception as e:
         result = {"value": None, "error": str(e)}
+    return result
+
+
+def get_ns_info(ip, geoip_dbs, timeout, redis):
+    cache_key = f"cache-ns-{ip['value']}"
+    if redis is not None:
+        cached = redis.get(cache_key)
+        if cached is not None:
+            redis.expire(cache_key, 900)
+            return json.loads(cached.decode("utf-8"))
+    result = {
+        "geoip": annotate_geoip([ip], geoip_dbs)[0],
+        "hostnamebind": get_chaostxt(ip["value"], "hostname.bind", timeout),
+        "versionbind": get_chaostxt(ip["value"], "version.bind", timeout),
+        "authorsbind": get_chaostxt(ip["value"], "authors.bind", timeout),
+        "fortune": get_chaostxt(ip["value"], "fortune", timeout)
+    }
     if redis is not None:
         redis.set(cache_key, json.dumps(result), ex=900)
     return result
