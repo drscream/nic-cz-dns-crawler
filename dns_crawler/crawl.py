@@ -31,12 +31,8 @@ from .hsts_utils import get_hsts_status
 from .mail_utils import get_mx_info
 from .web_utils import get_webserver_info
 
-config = load_config("config.yml")
-geoip_dbs = init_geoip(config)
-local_resolver = get_local_resolver(config)
 
-
-def get_dns_local(domain):
+def get_dns_local(domain, config, local_resolver, geoip_dbs):
     txt = get_record(domain, "TXT", local_resolver)
     result = {
         "NS_AUTH": get_record(domain, "NS", local_resolver),
@@ -66,7 +62,7 @@ def get_dns_local(domain):
     return dict(result, **additional)
 
 
-def get_dns_auth(domain, nameservers, redis):
+def get_dns_auth(domain, nameservers, redis, config, local_resolver, geoip_dbs):
     timeout = config["timeouts"]["dns"]
     if not nameservers or len(nameservers) < 1:
         return None
@@ -94,7 +90,7 @@ def get_dns_auth(domain, nameservers, redis):
     return results
 
 
-def get_web_status(domain, dns):
+def get_web_status(domain, dns, config):
     return {
         "WEB4_80": get_webserver_info(domain, dns["WEB4"], config),
         "WEB4_80_www": get_webserver_info(f"www.{domain}", dns["WEB4"], config),
@@ -108,12 +104,15 @@ def get_web_status(domain, dns):
 
 
 def process_domain(domain):
+    config = load_config("config.yml")
+    geoip_dbs = init_geoip(config)
+    local_resolver = get_local_resolver(config)
     redis = get_current_connection()
-    dns_local = get_dns_local(domain)
-    dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"], redis)
+    dns_local = get_dns_local(domain, config, local_resolver, geoip_dbs)
+    dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"], redis, config, local_resolver, geoip_dbs)
     mail = get_mx_info(dns_local["MAIL"], config["timeouts"]["mail"],
                        config["mail"]["get_banners"], local_resolver, redis)
-    web = get_web_status(domain, dns_local)
+    web = get_web_status(domain, dns_local, config)
     hsts = get_hsts_status(domain)
 
     return {
