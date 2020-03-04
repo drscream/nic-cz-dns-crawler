@@ -40,7 +40,7 @@ def init_geoip(config):
     return (geoip_country, geoip_isp, geoip_asn)
 
 
-def annotate_geoip(items, key, dbs):
+def annotate_geoip(items, dbs, key="value"):
     geoip_country, geoip_isp, geoip_asn = dbs
     if items:
         for item in items:

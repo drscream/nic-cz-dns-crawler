@@ -25,12 +25,12 @@ import dns.resolver
 
 def get_local_resolver(config):
     dns_timeout = config["timeouts"]["dns"]
-    use_custom_dns = "dns" in config and len(config["resolvers"]) > 0
+    use_custom_dns = "dns" in config and len(config["dns"]["resolvers"]) > 0
 
     local_resolver = dns.resolver.Resolver(configure=(not use_custom_dns))
     local_resolver.timeout = local_resolver.lifetime = dns_timeout
     if use_custom_dns:
-        local_resolver.nameservers = config["resolvers"]
+        local_resolver.nameservers = config["dns"]["resolvers"]
     return local_resolver
 
 
@@ -118,7 +118,7 @@ def check_dnssec(domain, resolver):
     return {"valid": True, "rrsig": str(rrsig).split("\n")}
 
 
-def annotate_dns_algorithm(items, key, index):
+def annotate_dns_algorithm(items, index, key="value"):
     if items:
         for item in items:
             try:
@@ -129,7 +129,7 @@ def annotate_dns_algorithm(items, key, index):
     return items
 
 
-def parse_dmarc(items, key):
+def parse_dmarc(items, key="value"):
     if not items:
         return None
     items = [item for item in items if item[key].startswith("\"v=DMARC")]
@@ -178,7 +178,7 @@ def get_spf_all(record):
         return all.replace("all", "")
 
 
-def parse_spf(items, key):
+def parse_spf(items, key="value"):
     if not items:
         return None
     items = [item for item in items if item[key].startswith("\"v=spf")]
@@ -204,7 +204,25 @@ def parse_spf(items, key):
     return parsed
 
 
-def get_txt(regex, items, key):
+def parse_tlsa(items, key="value"):
+    if not items:
+        return None
+    parsed = []
+    for item in items:
+        output = {}
+        fields = item[key].split(" ")
+        output["usage"] = int(fields[0])
+        output["selector"] = int(fields[1])
+        output["matchingtype"] = int(fields[2])
+        output["data"] = fields[3]
+        item = {k: v for k, v in output.items() if v is not None}
+        parsed.append(item)
+    if len(parsed) == 0:
+        return None
+    return parsed
+
+
+def get_txt(regex, items, key="value"):
     if not items:
         return items
     filtered = []
@@ -279,3 +297,16 @@ def get_record(domain_name, record, resolver):
         return results
     else:
         return None
+
+
+additional_parsers = {
+    "SPF": parse_spf
+}
+
+
+def get_record_parser(record):
+    try:
+        parser = additional_parsers[record]
+    except KeyError:
+        parser = None
+    return parser

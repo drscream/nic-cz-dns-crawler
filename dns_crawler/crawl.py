@@ -25,7 +25,7 @@ from rq import get_current_connection
 from .config_loader import load_config
 from .dns_utils import (annotate_dns_algorithm, check_dnssec,
                         get_local_resolver, get_record, get_txt, get_txtbind,
-                        parse_dmarc, parse_spf)
+                        parse_dmarc, parse_spf, parse_tlsa, get_record_parser)
 from .geoip_utils import annotate_geoip, init_geoip
 from .hsts_utils import get_hsts_status
 from .mail_utils import get_mx_info
@@ -38,22 +38,32 @@ local_resolver = get_local_resolver(config)
 
 def get_dns_local(domain):
     txt = get_record(domain, "TXT", local_resolver)
-    return {
+    result = {
         "NS_AUTH": get_record(domain, "NS", local_resolver),
         "MAIL": get_record(domain, "MX", local_resolver),
-        "WEB4": annotate_geoip(get_record(domain, "A", local_resolver), "value", geoip_dbs),
-        "WEB4_www": annotate_geoip(get_record("www." + domain, "A", local_resolver), "value", geoip_dbs),
-        "WEB6": annotate_geoip(get_record(domain, "AAAA", local_resolver), "value", geoip_dbs),
-        "WEB6_www": annotate_geoip(get_record("www." + domain, "AAAA", local_resolver), "value", geoip_dbs),
+        "WEB4": annotate_geoip(get_record(domain, "A", local_resolver), geoip_dbs),
+        "WEB4_www": annotate_geoip(get_record("www." + domain, "A", local_resolver), geoip_dbs),
+        "WEB6": annotate_geoip(get_record(domain, "AAAA", local_resolver), geoip_dbs),
+        "WEB6_www": annotate_geoip(get_record("www." + domain, "AAAA", local_resolver), geoip_dbs),
         "WEB_TLSA": get_record("_443._tcp." + domain, "TLSA", local_resolver),
-        "WEB_TLSA_www": get_record("_443._tcp.www." + domain, "TLSA", local_resolver),
+        "WEB_TLSA_www": parse_tlsa(get_record("_443._tcp.www." + domain, "TLSA", local_resolver)),
         "TXT": txt,
-        "TXT_SPF": parse_spf(get_txt(re.compile("^\"?v=spf"), deepcopy(txt), "value"), "value"),
-        "TXT_DMARC": parse_dmarc(get_record("_dmarc." + domain, "TXT", local_resolver), "value"),
-        "DS": annotate_dns_algorithm(get_record(domain, "DS", local_resolver), "value", 1),
-        "DNSKEY": annotate_dns_algorithm(get_record(domain, "DNSKEY", local_resolver), "value", 2),
+        "TXT_SPF": parse_spf(get_txt(re.compile("^\"?v=spf"), deepcopy(txt))),
+        "TXT_DMARC": parse_dmarc(get_record("_dmarc." + domain, "TXT", local_resolver)),
+        "SPF": parse_spf(get_record(domain, "SPF", local_resolver)),
+        "DS": annotate_dns_algorithm(get_record(domain, "DS", local_resolver), 1),
+        "DNSKEY": annotate_dns_algorithm(get_record(domain, "DNSKEY", local_resolver), 2),
         "DNSSEC": check_dnssec(domain, local_resolver),
     }
+    additional = {}
+    for record in config["dns"]["additional"]:
+        values = get_record(domain, record, local_resolver)
+        parser = get_record_parser(record)
+        if parser is not None:
+            additional[record] = parser(values)
+        else:
+            additional[record] = values
+    return dict(result, **additional)
 
 
 def get_dns_auth(domain, nameservers, redis):
@@ -71,8 +81,8 @@ def get_dns_auth(domain, nameservers, redis):
         ns_ipv6 = aaaa[0]["value"] if aaaa else None
         result = {
             "ns": ns,
-            "ns_ipv4": annotate_geoip([{"value": ns_ipv4}], "value", geoip_dbs)[0] if ns_ipv4 else ns_ipv4,
-            "ns_ipv6": annotate_geoip([{"value": ns_ipv6}], "value", geoip_dbs)[0] if ns_ipv6 else ns_ipv6,
+            "ns_ipv4": annotate_geoip([{"value": ns_ipv4}], geoip_dbs)[0] if ns_ipv4 else ns_ipv4,
+            "ns_ipv6": annotate_geoip([{"value": ns_ipv6}], geoip_dbs)[0] if ns_ipv6 else ns_ipv6,
             "HOSTNAMEBIND4": get_txtbind(ns_ipv4, "hostname.bind", timeout, redis) if ns_ipv4 else None,
             "HOSTNAMEBIND6": get_txtbind(ns_ipv6, "hostname.bind", timeout, redis) if ns_ipv6 else None,
             "VERSIONBIND4": get_txtbind(ns_ipv4, "version.bind", timeout, redis) if ns_ipv4 else None,

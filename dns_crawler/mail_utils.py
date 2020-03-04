@@ -19,7 +19,7 @@
 import json
 import socket
 
-from .dns_utils import get_record
+from .dns_utils import get_record, parse_tlsa
 
 
 def get_mailserver_info(host, timeout, get_banners, resolver, redis):
@@ -31,7 +31,7 @@ def get_mailserver_info(host, timeout, get_banners, resolver, redis):
             return json.loads(cached.decode("utf-8"))
     result = {}
     result["host"] = host
-    result["TLSA"] = get_record("_25._tcp." + host, "TLSA", resolver)
+    result["TLSA"] = parse_tlsa(get_record("_25._tcp." + host, "TLSA", resolver))
     if get_banners:
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
