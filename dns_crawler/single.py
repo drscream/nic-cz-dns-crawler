@@ -33,10 +33,10 @@ def print_help():
 
 
 def main():
-    try:
-        filename = sys.argv[1]
-    except IndexError:
+    if "-h" in sys.argv or "--help" in sys.argv or len(sys.argv) < 2:
         print_help()
+
+    filename = sys.argv[1]
 
     try:
         with open(filename, "r") as file:
