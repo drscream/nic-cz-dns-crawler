@@ -93,6 +93,10 @@ def load_config(filename):
                     }
                 })
                 config = merge_dicts(with_resolvers, defaults)
+                noalias_dumper = yaml.dumper.SafeDumper
+                noalias_dumper.ignore_aliases = lambda self, data: True
+                with open(path.join(pwd, filename), "w") as file_w:
+                    yaml.dump(config, file_w, default_flow_style=False, Dumper=noalias_dumper)
             else:
                 config = merge_dicts(config_from_file, defaults)
     except FileNotFoundError:
