@@ -265,7 +265,7 @@ def value_from_record(record, data):
     return re.sub(r".*" + re.escape(record) + " ", "", data)
 
 
-def get_record(domain_name, record, resolver):
+def get_record(domain_name, record, resolver, protocol="udp"):
     results = []
     domain = dns.name.from_text(domain_name)
     if not domain.is_absolute():
@@ -273,9 +273,9 @@ def get_record(domain_name, record, resolver):
     request = dns.message.make_query(domain, record)
     request.flags |= dns.flags.CD
     try:
-        response = dns.query.udp(request, resolver.nameservers[0], resolver.timeout)
+        response = getattr(dns.query, protocol)(request, resolver.nameservers[0], resolver.timeout)
     except dns.message.Truncated:
-        response = dns.query.tcp(request, resolver.nameservers[0], resolver.timeout)
+        return get_record(domain_name, record, resolver, protocol="tcp")
     except (
         dns.query.UnexpectedSource,
         dns.query.BadResponse
