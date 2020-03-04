@@ -1,13 +1,15 @@
 geoip:
   country: /usr/share/GeoIP/GeoLite2-Country.mmdb
   asn: /usr/share/GeoIP/GeoLite2-ASN.mmdb
-resolvers:
-  - 193.17.47.1
+dns:
+  resolvers:
+    - 193.17.47.1
 timeouts:
   job: 80
   dns: 2
   http: 2
   mail: 5
+  cache: 900
 mail:
   get_banners: True
 web:

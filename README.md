@@ -202,12 +202,15 @@ The default values are:
 geoip:
   country: /usr/share/GeoIP/GeoLite2-Country.mmdb
   asn: /usr/share/GeoIP/GeoLite2-ASN.mmdb
-resolvers:
-  - 193.17.47.1  # https://www.nic.cz/odvr/
+dns:
+  resolvers:
+    - 193.17.47.1  # https://www.nic.cz/odvr/
+  # add 'additional' here to get more DNS records, see below
 timeouts:
   job: 80  # seconds, overall job (one domain crawl) duration when using dns-crawler-controller, jobs will fail after that and you can retry/abort them as needed
   dns: 2  # seconds, timeout for dns queries
   http: 2  # seconds, timeout for HTTP(S)/TLS requests
+  cache: 900  # TTL for cached responses (used for mail and name servers), they will expire after this much seconds since their last use
 mail:
   get_banners: True  # connect to SMTP servers and save banners they send (you might want to turn it off if your ISP is touchy about higher traffic on port 25)
 web:
@@ -217,7 +220,9 @@ web:
   accept_language: en-US;q=0.9,en;q=0.8  # Accept-Language header to use for HTTP(S) requests
 ```
 
-Using commercial (GeoIP2 Country and ISP) DBs instead of free (GeoLite2 Country and ASN) ones:
+### Using commercial GeoIP DNSs
+
+Tell the crawler to use (GeoIP2 Country and ISP) DBs instead of free (GeoLite2 Country and ASN) ones:
 
 ```yaml
 geoip:
@@ -231,6 +236,24 @@ geoip:
 `ISP` (paid) database is preferred over `ASN` (free), if both are defined. The difference is described on Maxmind's website: https://dev.maxmind.com/faq/what-is-the-difference-between-the-geoip-isp-and-organization-databases/.
 
 The free `GeoLite2-Country` seems to be a bit inaccurate, especially for IPv6 (it places some CZ.NIC nameservers in Ukraine etc.).
+
+### Getting additional DNS records:
+
+You can easily get some additional records (for the 2nd level domain) which aren't included in the crawler by default:
+
+```yaml
+dns:
+  additional:
+    - SPF
+    - CAA
+    - CERT
+    - LOC
+    - SSHFP
+```
+
+See the [List of DNS record types](https://en.wikipedia.org/wiki/List_of_DNS_record_types) for some ideas. Things like OPENPGPKEY won't work though, because they are intented to be used on a subdomain (generated as a hash of part of e-mail address in this case).
+
+You can plug a parser for the record by adding a function to the `additional_parsers` enum in `dns_utils.py`. The only one included by default is SPF (since the deprecated SPF record has the same format as SPF from TXT which the crawler is getting by default).
 
 ## Command line parameters
 

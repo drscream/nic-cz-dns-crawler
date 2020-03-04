@@ -27,14 +27,18 @@ defaults = {
         "country": "/usr/share/GeoIP/GeoLite2-Country.mmdb",
         "asn": "/usr/share/GeoIP/GeoLite2-ASN.mmdb"
     },
-    "resolvers": [
-        "193.17.47.1"
-    ],
+    "dns": {
+        "resolvers": [
+            "193.17.47.1"
+        ],
+        "additional": []
+    },
     "timeouts": {
         "job": 80,
         "dns": 2,
         "http": 2,
-        "mail": 2
+        "mail": 2,
+        "cache": 900
     },
     "mail": {
         "get_banners": True
@@ -77,8 +81,18 @@ def load_config(filename):
                "dns_timeout" in config_from_file or \
                "save_web_content" in config_from_file:
                 sys.stderr.write(f"{timestamp()} Incompatible config file loaded (the format" +
-                                 "changed with v1.2, see README). Using defaults instead.\n")
+                                 " changed with v1.2, see README). Using defaults instead.\n")
                 config = defaults
+            elif "resolvers" in config_from_file:
+                sys.stderr.write(f"{timestamp()} Incompatible config file loaded (the format" +
+                                 " changed with v1.4, see README). Automatically converting to" +
+                                 " the new format.\n")
+                with_resolvers = merge_dicts(config_from_file, {
+                    "dns": {
+                        "resolvers": config_from_file["resolvers"]
+                    }
+                })
+                config = merge_dicts(with_resolvers, defaults)
             else:
                 config = merge_dicts(config_from_file, defaults)
     except FileNotFoundError:
