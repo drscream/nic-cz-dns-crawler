@@ -208,6 +208,8 @@ timeouts:
   job: 80  # seconds, overall job (one domain crawl) duration when using dns-crawler-controller, jobs will fail after that and you can retry/abort them as needed
   dns: 2  # seconds, timeout for dns queries
   http: 2  # seconds, timeout for HTTP(S)/TLS requests
+mail:
+  get_banners: True  # connect to SMTP servers and save banners they send (you might want to turn it off if your ISP is touchy about higher traffic on port 25)
 web:
   save_content: False  # save website content – beware, setting this to True will output HUGE files for higher domain counts
   strip_html: True   # when saving web content, save just text (strip HTML tags, scripts, CSS, and abundant whitespace)

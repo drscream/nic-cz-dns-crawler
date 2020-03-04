@@ -36,6 +36,9 @@ defaults = {
         "http": 2,
         "mail": 2
     },
+    "mail": {
+        "get_banners": True
+    },
     "web": {
         "save_content": False,
         "strip_html": True,

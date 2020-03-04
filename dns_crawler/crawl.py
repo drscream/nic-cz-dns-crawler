@@ -101,7 +101,8 @@ def process_domain(domain):
     redis = get_current_connection()
     dns_local = get_dns_local(domain)
     dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"], redis)
-    mail = get_mx_info(dns_local["MAIL"], config["timeouts"]["mail"], local_resolver, redis)
+    mail = get_mx_info(dns_local["MAIL"], config["timeouts"]["mail"],
+                       config["mail"]["get_banners"], local_resolver, redis)
     web = get_web_status(domain, dns_local)
     hsts = get_hsts_status(domain)
 
