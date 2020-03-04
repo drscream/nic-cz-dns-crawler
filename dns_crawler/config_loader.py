@@ -93,6 +93,7 @@ def load_config(filename):
                     }
                 })
                 config = merge_dicts(with_resolvers, defaults)
+                del config["resolvers"]
                 noalias_dumper = yaml.dumper.SafeDumper
                 noalias_dumper.ignore_aliases = lambda self, data: True
                 with open(path.join(pwd, filename), "w") as file_w:
