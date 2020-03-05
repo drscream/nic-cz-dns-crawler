@@ -115,8 +115,11 @@ def strip_newlines(text):
 
 
 def emsg(e):
-    msg = e.message if hasattr(e, "message") else str(e)
-    return re.sub(r".*Caused by.*>: ([^']+)'\)\)", r"\1", msg)
+    if isinstance(e, (requests.exceptions.Timeout, requests.exceptions.ConnectTimeout)):
+        msg = "timeout"
+    else:
+        msg = str(e)
+    return msg
 
 
 def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
