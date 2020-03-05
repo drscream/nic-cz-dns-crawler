@@ -144,15 +144,18 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                     host = ip
                 h["r"] = s2.get(f"{protocol}://{host}{path}",
                                 allow_redirects=False, stream=True, timeout=http_timeout, headers=headers)
-                history = [h]
-                getattr(h, "r")
-                redirect_count = 0
+            getattr(h, "r")
         except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout, AttributeError) as e:
-            results.append({
-                "ip": ip,
-                "error": str(e)
-            })
-            continue
+            if isinstance(e, AttributeError):
+                pass
+            else:
+                results.append({
+                    "ip": ip,
+                    "error": str(e)
+                })
+                continue
+        redirect_count = 0
+        history = [h]
         while history[-1]["r"].is_redirect:
             url = history[-1]["r"].headers["location"]
             h = {

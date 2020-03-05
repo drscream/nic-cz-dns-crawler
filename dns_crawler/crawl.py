@@ -95,13 +95,13 @@ def get_dns_auth(domain, nameservers, redis, config, local_resolver, geoip_dbs):
 def get_web_status(domain, dns, config, source_ipv4, source_ipv6):
     return {
         "WEB4_80": get_webserver_info(domain, dns["WEB4"], config, source_ipv4),
-        "WEB4_80_www": get_webserver_info(f"www.{domain}", dns["WEB4"], config, source_ipv4),
+        "WEB4_80_www": get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4),
         "WEB4_443": get_webserver_info(domain, dns["WEB4"], config, source_ipv4, tls=True),
-        "WEB4_443_www": get_webserver_info(f"www.{domain}", dns["WEB4"], config, source_ipv4, tls=True),
+        "WEB4_443_www": get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4, tls=True),
         "WEB6_80": get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True),
-        "WEB6_80_www": get_webserver_info(f"www.{domain}", dns["WEB6"], config, source_ipv6, ipv6=True),
+        "WEB6_80_www": get_webserver_info(f"www.{domain}", dns["WEB6_www"], config, source_ipv6, ipv6=True),
         "WEB6_443": get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True, tls=True),
-        "WEB6_443_www": get_webserver_info(f"www.{domain}", dns["WEB6"], config, source_ipv6, ipv6=True, tls=True)
+        "WEB6_443_www": get_webserver_info(f"www.{domain}", dns["WEB6_www"], config, source_ipv6, ipv6=True, tls=True)
     }
 
 
