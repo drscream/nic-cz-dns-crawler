@@ -25,6 +25,7 @@ setup(
         "cert_human==1.0.7",
         "cryptography==2.8",
         "dnspython",
+        "forcediphttpsadapter==1.0.1",
         "geoip2==3.0.0",
         "hstspreload",
         "idna==2.9",
