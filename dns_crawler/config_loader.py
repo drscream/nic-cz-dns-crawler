@@ -37,6 +37,7 @@ defaults = {
         "job": 80,
         "dns": 2,
         "http": 2,
+        "http_read": 5,
         "mail": 2,
         "cache": 900
     },

@@ -125,7 +125,7 @@ def emsg(e):
 def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
     if not ips or len(ips) < 1:
         return None
-    http_timeout = config["timeouts"]["http"]
+    http_timeout = (config["timeouts"]["http"], config["timeouts"]["http_read"])
     save_content = config["web"]["save_content"]
     max_redirects = config["web"]["max_redirects"]
     protocol = "https" if tls else "http"
@@ -236,10 +236,13 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                     if h["r"].raw.peer_cert:
                         step["cert"] = [parse_cert(h["r"].raw.peer_cert.to_cryptography())]
             if save_content:
-                if not config["web"]["strip_html"]:
-                    step["content"] = h["r"].text
-                else:
-                    step["content"] = strip_newlines(strip_tags(h["r"].text))
+                try:
+                    if not config["web"]["strip_html"]:
+                        step["content"] = h["r"].text
+                    else:
+                        step["content"] = strip_newlines(strip_tags(h["r"].text))
+                except requests.exceptions.ConnectionError:
+                    step["content"] = None
             h["r"].close()
             steps.append(step)
 

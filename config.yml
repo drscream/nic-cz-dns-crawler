@@ -8,10 +8,11 @@ timeouts:
   job: 80
   dns: 2
   http: 2
+  http_read: 5
   mail: 5
   cache: 900
 mail:
-  get_banners: True
+  get_banners: False
 web:
   save_content: True
   strip_html: False

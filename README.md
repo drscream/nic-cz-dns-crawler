@@ -210,7 +210,8 @@ dns:
 timeouts:
   job: 80  # seconds, overall job (one domain crawl) duration when using dns-crawler-controller, jobs will fail after that and you can retry/abort them as needed
   dns: 2  # seconds, timeout for dns queries
-  http: 2  # seconds, timeout for HTTP(S)/TLS requests
+  http: 2  # seconds, connection timeout for HTTP(S)/TLS requests
+  http_read: 5  # seconds, read timeout when saving web content
   cache: 900  # TTL for cached responses (used for mail and name servers), they will expire after this much seconds since their last use
 mail:
   get_banners: True  # connect to SMTP servers and save banners they send (you might want to turn it off if your ISP is touchy about higher traffic on port 25, or just to save time)
