@@ -17,6 +17,7 @@
 
 import re
 from html.parser import HTMLParser
+from itertools import takewhile
 from urllib.parse import unquote, urljoin, urlparse
 
 import cert_human
@@ -63,9 +64,11 @@ def parse_alt_svc(header):
 def parse_hsts(header):
     result = {}
     items = [i.lower() for i in re.split(r"; ?", header)]
+    result["raw"] = header
     result["includeSubdomains"] = "includesubdomains" in items
     result["preload"] = "preload" in items
-    result["max-age"] = [int(i.split("=")[1]) for i in items if i.startswith("max-age")][0]
+    result["max-age"] = [int(''.join(takewhile(str.isdigit, re.split(r"[=:]", i)[1])))
+                         for i in items if re.sub(r"'i\"", "", i).startswith("max-age")][0]
     return result
 
 
