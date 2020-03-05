@@ -190,7 +190,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                     host = ip
                 h["r"] = s2.get(f"{protocol}://{host}{path}",
                                 allow_redirects=False, stream=True, timeout=http_timeout, headers=headers)
-        except requests.exceptions.ConnectionError as e:
+        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
             results.append({
                 "ip": ip,
                 "error": str(e)
@@ -207,7 +207,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                 h["r"] = s1.get(url, verify=False, allow_redirects=False, stream=True, timeout=http_timeout,
                                 headers=create_request_headers(urlparse(url).hostname, config["web"]["user_agent"],
                                                                config["web"]["accept_language"]))
-            except requests.exceptions.ConnectionError as e:
+            except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
                 h["e"] = str(e)
             history.append(h)
             redirect_count = redirect_count + 1
@@ -255,8 +255,8 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                 step["ip"] = ip
             # elif h["r"].raw._fp.fp:
             else:
-                step["ip"] = h["r"].connection.dest_ip
-                # step["ip"] = h["r"].raw._fp.fp.raw._sock.socket.getpeername()[0]
+                # step["ip"] = h["r"].connection.dest_ip
+                step["ip"] = h["r"].raw._fp.fp.raw._sock.socket.getpeername()[0]
             if h["r"].url.startswith("https") and h["r"].raw.connection:
                 # step["ssl_version"] = h["r"].raw.connection.ssl_context.protocol
                 step["tls"] = {
