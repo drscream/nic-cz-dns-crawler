@@ -21,6 +21,7 @@ setup(
         ]
     },
     install_requires=[
+        "asn1crypto==1.3.0",
         "cert_human==1.0.7",
         "cryptography==2.8",
         "dnspython",
