@@ -47,9 +47,12 @@ def get_pubkey_fingerprint(cert, hash):
 
 def parse_cert(cert):
     result = {}
+    now = datetime.now()
     result["not_before"] = cert_datetime_to_iso(cert.not_valid_before)
     result["not_after"] = cert_datetime_to_iso(cert.not_valid_after)
-    result["expired"] = cert.not_valid_after < datetime.now()
+    result["expired"] = cert.not_valid_after < now
+    if result["expired"]:
+        result["expired_for"] = (now - cert.not_valid_after).days
     result["validity_period"] = (cert.not_valid_after - cert.not_valid_before).days
     result["subject"] = parse_cert_name(cert, "subject")
     result["issuer"] = parse_cert_name(cert, "issuer")
