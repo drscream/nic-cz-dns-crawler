@@ -68,7 +68,7 @@ def parse_hsts(header):
     result["includeSubdomains"] = "includesubdomains" in items
     result["preload"] = "preload" in items
     result["max-age"] = [int(''.join(takewhile(str.isdigit, re.split(r"[=:]", i)[1])))
-                         for i in items if re.sub(r"'i\"", "", i).startswith("max-age")][0]
+                         for i in items if re.sub(r"['\"]", "", i).startswith("max-age")][0]
     return result
 
 
