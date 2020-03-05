@@ -16,22 +16,17 @@
 # see <http://www.gnu.org/licenses/>.
 
 import re
-# import socket
-# import ssl
 from html.parser import HTMLParser
 from urllib.parse import unquote, urlparse
 
 import cert_human
-# import certifi
 import idna
 import requests
 import urllib3
 from forcediphttpsadapter.adapters import ForcedIPHTTPSAdapter
 from requests_toolbelt.adapters.source import SourceAddressAdapter
-# from requests.packages.urllib3.connection import VerifiedHTTPSConnection
 
 from .certificate import parse_cert
-# from .utils import drop_null_values
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 cert_human.enable_urllib3_patch()
@@ -47,7 +42,6 @@ class CrawlerAdapter(SourceAddressAdapter, ForcedIPHTTPSAdapter):
 def create_request_headers(domain, user_agent, accept_language):
     return {
         "Host": idna.encode(domain).decode("ascii"),
-        "Connection": "close",
         "Upgrade-Insecure-Requests": "1",
         "User-Agent": user_agent,
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
@@ -115,6 +109,11 @@ def strip_newlines(text):
     return re.sub(r"(\r?\n *)+", "\n", re.sub(r" {2,}", "", re.sub(r"\t+", "", text))).strip()
 
 
+def emsg(e):
+    msg = e.message if hasattr(e, "message") else str(e)
+    return re.sub(r".*Caused by.*>: ([^']+)'\)\)", r"\1", msg)
+
+
 def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
     if not ips or len(ips) < 1:
         return None
@@ -132,31 +131,29 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
         s2.mount(f'https://', SourceAddressAdapter(source_address=source_ip))
         s2.mount(f'http://', SourceAddressAdapter(source_address=source_ip))
         headers = create_request_headers(domain, config["web"]["user_agent"], config["web"]["accept_language"])
-        h = {}
         try:
             if protocol == "https":
-                h["r"] = s1.get(f"{protocol}://{domain}{path}", allow_redirects=False,
-                                verify=False, stream=True, timeout=http_timeout, headers=headers)
+                r = s1.get(f"{protocol}://{domain}{path}", allow_redirects=False,
+                           verify=False, stream=True, timeout=http_timeout, headers=headers)
             else:
                 if ipv6:
                     host = f"[{ip}]"
                 else:
                     host = ip
-                h["r"] = s2.get(f"{protocol}://{host}{path}",
-                                allow_redirects=False, stream=True, timeout=http_timeout, headers=headers)
-            getattr(h, "r")
-        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout, AttributeError) as e:
+                r = s2.get(f"{protocol}://{host}{path}",
+                           allow_redirects=False, stream=True, timeout=http_timeout, headers=headers)
+        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
             if isinstance(e, AttributeError):
                 pass
             else:
                 results.append({
                     "ip": ip,
-                    "error": str(e)
+                    "error": emsg(e)
                 })
                 continue
         redirect_count = 0
-        history = [h]
-        while history[-1]["r"].is_redirect:
+        history = [{"r": r}]
+        while "r" in history[-1] and history[-1]["r"].is_redirect:
             url = history[-1]["r"].headers["location"]
             h = {
                 "url": url
@@ -166,7 +163,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                                 headers=create_request_headers(urlparse(url).hostname, config["web"]["user_agent"],
                                                                config["web"]["accept_language"]))
             except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
-                h["e"] = str(e)
+                h["e"] = emsg(e)
             history.append(h)
             redirect_count = redirect_count + 1
             if redirect_count >= max_redirects:

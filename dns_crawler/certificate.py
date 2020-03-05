@@ -22,6 +22,7 @@ from cryptography.hazmat.primitives.serialization.base import Encoding, PublicFo
 from .utils import drop_null_values
 from datetime import datetime
 
+
 def cert_datetime_to_iso(cert_date):
     return cert_date.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -53,7 +54,6 @@ def parse_cert(cert):
     result["subject"] = parse_cert_name(cert, "subject")
     result["issuer"] = parse_cert_name(cert, "issuer")
     result["version"] = int(str(cert.version)[-1])
-    result["serial"] = format_cert_serial_number(cert.serial_number)
     result["serial"] = format_cert_serial_number(cert.serial_number)
     result["fingerprint"] = {
         "cert": {

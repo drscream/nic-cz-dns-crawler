@@ -11,7 +11,7 @@ timeouts:
   mail: 5
   cache: 900
 mail:
-  get_banners: False
+  get_banners: True
 web:
   save_content: True
   strip_html: False
