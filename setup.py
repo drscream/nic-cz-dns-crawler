@@ -22,7 +22,7 @@ setup(
     },
     install_requires=[
         "cryptography==2.8",
-        "dnspython"
+        "dnspython",
         "geoip2==3.0.0",
         "hstspreload",
         "idna==2.9",
