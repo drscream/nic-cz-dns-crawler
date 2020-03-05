@@ -80,52 +80,6 @@ header_parsers = {
 }
 
 
-# def get_tls_info(domain, ip, http_timeout, ipv6=False, port=443):
-#     socket.setdefaulttimeout(float(http_timeout))
-#     ctx = ssl.create_default_context()
-#     ctx.options &= ~(ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1)
-#     ctx.load_verify_locations(certifi.where())
-#     ctx.check_hostname = False
-#     ctx.verify_mode = ssl.CERT_NONE
-#     ctx.set_alpn_protocols(alpn_protocols)
-
-#     if not ipv6:
-#         inet = socket.AF_INET
-#     else:
-#         inet = socket.AF_INET6
-#     sock = socket.socket(inet, socket.SOCK_STREAM)
-#     conn = ctx.wrap_socket(sock, server_hostname=domain)
-
-#     try:
-#         r = conn.connect_ex((ip, port))
-#     except (OSError, socket.timeout) as e:
-#         result = {
-#             "error": str(e)
-#         }
-#     else:
-#         if r != 0:
-#             result = {
-#                 "error": f"errno {r}"
-#             }
-#         else:
-#             try:
-#                 cert = conn.getpeercert(binary_form=True)
-#             except (OSError, AttributeError) as e:
-#                 result = {
-#                     "error": str(e)
-#                 }
-#             else:
-#                 result = drop_null_values({
-#                     "alpn_protocol": conn.selected_alpn_protocol(),
-#                     "tls_version": conn.version(),
-#                     "tls_cipher_name": conn.cipher()[0],
-#                     "tls_cipher_bits": conn.cipher()[2],
-#                     "cert": parse_cert(cert, domain)
-#                 })
-#     conn.close()
-#     return result
-
-
 class HTMLStripper(HTMLParser):
     def __init__(self):
         self.reset()
@@ -226,6 +180,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                     "error": h["e"]
                 })
                 continue
+            step_tls = "r" in h and h["r"].url.startswith("https")
             step = {}
             if "r" in h:
                 step["url"] = h["r"].url
@@ -253,22 +208,13 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
             step["headers"] = headers
             if i == 0:
                 step["ip"] = ip
-            # elif h["r"].raw._fp.fp:
-            else:
-                # step["ip"] = h["r"].connection.dest_ip
-                step["ip"] = h["r"].raw._fp.fp.raw._sock.socket.getpeername()[0]
-            if h["r"].url.startswith("https") and h["r"].raw.connection:
-                # step["ssl_version"] = h["r"].raw.connection.ssl_context.protocol
-                step["tls"] = {
-                    "version": h["r"].raw._fp.fp.raw._sock.connection.get_protocol_version_name(),
-                    "cipher_bits": h["r"].raw._fp.fp.raw._sock.connection.get_cipher_bits(),
-                    "cipher_name": h["r"].raw._fp.fp.raw._sock.connection.get_cipher_name()
-                }
-                # step["alpn_proto"] = str(h["r"].raw._fp.fp.raw._sock.connection.get_alpn_proto_negotiated())
-                # step["protocol_version"] = h["r"].raw._fp.fp.raw._sock.connection.get_protocol_version()
-                # step["tls_version"] = h["r"].raw._fp.fp.raw._sock.connection.get_protocol_version_name()
-                # print("CCC", dir(h["r"].raw._fp.fp.raw._sock.connection))
-            if "r" in h and h["r"].url.startswith("https"):
+            if step_tls:
+                if h["r"].raw._fp.fp:
+                    step["tls"] = {
+                        "version": h["r"].raw._fp.fp.raw._sock.connection.get_protocol_version_name(),
+                        "cipher_bits": h["r"].raw._fp.fp.raw._sock.connection.get_cipher_bits(),
+                        "cipher_name": h["r"].raw._fp.fp.raw._sock.connection.get_cipher_name()
+                    }
                 if config["web"]["save_cert_chain"]:
                     if h["r"].raw.peer_cert_chain:
                         cert_chain = []
