@@ -287,8 +287,6 @@ def get_record(domain_name, record, resolver, protocol="udp"):
     request.flags |= dns.flags.CD
     try:
         response = getattr(dns.query, protocol)(request, resolver.nameservers[0], resolver.timeout)
-    except dns.message.Truncated:
-        return get_record(domain_name, record, resolver, protocol="tcp")
     except (
         dns.query.UnexpectedSource,
         dns.query.BadResponse
@@ -302,6 +300,8 @@ def get_record(domain_name, record, resolver, protocol="udp"):
         dns.exception.Timeout,
     ):
         return None
+    except dns.message.Truncated:
+        return get_record(domain_name, record, resolver, protocol="tcp")
     for item in response.answer:
         if item.rdtype == dns.rdatatype.from_text(record) and item.name == domain:
             for line in str(item).split("\n"):
