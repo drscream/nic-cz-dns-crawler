@@ -39,10 +39,15 @@ class CrawlerAdapter(SourceAddressAdapter, ForcedIPHTTPSAdapter):
 
 
 def create_request_headers(domain, user_agent, accept_language):
-    if is_valid_ipv6_address(domain):
+    if not domain:
+        host = None
+    elif is_valid_ipv6_address(domain):
         host = f"[{domain}]"
     else:
-        host = idna.encode(domain).decode("ascii")
+        try:
+            host = idna.encode(domain).decode("ascii")
+        except idna.core.InvalidCodepoint:
+            host = domain
     return {
         "Host": host,
         "Upgrade-Insecure-Requests": "1",
