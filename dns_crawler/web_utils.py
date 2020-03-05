@@ -32,9 +32,6 @@ from .ip_utils import is_valid_ipv6_address
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 cert_human.enable_urllib3_patch()
 
-alpn_protocols = ['h3', 'h3-Q046', 'h3-Q043', 'h3-Q039', 'h3-24', 'h3-23',
-                  'h2', 'spdy/3.1', 'spdy/3', 'spdy/2', 'spdy/1', 'http/1.1']
-
 
 class CrawlerAdapter(SourceAddressAdapter, ForcedIPHTTPSAdapter):
     pass
@@ -65,10 +62,10 @@ def parse_alt_svc(header):
 
 def parse_hsts(header):
     result = {}
-    items = header.split("; ")
-    result["includeSubdomains"] = "includeSubdomains" in items
+    items = [i.lower() for i in re.split(r"; ?", header)]
+    result["includeSubdomains"] = "includesubdomains" in items
     result["preload"] = "preload" in items
-    result["max-age"] = [int(i.split("=")[1].replace(";", "")) for i in items if i.startswith("max-age")][0]
+    result["max-age"] = [int(i.split("=")[1]) for i in items if i.startswith("max-age")][0]
     return result
 
 
