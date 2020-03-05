@@ -21,6 +21,7 @@ setup(
         ]
     },
     install_requires=[
+        "cert_human==1.0.7",
         "cryptography==2.8",
         "dnspython",
         "geoip2==3.0.0",
