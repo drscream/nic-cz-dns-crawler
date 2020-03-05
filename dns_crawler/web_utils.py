@@ -17,7 +17,7 @@
 
 import re
 from html.parser import HTMLParser
-from urllib.parse import unquote, urlparse
+from urllib.parse import unquote, urlparse, urljoin
 
 import cert_human
 import idna
@@ -133,14 +133,16 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
         headers = create_request_headers(domain, config["web"]["user_agent"], config["web"]["accept_language"])
         try:
             if protocol == "https":
-                r = s1.get(f"{protocol}://{domain}{path}", allow_redirects=False,
+                url = f"{protocol}://{domain}{path}"
+                r = s1.get(url, allow_redirects=False,
                            verify=False, stream=True, timeout=http_timeout, headers=headers)
             else:
                 if ipv6:
                     host = f"[{ip}]"
                 else:
                     host = ip
-                r = s2.get(f"{protocol}://{host}{path}",
+                url = f"{protocol}://{host}{path}"
+                r = s2.get(url,
                            allow_redirects=False, stream=True, timeout=http_timeout, headers=headers)
         except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
             if isinstance(e, AttributeError):
@@ -152,9 +154,9 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                 })
                 continue
         redirect_count = 0
-        history = [{"r": r}]
+        history = [{"r": r, "url": url}]
         while "r" in history[-1] and history[-1]["r"].is_redirect:
-            url = history[-1]["r"].headers["location"]
+            url = urljoin(history[-1]["url"], history[-1]["r"].headers["location"])
             h = {
                 "url": url
             }
