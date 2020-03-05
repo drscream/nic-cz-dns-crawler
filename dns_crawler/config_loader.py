@@ -42,7 +42,7 @@ defaults = {
         "cache": 900
     },
     "mail": {
-        "get_banners": True
+        "get_banners": False
     },
     "web": {
         "save_content": False,

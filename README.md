@@ -214,7 +214,7 @@ timeouts:
   http_read: 5  # seconds, read timeout when saving web content
   cache: 900  # TTL for cached responses (used for mail and name servers), they will expire after this much seconds since their last use
 mail:
-  get_banners: True  # connect to SMTP servers and save banners they send (you might want to turn it off if your ISP is touchy about higher traffic on port 25, or just to save time)
+  get_banners: False  # connect to SMTP servers and save banners they send (you might want to turn it off if your ISP is touchy about higher traffic on port 25, or just to save time)
 web:
   save_content: False  # save website content – beware, setting this to True will output HUGE files for higher domain counts
   strip_html: True   # when saving web content, save just text (strip HTML tags, scripts, CSS, and abundant whitespace)
