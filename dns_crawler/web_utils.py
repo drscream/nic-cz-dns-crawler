@@ -180,7 +180,8 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                 h["r"] = s1.get(url, verify=False, allow_redirects=False, stream=True, timeout=http_timeout,
                                 headers=create_request_headers(urlparse(url).hostname, config["web"]["user_agent"],
                                                                config["web"]["accept_language"]))
-            except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
+            except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout,
+                    requests.exceptions.InvalidURL, requests.exceptions.InvalidSchema) as e:
                 h["e"] = emsg(e)
             history.append(h)
             redirect_count = redirect_count + 1
