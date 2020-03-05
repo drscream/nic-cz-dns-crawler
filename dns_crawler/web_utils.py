@@ -17,7 +17,7 @@
 
 import re
 from html.parser import HTMLParser
-from urllib.parse import unquote, urlparse, urljoin
+from urllib.parse import unquote, urljoin, urlparse
 
 import cert_human
 import idna
@@ -27,6 +27,7 @@ from forcediphttpsadapter.adapters import ForcedIPHTTPSAdapter
 from requests_toolbelt.adapters.source import SourceAddressAdapter
 
 from .certificate import parse_cert
+from .ip_utils import is_valid_ipv6_address
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 cert_human.enable_urllib3_patch()
@@ -40,8 +41,12 @@ class CrawlerAdapter(SourceAddressAdapter, ForcedIPHTTPSAdapter):
 
 
 def create_request_headers(domain, user_agent, accept_language):
+    if is_valid_ipv6_address(domain):
+        host = f"[domain]"
+    else:
+        host = idna.encode(domain).decode("ascii")
     return {
-        "Host": idna.encode(domain).decode("ascii"),
+        "Host": host,
         "Upgrade-Insecure-Requests": "1",
         "User-Agent": user_agent,
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
