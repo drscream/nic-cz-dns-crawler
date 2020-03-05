@@ -20,7 +20,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.serialization.base import Encoding, PublicFormat
 from .utils import drop_null_values
-
+from datetime import datetime
 
 def cert_datetime_to_iso(cert_date):
     return cert_date.strftime("%Y-%m-%d %H:%M:%S")
@@ -44,11 +44,11 @@ def get_pubkey_fingerprint(cert, hash):
     return digest.finalize()
 
 
-def parse_cert(cert, domain):
-    cert = x509.load_der_x509_certificate(cert, default_backend())
+def parse_cert(cert):
     result = {}
     result["not_before"] = cert_datetime_to_iso(cert.not_valid_before)
     result["not_after"] = cert_datetime_to_iso(cert.not_valid_after)
+    result["expired"] = cert.not_valid_after < datetime.now()
     result["validity_period"] = (cert.not_valid_after - cert.not_valid_before).days
     result["subject"] = parse_cert_name(cert, "subject")
     result["issuer"] = parse_cert_name(cert, "issuer")

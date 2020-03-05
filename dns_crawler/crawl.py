@@ -31,6 +31,7 @@ from .geoip_utils import annotate_geoip, init_geoip
 from .hsts_utils import get_hsts_status
 from .mail_utils import get_mx_info
 from .web_utils import get_webserver_info
+from .ip_utils import get_source_address
 
 
 def get_dns_local(domain, config, local_resolver, geoip_dbs):
@@ -91,16 +92,16 @@ def get_dns_auth(domain, nameservers, redis, config, local_resolver, geoip_dbs):
     return results
 
 
-def get_web_status(domain, dns, config):
+def get_web_status(domain, dns, config, source_ipv4, source_ipv6):
     return {
-        "WEB4_80": get_webserver_info(domain, dns["WEB4"], config),
-        "WEB4_80_www": get_webserver_info(f"www.{domain}", dns["WEB4"], config),
-        "WEB4_443": get_webserver_info(domain, dns["WEB4"], config, tls=True),
-        "WEB4_443_www": get_webserver_info(f"www.{domain}", dns["WEB4"], config, tls=True),
-        "WEB6_80": get_webserver_info(domain, dns["WEB6"], config, ipv6=True),
-        "WEB6_80_www": get_webserver_info(f"www.{domain}", dns["WEB6"], config, ipv6=True),
-        "WEB6_443": get_webserver_info(domain, dns["WEB6"], config,  ipv6=True, tls=True),
-        "WEB6_443_www": get_webserver_info(f"www.{domain}", dns["WEB6"], config, ipv6=True, tls=True)
+        "WEB4_80": get_webserver_info(domain, dns["WEB4"], config, source_ipv4),
+        "WEB4_80_www": get_webserver_info(f"www.{domain}", dns["WEB4"], config, source_ipv4),
+        "WEB4_443": get_webserver_info(domain, dns["WEB4"], config, source_ipv4, tls=True),
+        "WEB4_443_www": get_webserver_info(f"www.{domain}", dns["WEB4"], config, source_ipv4, tls=True),
+        "WEB6_80": get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True),
+        "WEB6_80_www": get_webserver_info(f"www.{domain}", dns["WEB6"], config, source_ipv6, ipv6=True),
+        "WEB6_443": get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True, tls=True),
+        "WEB6_443_www": get_webserver_info(f"www.{domain}", dns["WEB6"], config, source_ipv6, ipv6=True, tls=True)
     }
 
 
@@ -113,7 +114,8 @@ def process_domain(domain):
     dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"], redis, config, local_resolver, geoip_dbs)
     mail = get_mx_info(dns_local["MAIL"], config["timeouts"]["mail"],
                        config["mail"]["get_banners"], local_resolver, redis)
-    web = get_web_status(domain, dns_local, config)
+
+    web = get_web_status(domain, dns_local, config, get_source_address(4), get_source_address(6))
     hsts = get_hsts_status(domain)
 
     return {

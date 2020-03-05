@@ -45,7 +45,9 @@ defaults = {
     },
     "web": {
         "save_content": False,
-        "strip_html": True,
+        "strip_html": False,
+        "max_redirects": 6,
+        "save_cert_chain": False,
         "user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
         "accept_language": "en-US;q=0.9,en;q=0.8"
     }
@@ -76,7 +78,7 @@ def load_config(filename):
     pwd = getcwd()
     try:
         with open(path.join(pwd, filename), "r") as conf_file:
-            config_from_file = yaml.load(conf_file, Loader=yaml.BaseLoader)
+            config_from_file = yaml.safe_load(conf_file)
             if "http_timeout" in config_from_file or \
                "dns_timeout" in config_from_file or \
                "save_web_content" in config_from_file:
@@ -97,7 +99,7 @@ def load_config(filename):
                 noalias_dumper = yaml.dumper.SafeDumper
                 noalias_dumper.ignore_aliases = lambda self, data: True
                 with open(path.join(pwd, filename), "w") as file_w:
-                    yaml.dump(config, file_w, default_flow_style=False, Dumper=noalias_dumper)
+                    yaml.safe_dump(config, file_w, default_flow_style=False, Dumper=noalias_dumper)
             else:
                 config = merge_dicts(config_from_file, defaults)
     except FileNotFoundError:

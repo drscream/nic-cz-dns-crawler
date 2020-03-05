@@ -16,23 +16,32 @@
 # see <http://www.gnu.org/licenses/>.
 
 import re
-import socket
-import ssl
+# import socket
+# import ssl
 from html.parser import HTMLParser
-from urllib.parse import unquote
+from urllib.parse import unquote, urlparse
 
-import certifi
+import cert_human
+# import certifi
 import idna
 import requests
 import urllib3
+from forcediphttpsadapter.adapters import ForcedIPHTTPSAdapter
+from requests_toolbelt.adapters.source import SourceAddressAdapter
+# from requests.packages.urllib3.connection import VerifiedHTTPSConnection
 
-from .ip_utils import is_valid_ip_address
-from .utils import drop_null_values
 from .certificate import parse_cert
+# from .utils import drop_null_values
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+cert_human.enable_urllib3_patch()
 
 alpn_protocols = ['h3', 'h3-Q046', 'h3-Q043', 'h3-Q039', 'h3-24', 'h3-23',
                   'h2', 'spdy/3.1', 'spdy/3', 'spdy/2', 'spdy/1', 'http/1.1']
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
+class CrawlerAdapter(SourceAddressAdapter, ForcedIPHTTPSAdapter):
+    pass
 
 
 def create_request_headers(domain, user_agent, accept_language):
@@ -48,8 +57,6 @@ def create_request_headers(domain, user_agent, accept_language):
 
 
 def parse_alt_svc(header):
-    if not header:
-        return None
     result = {}
     for pair in [i.split(";")[0].replace("\"", "") for i in re.findall(r'[a-zA-Z0-9-]+=[^,]+', header)]:
         list = unquote(pair).split("=")
@@ -57,50 +64,66 @@ def parse_alt_svc(header):
     return result
 
 
-def get_tls_info(domain, ip, http_timeout, ipv6=False, port=443):
-    socket.setdefaulttimeout(float(http_timeout))
-    ctx = ssl.create_default_context()
-    ctx.options &= ~(ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1)
-    ctx.load_verify_locations(certifi.where())
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
-    ctx.set_alpn_protocols(alpn_protocols)
-
-    if not ipv6:
-        inet = socket.AF_INET
-    else:
-        inet = socket.AF_INET6
-    sock = socket.socket(inet, socket.SOCK_STREAM)
-    conn = ctx.wrap_socket(sock, server_hostname=domain)
-
-    try:
-        r = conn.connect_ex((ip, port))
-    except (OSError, socket.timeout) as e:
-        result = {
-            "error": str(e)
-        }
-    else:
-        if r != 0:
-            result = {
-                "error": f"errno {r}"
-            }
-        else:
-            try:
-                cert = conn.getpeercert(binary_form=True)
-            except (OSError, AttributeError) as e:
-                result = {
-                    "error": str(e)
-                }
-            else:
-                result = drop_null_values({
-                    "alpn_protocol": conn.selected_alpn_protocol(),
-                    "tls_version": conn.version(),
-                    "tls_cipher_name": conn.cipher()[0],
-                    "tls_cipher_bits": conn.cipher()[2],
-                    "cert": parse_cert(cert, domain)
-                })
-    conn.close()
+def parse_hsts(header):
+    result = {}
+    items = header.split("; ")
+    result["includeSubdomains"] = "includeSubdomains" in items
+    result["preload"] = "preload" in items
+    result["max-age"] = [int(i.split("=")[1]) for i in items if i.startswith("max-age")][0]
     return result
+
+
+header_parsers = {
+    "alt-svc": parse_alt_svc,
+    "strict-transport-security": parse_hsts,
+    "content-length": lambda header: int(header)
+}
+
+
+# def get_tls_info(domain, ip, http_timeout, ipv6=False, port=443):
+#     socket.setdefaulttimeout(float(http_timeout))
+#     ctx = ssl.create_default_context()
+#     ctx.options &= ~(ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1)
+#     ctx.load_verify_locations(certifi.where())
+#     ctx.check_hostname = False
+#     ctx.verify_mode = ssl.CERT_NONE
+#     ctx.set_alpn_protocols(alpn_protocols)
+
+#     if not ipv6:
+#         inet = socket.AF_INET
+#     else:
+#         inet = socket.AF_INET6
+#     sock = socket.socket(inet, socket.SOCK_STREAM)
+#     conn = ctx.wrap_socket(sock, server_hostname=domain)
+
+#     try:
+#         r = conn.connect_ex((ip, port))
+#     except (OSError, socket.timeout) as e:
+#         result = {
+#             "error": str(e)
+#         }
+#     else:
+#         if r != 0:
+#             result = {
+#                 "error": f"errno {r}"
+#             }
+#         else:
+#             try:
+#                 cert = conn.getpeercert(binary_form=True)
+#             except (OSError, AttributeError) as e:
+#                 result = {
+#                     "error": str(e)
+#                 }
+#             else:
+#                 result = drop_null_values({
+#                     "alpn_protocol": conn.selected_alpn_protocol(),
+#                     "tls_version": conn.version(),
+#                     "tls_cipher_name": conn.cipher()[0],
+#                     "tls_cipher_bits": conn.cipher()[2],
+#                     "cert": parse_cert(cert, domain)
+#                 })
+#     conn.close()
+#     return result
 
 
 class HTMLStripper(HTMLParser):
@@ -138,69 +161,138 @@ def strip_newlines(text):
     return re.sub(r"(\r?\n *)+", "\n", re.sub(r" {2,}", "", re.sub(r"\t+", "", text))).strip()
 
 
-def get_response_headers(headers):
-    return drop_null_values({
-        "location": headers.get("location"),
-        "server": headers.get("server"),
-        "x-frame-options": headers.get("x-frame-options"),
-        "content-security-policy": headers.get("content-security-policy"),
-        "x-xss-protection": headers.get("x-xss-protection"),
-        "strict-transport-security": headers.get("strict-transport-security"),
-        "expect-ct": headers.get("expect-ct"),
-        "x-content-type-options": headers.get("x-content-type-options"),
-        "feature-policy": headers.get("feature-policy"),
-        "access-control-allow-origin": headers.get("access-control-allow-origin"),
-        "x-powered-by": headers.get("x-powered-by"),
-        "alt-svc": parse_alt_svc(headers.get("alt-svc"))
-    })
-
-
-def get_webserver_info(domain, ips, config, ipv6=False, tls=False):
+def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
     if not ips or len(ips) < 1:
         return None
     http_timeout = config["timeouts"]["http"]
     save_content = config["web"]["save_content"]
+    max_redirects = config["web"]["max_redirects"]
+    protocol = "https" if tls else "http"
+    path = "/"
     results = []
-    for ip in ips:
-        ip = ip["value"]
-        if not is_valid_ip_address(ip):
-            continue
-        result = {
-            "ip": ip
-        }
-        protocol = "http://"
-        if tls:
-            result["tls"] = get_tls_info(domain, ip, http_timeout, ipv6)
-            protocol = "https://"
-        host = ip
-        if ipv6:
-            host = f"[{ip}]"
-        if save_content:
-            r = requests.get
-        else:
-            r = requests.head
+    for entry in ips:
+        ip = entry["value"]
+        s1 = requests.session()
+        s2 = requests.session()
+        s1.mount(f'https://', CrawlerAdapter(dest_ip=ip, source_address=source_ip))
+        s2.mount(f'https://', SourceAddressAdapter(source_address=source_ip))
+        s2.mount(f'http://', SourceAddressAdapter(source_address=source_ip))
+        headers = create_request_headers(domain, config["web"]["user_agent"], config["web"]["accept_language"])
+        h = {}
         try:
-            response = r(f"{protocol}{host}/",
-                         headers=create_request_headers(
-                             domain,
-                             user_agent=config["web"]["user_agent"],
-                             accept_language=config["web"]["accept_language"]
-                         ),
-                         allow_redirects=False,
-                         verify=False,
-                         timeout=http_timeout,
-                         stream=False
-                         )
-            response.close()
-        except Exception as e:
-            result["error"] = str(e)
-        else:
-            result["status"] = response.status_code
-            result["headers"] = get_response_headers(response.headers)
+            if protocol == "https":
+                h["r"] = s1.get(f"{protocol}://{domain}{path}", allow_redirects=False,
+                                verify=False, stream=True, timeout=http_timeout, headers=headers)
+            else:
+                if ipv6:
+                    host = f"[{ip}]"
+                else:
+                    host = ip
+                h["r"] = s2.get(f"{protocol}://{host}{path}",
+                                allow_redirects=False, stream=True, timeout=http_timeout, headers=headers)
+        except requests.exceptions.ConnectionError as e:
+            results.append({
+                "ip": ip,
+                "error": str(e)
+            })
+            continue
+        history = [h]
+        redirect_count = 0
+        while history[-1]["r"].is_redirect:
+            url = history[-1]["r"].headers["location"]
+            h = {
+                "url": url
+            }
+            try:
+                h["r"] = s1.get(url, verify=False, allow_redirects=False, stream=True, timeout=http_timeout,
+                                headers=create_request_headers(urlparse(url).hostname, config["web"]["user_agent"],
+                                                               config["web"]["accept_language"]))
+            except requests.exceptions.ConnectionError as e:
+                h["e"] = str(e)
+            history.append(h)
+            redirect_count = redirect_count + 1
+            if redirect_count >= max_redirects:
+                break
+
+        steps = []
+        for (i, h) in enumerate(history):
+            if i == 0:
+                url = f"{protocol}://{domain}{path}"
+            else:
+                url = h["url"]
+            if "e" in h:
+                steps.append({
+                    "url": url,
+                    "error": h["e"]
+                })
+                continue
+            step = {}
+            if "r" in h:
+                step["url"] = h["r"].url
+                step["status"] = h["r"].status_code
+                step["is_redirect"] = h["r"].is_redirect
+            cookies = []
+            for cookie in h["r"].cookies:
+                cookies.append({
+                    "domain": cookie.domain,
+                    "name": cookie.name,
+                    "value": cookie.value,
+                    "secure": cookie.secure,
+                    "expires": cookie.expires,
+                    **cookie.__dict__['_rest']
+                })
+            headers = {}
+            for k, v in h["r"].headers.items():
+                key = k.lower()
+                if key == "set-cookie":
+                    headers[key] = cookies
+                elif key in header_parsers:
+                    headers[key] = header_parsers[key](v)
+                else:
+                    headers[key] = v
+            step["headers"] = headers
+            if i == 0:
+                step["ip"] = ip
+            # elif h["r"].raw._fp.fp:
+            else:
+                step["ip"] = h["r"].connection.dest_ip
+                # step["ip"] = h["r"].raw._fp.fp.raw._sock.socket.getpeername()[0]
+            if h["r"].url.startswith("https") and h["r"].raw.connection:
+                # step["ssl_version"] = h["r"].raw.connection.ssl_context.protocol
+                step["tls"] = {
+                    "version": h["r"].raw._fp.fp.raw._sock.connection.get_protocol_version_name(),
+                    "cipher_bits": h["r"].raw._fp.fp.raw._sock.connection.get_cipher_bits(),
+                    "cipher_name": h["r"].raw._fp.fp.raw._sock.connection.get_cipher_name()
+                }
+                # step["alpn_proto"] = str(h["r"].raw._fp.fp.raw._sock.connection.get_alpn_proto_negotiated())
+                # step["protocol_version"] = h["r"].raw._fp.fp.raw._sock.connection.get_protocol_version()
+                # step["tls_version"] = h["r"].raw._fp.fp.raw._sock.connection.get_protocol_version_name()
+                # print("CCC", dir(h["r"].raw._fp.fp.raw._sock.connection))
+            if "r" in h and h["r"].url.startswith("https"):
+                if config["web"]["save_cert_chain"]:
+                    if h["r"].raw.peer_cert_chain:
+                        cert_chain = []
+                        for cert in h["r"].raw.peer_cert_chain:
+                            cert_chain.append(parse_cert(cert.to_cryptography()))
+                        step["cert"] = cert_chain
+                else:
+                    if h["r"].raw.peer_cert:
+                        step["cert"] = [parse_cert(h["r"].raw.peer_cert.to_cryptography())]
             if save_content:
                 if not config["web"]["strip_html"]:
-                    result["content"] = response.text
+                    step["content"] = h["r"].text
                 else:
-                    result["content"] = strip_newlines(strip_tags(response.text))
+                    step["content"] = strip_newlines(strip_tags(h["r"].text))
+            h["r"].close()
+            steps.append(step)
+
+        result = {
+            "ip": ip,
+            "steps": steps,
+            "redirect_count": redirect_count
+        }
         results.append(result)
+
+        s1.close()
+        s2.close()
     return results

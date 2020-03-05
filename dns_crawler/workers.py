@@ -100,6 +100,7 @@ def main():
         except KeyboardInterrupt:
             exit(0)
 
+    sys.stderr.write(f"{timestamp()} Starting {worker_count} workers.\n")
     procs = [subprocess.Popen(i) for i in commands]
 
     try:

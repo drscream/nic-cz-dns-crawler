@@ -16,6 +16,7 @@
 # see <http://www.gnu.org/licenses/>.
 
 import ipaddress
+import socket
 
 
 def is_valid_ipv6_address(ip):
@@ -36,3 +37,18 @@ def is_valid_ipv4_address(ip):
 
 def is_valid_ip_address(ip):
     return is_valid_ipv4_address(ip) or is_valid_ipv6_address(ip)
+
+
+def get_source_address(v):
+    if v == 6:
+        inet = socket.AF_INET6
+        odvr = ("2001:148f:ffff::1", 53)
+    elif v == 4:
+        inet = socket.AF_INET
+        odvr = ("193.17.47.1", 53)
+
+    sock = socket.socket(inet, socket.SOCK_DGRAM)
+    sock.connect(odvr)
+    source_ip = sock.getsockname()[0]
+    sock.close()
+    return source_ip
