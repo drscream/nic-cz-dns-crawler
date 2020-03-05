@@ -63,7 +63,7 @@ def parse_hsts(header):
     items = header.split("; ")
     result["includeSubdomains"] = "includeSubdomains" in items
     result["preload"] = "preload" in items
-    result["max-age"] = [int(i.split("=")[1]) for i in items if i.startswith("max-age")][0]
+    result["max-age"] = [int(i.split("=")[1].replace(";", "")) for i in items if i.startswith("max-age")][0]
     return result
 
 
