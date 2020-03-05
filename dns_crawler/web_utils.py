@@ -40,7 +40,7 @@ class CrawlerAdapter(SourceAddressAdapter, ForcedIPHTTPSAdapter):
 
 def create_request_headers(domain, user_agent, accept_language):
     if is_valid_ipv6_address(domain):
-        host = f"[domain]"
+        host = f"[{domain}]"
     else:
         host = idna.encode(domain).decode("ascii")
     return {
