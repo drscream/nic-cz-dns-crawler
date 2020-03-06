@@ -26,6 +26,7 @@ from redis import Redis
 
 from .redis_utils import get_redis_host
 from .timestamp import timestamp
+from .ip_utils import get_source_addresses
 
 
 def print_help():
@@ -82,6 +83,10 @@ def main():
         sys.stderr.write(str(e) + "\n")
         exit(1)
     redis = Redis(host=redis_host[0], port=redis_host[1], db=redis_host[2])
+
+    source_ipv4, source_ipv6 = get_source_addresses(redis, hostname)
+    sys.stderr.write(
+        f"{timestamp()} We will use these source IPs for HTTP(S) connections: '{source_ipv4}' and '{source_ipv6}'.\n")
 
     commands = []
 

@@ -31,7 +31,7 @@ from .geoip_utils import annotate_geoip, init_geoip
 from .hsts_utils import get_hsts_status
 from .mail_utils import get_mx_info
 from .web_utils import get_webserver_info
-from .ip_utils import get_source_address
+from .ip_utils import get_source_addresses
 
 
 def get_dns_local(domain, config, local_resolver, geoip_dbs):
@@ -106,16 +106,17 @@ def get_web_status(domain, dns, config, source_ipv4, source_ipv6):
 
 
 def process_domain(domain):
+    redis = get_current_connection()
+    source_ipv4, source_ipv6 = get_source_addresses(redis)
     config = load_config("config.yml")
+
     geoip_dbs = init_geoip(config)
     local_resolver = get_local_resolver(config)
-    redis = get_current_connection()
     dns_local = get_dns_local(domain, config, local_resolver, geoip_dbs)
     dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"], redis, config, local_resolver, geoip_dbs)
     mail = get_mx_info(dns_local["MAIL"], config["timeouts"]["mail"],
                        config["mail"]["get_banners"], local_resolver, redis)
-
-    web = get_web_status(domain, dns_local, config, get_source_address(4), get_source_address(6))
+    web = get_web_status(domain, dns_local, config, source_ipv4, source_ipv6)
     hsts = get_hsts_status(domain)
 
     return {

@@ -17,6 +17,7 @@
 
 import ipaddress
 import socket
+import pickle
 
 
 def is_valid_ipv6_address(ip):
@@ -52,3 +53,17 @@ def get_source_address(v):
     source_ip = sock.getsockname()[0]
     sock.close()
     return source_ip
+
+
+def get_source_addresses(redis, hostname=socket.gethostname()):
+    if redis is not None:
+        key = f"sourceips-{hostname}"
+        cached = redis.get(key)
+        if cached is not None:
+            return pickle.loads(cached)
+        else:
+            ips = (get_source_address(4), get_source_address(6))
+            redis.set(key, pickle.dumps(ips))
+            return ips
+    else:
+        return (get_source_address(4), get_source_address(6))
