@@ -18,14 +18,13 @@
 
 import pickle
 import sys
-import threading
-from multiprocessing import cpu_count
 from os.path import basename
 from time import sleep
 
 from redis import Redis
 from redis.exceptions import ConnectionError as RedisConnectionError
 from rq import Queue
+from rq.job import Job
 from rq.registry import FinishedJobRegistry
 
 from .config_loader import default_config_filename, load_config
@@ -53,25 +52,20 @@ def print_help():
     sys.exit(1)
 
 
-def create_jobs(domains, function, queue, timeout, should_stop):
+def create_jobs(domains, function, redis, queue, timeout):
     try:
+        pipe = redis.pipeline()
         for domain in domains:
-            if should_stop():
-                break
-            create_job(domain, function, queue, timeout)
+            job = Job.create(function, args=(domain,), id=domain, timeout=timeout, result_ttl=-1, connection=redis)
+            queue.enqueue_job(job, pipeline=pipe)
+        pipe.execute()
     except RedisConnectionError:
         return
-
-
-def create_job(domain, function, queue, timeout):
-    queue.enqueue(function, domain, job_id=domain, result_ttl=-1, job_timeout=timeout)
 
 
 def main():
     if "-h" in sys.argv or "--help" in sys.argv or len(sys.argv) < 2:
         print_help()
-
-    cpus = cpu_count()
 
     try:
         redis_host = get_redis_host(sys.argv, 2)
@@ -82,9 +76,7 @@ def main():
 
     redis.flushdb()
     config = load_config(default_config_filename, redis, save=True)
-    queue = Queue(connection=redis)
     finished_registry = FinishedJobRegistry(connection=redis)
-    stop_threads = False
 
     try:
         filename = sys.argv[1]
@@ -99,31 +91,12 @@ def main():
             sys.stderr.write(f"{timestamp()} Read {domain_count} domain{('s' if domain_count > 1 else '')}.\n")
             finished_count = 0
             created_count = 0
-            parts = cpus * 4
-            if parts * 1000 > domain_count:
-                parts = 1
-            domains_per_part = int(domain_count / parts)
-            sys.stderr.write(f"{timestamp()} Creating job queue using {parts} thread{('s' if parts > 1 else '')}.\n")
+
+            sys.stderr.write(
+                f"{timestamp()} Creating job queue… {'This will take a while.' if domain_count > 50000 else ''}\n")
             redis.set("locked", 1)
-
-            if parts == 1:
-                create_jobs(domains, get_json_result, queue, config["timeouts"]["job"], lambda: False)
-            else:
-                for thread_num in range(parts):
-                    if thread_num == parts - 1:  # last one
-                        end = domain_count
-                    else:
-                        end = (thread_num + 1) * domains_per_part
-                    part = domains[(thread_num * domains_per_part):end]
-                    t = threading.Thread(target=create_jobs,
-                                         args=(part, get_json_result, queue,
-                                               config["timeouts"]["job"], lambda: stop_threads))
-                    t.start()
-
-            while created_count < domain_count:
-                sys.stderr.write(f"{timestamp()} {created_count}/{domain_count} jobs created.\n")
-                created_count = queue.count
-                sleep(POLL_INTERVAL)
+            queue = Queue(connection=redis)
+            create_jobs(domains, get_json_result, queue=queue, redis=redis, timeout=config["timeouts"]["job"])
 
             sys.stderr.write(f"{timestamp()} Created {domain_count} jobs. Unlocking queue and waiting for workers…\n")
             redis.set("locked", 0)
@@ -155,7 +128,6 @@ def main():
     except KeyboardInterrupt:
         created_count = queue.count
         sys.stderr.write(f"{timestamp()} Cancelled. Deleting {created_count} jobs…\n")
-        stop_threads = True
         redis.flushdb()
         sys.stderr.write(f"{timestamp()} All jobs deleted, exiting.\n")
         sys.exit(1)
