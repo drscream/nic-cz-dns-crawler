@@ -93,7 +93,6 @@ def main():
         sys.stderr.write(f"{timestamp()} Shared config loaded from the controller.\n")
         if path.isfile(path.join(getcwd(), default_config_filename)):
             sys.stderr.write(f"{timestamp()} Local config merged with the shared one.\n")
-        sys.stderr.write(f"{timestamp()} Shared config loaded from the controller.\n")
     except ControllerNotRunning:
         sys.stderr.write(f"{timestamp()} Can't load the shared config. Is dns-crawler-controller running?\n")
         exit(1)
