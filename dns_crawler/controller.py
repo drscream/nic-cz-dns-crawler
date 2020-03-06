@@ -76,7 +76,7 @@ def main():
     redis = Redis(host=redis_host[0], port=redis_host[1], db=redis_host[2])
 
     redis.flushdb()
-    config = load_config("config.yml", redis)
+    config = load_config("config.yml", redis, save=True)
     queue = Queue(connection=redis)
     finished_registry = FinishedJobRegistry(connection=redis)
     stop_threads = False
