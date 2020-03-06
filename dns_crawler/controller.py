@@ -67,7 +67,6 @@ def main():
         print_help()
 
     cpus = cpu_count()
-    config = load_config("config.yml")
 
     try:
         redis_host = get_redis_host(sys.argv, 2)
@@ -77,6 +76,7 @@ def main():
     redis = Redis(host=redis_host[0], port=redis_host[1], db=redis_host[2])
 
     redis.flushdb()
+    config = load_config("config.yml", redis)
     queue = Queue(connection=redis)
     finished_registry = FinishedJobRegistry(connection=redis)
     stop_threads = False

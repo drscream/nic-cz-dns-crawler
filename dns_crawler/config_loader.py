@@ -15,12 +15,15 @@
 # You should have received a copy of the GNU Lesser General Public License. If not,
 # see <http://www.gnu.org/licenses/>.
 
+import pickle
 import sys
 from os import getcwd, path
 
 import yaml
 
 from .timestamp import timestamp
+
+default_config_filename = "config.yml"
 
 defaults = {
     "geoip": {
@@ -75,7 +78,7 @@ def merge_dicts(source, destination):
     return destination
 
 
-def load_config(filename):
+def load_config_from_file(filename=default_config_filename):
     pwd = getcwd()
     try:
         with open(path.join(pwd, filename), "r") as conf_file:
@@ -106,3 +109,17 @@ def load_config(filename):
     except FileNotFoundError:
         config = defaults
     return config
+
+
+def load_config(filename=default_config_filename, redis=None):
+    if redis is not None:
+        key = "crawler-config"
+        cached = redis.get(key)
+        if cached is not None:
+            return pickle.loads(cached)
+        else:
+            config = load_config_from_file(filename)
+            redis.set(key, pickle.dumps(config))
+            return config
+    else:
+        return load_config_from_file(filename)

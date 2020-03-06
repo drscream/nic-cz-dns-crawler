@@ -16,8 +16,8 @@
 # see <http://www.gnu.org/licenses/>.
 
 import ipaddress
-import socket
 import pickle
+import socket
 
 
 def is_valid_ipv6_address(ip):
@@ -55,7 +55,7 @@ def get_source_address(v):
     return source_ip
 
 
-def get_source_addresses(redis, hostname=socket.gethostname()):
+def get_source_addresses(redis=None, hostname=socket.gethostname()):
     if redis is not None:
         key = f"sourceips-{hostname}"
         cached = redis.get(key)

@@ -108,7 +108,7 @@ def get_web_status(domain, dns, config, source_ipv4, source_ipv6):
 def process_domain(domain):
     redis = get_current_connection()
     source_ipv4, source_ipv6 = get_source_addresses(redis)
-    config = load_config("config.yml")
+    config = load_config("config.yml", redis)
 
     geoip_dbs = init_geoip(config)
     local_resolver = get_local_resolver(config)
