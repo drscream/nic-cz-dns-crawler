@@ -21,7 +21,6 @@ from os import getcwd, path
 
 import yaml
 
-from .controller import ControllerNotRunning
 from .timestamp import timestamp
 
 default_config_filename = "config.yml"
@@ -124,6 +123,7 @@ def load_config(filename=default_config_filename, redis=None, hostname=None, sav
                 try:
                     config_controller = pickle.loads(redis.get(key_controller))
                 except TypeError:
+                    from .controller import ControllerNotRunning
                     raise ControllerNotRunning()
                 config_workers = load_config_from_file(filename)
                 config = merge_dicts(config_controller, config_workers)
