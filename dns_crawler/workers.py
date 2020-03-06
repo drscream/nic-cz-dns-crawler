@@ -94,7 +94,7 @@ def main():
             sys.stderr.write(f"{timestamp()} Local config merged with the shared one.\n")
         sys.stderr.write(f"{timestamp()} Shared config loaded from the controller.\n")
     except ControllerNotRunning:
-        sys.stderr.write(f"{timestamp()} Can't load the shared config. Is the dns-crawler-controller running?\n")
+        sys.stderr.write(f"{timestamp()} Can't load the shared config. Is dns-crawler-controller running?\n")
         exit(1)
     source_ipv4, source_ipv6 = get_source_addresses(redis, hostname)
     sys.stderr.write(
