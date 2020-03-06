@@ -27,7 +27,7 @@ from redis.exceptions import ConnectionError as RedisConnectionError
 from rq import Queue
 from rq.registry import FinishedJobRegistry
 
-from .config_loader import load_config
+from .config_loader import default_config_filename, load_config
 from .crawl import get_json_result
 from .redis_utils import get_redis_host
 from .timestamp import timestamp
@@ -76,7 +76,7 @@ def main():
     redis = Redis(host=redis_host[0], port=redis_host[1], db=redis_host[2])
 
     redis.flushdb()
-    config = load_config("config.yml", redis, save=True)
+    config = load_config(default_config_filename, redis, save=True)
     queue = Queue(connection=redis)
     finished_registry = FinishedJobRegistry(connection=redis)
     stop_threads = False

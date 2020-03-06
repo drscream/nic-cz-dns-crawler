@@ -111,16 +111,30 @@ def load_config_from_file(filename=default_config_filename):
     return config
 
 
-def load_config(filename=default_config_filename, redis=None, save=False):
+def load_config(filename=default_config_filename, redis=None, hostname=None, save=False):
     if redis is not None:
-        key = "crawler-config"
-        cached = redis.get(key)
-        if cached is not None:
-            return pickle.loads(cached)
+        key_controller = "crawler-config"
+        if hostname:
+            key = f"{key_controller}-{hostname}"
+            cached = redis.get(key)
+            if cached is not None:
+                return pickle.loads(cached)
+            else:
+                config_controller = pickle.loads(redis.get(key_controller))
+                config_workers = load_config_from_file(filename)
+                config = merge_dicts(config_controller, config_workers)
+                if save:
+                    redis.set(key, pickle.dumps(config))
+                return config
         else:
-            config = load_config_from_file(filename)
-            if save:
-                redis.set(key, pickle.dumps(config))
-            return config
+            key = key_controller
+            cached = redis.get(key)
+            if cached is not None:
+                return pickle.loads(cached)
+            else:
+                config = load_config_from_file(filename)
+                if save:
+                    redis.set(key, pickle.dumps(config))
+                return config
     else:
         return load_config_from_file(filename)

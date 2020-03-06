@@ -223,6 +223,10 @@ web:
   accept_language: en-US;q=0.9,en;q=0.8  # Accept-Language header to use for HTTP(S) requests
 ```
 
+If you're using the multi-threaded crawler (`dns-crawler-controller` & `dns-crawler-workers`), the config is loaded by the controlled and shared with the workers via Redis.
+
+You can override it on the worker machines if needed – just create a `config.yml` in their working dir (eg. to set different resolver IP(s) or GeoIP paths on each machine). The config is then merged – directives not defined in the worker config are loaded from the controller one (and defaults are used if the're not defined there either).
+
 ### Using commercial GeoIP DNSs
 
 Tell the crawler to use (GeoIP2 Country and ISP) DBs instead of free (GeoLite2 Country and ASN) ones:

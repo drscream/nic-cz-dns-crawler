@@ -19,19 +19,20 @@ import json
 import re
 from copy import deepcopy
 from datetime import datetime
+from socket import gethostname
 
 from rq import get_current_connection
 
-from .config_loader import load_config
+from .config_loader import default_config_filename, load_config
 from .dns_utils import (annotate_dns_algorithm, check_dnssec,
                         get_local_resolver, get_ns_info, get_record,
                         get_record_parser, get_txt, parse_dmarc, parse_spf,
                         parse_tlsa)
 from .geoip_utils import annotate_geoip, init_geoip
 from .hsts_utils import get_hsts_status
+from .ip_utils import get_source_addresses
 from .mail_utils import get_mx_info
 from .web_utils import get_webserver_info
-from .ip_utils import get_source_addresses
 
 
 def get_dns_local(domain, config, local_resolver, geoip_dbs):
@@ -108,7 +109,7 @@ def get_web_status(domain, dns, config, source_ipv4, source_ipv6):
 def process_domain(domain):
     redis = get_current_connection()
     source_ipv4, source_ipv6 = get_source_addresses(redis)
-    config = load_config("config.yml", redis)
+    config = load_config(default_config_filename, redis, hostname=gethostname)
 
     geoip_dbs = init_geoip(config)
     local_resolver = get_local_resolver(config)
