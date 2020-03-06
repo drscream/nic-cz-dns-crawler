@@ -112,7 +112,7 @@ def main():
 
     while redis.get("locked") == b"1":
         try:
-            sys.stderr.write(f"{timestamp()} Waiting for the main process to unlock the queue.\n")
+            sys.stderr.write(f"{timestamp()} Waiting for the controller to unlock the queue.\n")
             sleep(5)
         except KeyboardInterrupt:
             exit(0)
