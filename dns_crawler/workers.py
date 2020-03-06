@@ -18,6 +18,7 @@
 import subprocess
 import sys
 from multiprocessing import cpu_count
+from os import getcwd, path
 from os.path import basename
 from socket import gethostname
 from time import sleep
@@ -25,6 +26,7 @@ from time import sleep
 from redis import Redis
 
 from .config_loader import default_config_filename, load_config
+from .controller import ControllerNotRunning
 from .ip_utils import get_source_addresses
 from .redis_utils import get_redis_host
 from .timestamp import timestamp
@@ -85,7 +87,15 @@ def main():
         exit(1)
     redis = Redis(host=redis_host[0], port=redis_host[1], db=redis_host[2])
 
-    load_config(default_config_filename, redis, hostname=hostname, save=True)
+    try:
+        load_config(default_config_filename, redis, hostname=hostname, save=True)
+        sys.stderr.write(f"{timestamp()} Shared config loaded from the controller.\n")
+        if path.isfile(path.join(getcwd(), default_config_filename)):
+            sys.stderr.write(f"{timestamp()} Local config merged with the shared one.\n")
+        sys.stderr.write(f"{timestamp()} Shared config loaded from the controller.\n")
+    except ControllerNotRunning:
+        sys.stderr.write(f"{timestamp()} Can't load the shared config. Is the dns-crawler-controller running?\n")
+        exit(1)
     source_ipv4, source_ipv6 = get_source_addresses(redis, hostname)
     sys.stderr.write(
         f"{timestamp()} We will use these source IPs for HTTP(S) connections: '{source_ipv4}' and '{source_ipv6}'.\n")

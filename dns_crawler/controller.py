@@ -35,6 +35,10 @@ from .timestamp import timestamp
 POLL_INTERVAL = 5
 
 
+class ControllerNotRunning(Exception):
+    pass
+
+
 def print_help():
     exe = basename(sys.argv[0])
     sys.stderr.write(f"{exe} - the main process controlling the job queue and printing results.\n\n")
