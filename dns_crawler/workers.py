@@ -118,7 +118,12 @@ def main():
             exit(0)
 
     sys.stderr.write(f"{timestamp()} Starting {worker_count} workers.\n")
-    procs = [subprocess.Popen(i) for i in commands]
+
+    procs = []
+    for i, cmd in enumerate(commands):
+        procs.append(subprocess.Popen(cmd))
+        if i % 10 == 0:
+            sleep(5)
 
     try:
         for p in procs:
