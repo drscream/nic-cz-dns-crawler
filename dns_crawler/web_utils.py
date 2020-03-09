@@ -78,7 +78,7 @@ def parse_hsts(header):
     try:
         result["max-age"] = [int(''.join(takewhile(str.isdigit, re.split(r"[=:]", i)[1])))
                              for i in items if re.sub(r"['\"]", "", i).startswith("max-age")][0]
-    except IndexError:
+    except (IndexError, ValueError):
         pass
     return result
 
