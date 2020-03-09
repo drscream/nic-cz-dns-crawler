@@ -81,10 +81,21 @@ def parse_hsts(header):
     return result
 
 
+def parse_content_length(header):
+    result = {}
+    result["raw"] = header
+    if not header:
+        return result
+    if not str.isdigit(header[0]):
+        return result
+    result["value"] = int(''.join(takewhile(str.isdigit, header)))
+    return result
+
+
 header_parsers = {
     "alt-svc": parse_alt_svc,
     "strict-transport-security": parse_hsts,
-    "content-length": lambda header: int(header)
+    "content-length": parse_content_length
 }
 
 
