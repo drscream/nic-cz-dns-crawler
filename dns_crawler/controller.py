@@ -56,7 +56,8 @@ def create_jobs(domains, function, redis, queue, timeout):
     job_count = 0
     pipe = redis.pipeline()
     for domain in domains:
-        job = Job.create(function, args=(domain,), id=domain, timeout=timeout, result_ttl=-1, connection=redis)
+        job = Job.create(function, args=(domain,), id=domain, timeout=timeout,
+                         result_ttl=-1, connection=redis, description=domain)
         queue.enqueue_job(job, pipeline=pipe)
         job_count += 1
     pipe.execute()
