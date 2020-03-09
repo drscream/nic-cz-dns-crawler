@@ -251,7 +251,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                         step["content"] = h["r"].text
                     else:
                         step["content"] = strip_newlines(strip_tags(h["r"].text))
-                except requests.exceptions.ConnectionError:
+                except (requests.exceptions.ConnectionError, requests.exceptions.ContentDecodingError):
                     step["content"] = None
             h["r"].close()
             steps.append(step)
