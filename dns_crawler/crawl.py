@@ -110,7 +110,7 @@ def get_web_status(domain, dns, config, source_ipv4, source_ipv6):
 def process_domain(domain):
     redis = get_current_connection()
     source_ipv4, source_ipv6 = get_source_addresses(redis)
-    config = load_config(default_config_filename, redis, hostname=gethostname)
+    config = load_config(default_config_filename, redis, hostname=gethostname())
 
     geoip_dbs = init_geoip(config)
     local_resolver = get_local_resolver(config)
