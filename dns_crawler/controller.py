@@ -20,7 +20,6 @@ import pickle
 import sys
 from os.path import basename
 from time import sleep
-
 from redis import Redis
 from redis.exceptions import ConnectionError as RedisConnectionError
 from rq import Queue
@@ -33,6 +32,7 @@ from .redis_utils import get_redis_host
 from .timestamp import timestamp
 
 POLL_INTERVAL = 5
+INPUT_CHUNK_SIZE = 10000
 
 
 class ControllerNotRunning(Exception):
@@ -53,14 +53,14 @@ def print_help():
 
 
 def create_jobs(domains, function, redis, queue, timeout):
-    try:
-        pipe = redis.pipeline()
-        for domain in domains:
-            job = Job.create(function, args=(domain,), id=domain, timeout=timeout, result_ttl=-1, connection=redis)
-            queue.enqueue_job(job, pipeline=pipe)
-        pipe.execute()
-    except RedisConnectionError:
-        return
+    job_count = 0
+    pipe = redis.pipeline()
+    for domain in domains:
+        job = Job.create(function, args=(domain,), id=domain, timeout=timeout, result_ttl=-1, connection=redis)
+        queue.enqueue_job(job, pipeline=pipe)
+        job_count += 1
+    pipe.execute()
+    return job_count
 
 
 def main():
@@ -84,46 +84,54 @@ def main():
         print_help()
 
     try:
-        with open(filename, "r") as file:
-            sys.stderr.write(f"{timestamp()} Reading domains from {filename}.\n")
-            domains = [line for line in file.read().splitlines() if line.strip()]
-            domain_count = len(domains)
-            sys.stderr.write(f"{timestamp()} Read {domain_count} domain{('s' if domain_count > 1 else '')}.\n")
-            finished_count = 0
-            created_count = 0
+        sys.stderr.write(f"{timestamp()} Reading domains from {filename}.\n")
+        input_file = open(filename, "r")
+        sys.stderr.write(
+            f"{timestamp()} Creating job queue…\n")
+        redis.set("locked", 1)
+        queue = Queue(connection=redis)
+        domain_count = 0
+        read_domains = []
+        for line in input_file:
+            read_domains.append(line.rstrip())
+            if len(read_domains) == INPUT_CHUNK_SIZE:
+                domain_count = domain_count + create_jobs(read_domains, get_json_result, queue=queue,
+                                                          redis=redis, timeout=config["timeouts"]["job"])
+                sys.stderr.write(f"{timestamp()} {domain_count}\n")
+                read_domains = []
+        domain_count = domain_count + create_jobs(read_domains, get_json_result, queue=queue,
+                                                  redis=redis, timeout=config["timeouts"]["job"])
+        sys.stderr.write(f"{timestamp()} {domain_count}\n")
+        input_file.close()
 
-            sys.stderr.write(
-                f"{timestamp()} Creating job queue… {'This will take a while.' if domain_count > 50000 else ''}\n")
-            redis.set("locked", 1)
-            queue = Queue(connection=redis)
-            create_jobs(domains, get_json_result, queue=queue, redis=redis, timeout=config["timeouts"]["job"])
+        finished_count = 0
+        sys.stderr.write(f"{timestamp()} Created {domain_count} jobs. Unlocking queue and waiting for workers…\n")
 
-            sys.stderr.write(f"{timestamp()} Created {domain_count} jobs. Unlocking queue and waiting for workers…\n")
-            redis.set("locked", 0)
+        redis.set("locked", 0)
 
-            while finished_count < domain_count:
-                finished_domains = finished_registry.get_job_ids()
-                if len(finished_domains) > 0:
-                    pipe = redis.pipeline()
-                    hashes = []
-                    for domain in finished_domains:
-                        hash = f"rq:job:{domain}"
-                        hashes.append(hash)
-                        pipe.hget(hash, "result")
-                    results = pipe.execute()
-                    pipe = redis.pipeline()
-                    count = 0
-                    for index, result in enumerate(results):
-                        if result:
-                            count = count + 1
-                            print(pickle.loads(result))
-                            pipe.delete(hashes[index])
-                    pipe.execute()
-                    finished_count = finished_count + count
-                sys.stderr.write(f"{timestamp()} {finished_count}/{domain_count}\n")
-                sleep(POLL_INTERVAL)
-            queue.delete(delete_jobs=True)
-            sys.exit(0)
+        while finished_count < domain_count:
+            finished_domains = finished_registry.get_job_ids()
+            if len(finished_domains) > 0:
+                pipe = redis.pipeline()
+                hashes = []
+                for domain in finished_domains:
+                    hash = f"rq:job:{domain}"
+                    hashes.append(hash)
+                    pipe.hget(hash, "result")
+                results = pipe.execute()
+                pipe = redis.pipeline()
+                count = 0
+                for index, result in enumerate(results):
+                    if result:
+                        count = count + 1
+                        print(pickle.loads(result))
+                        pipe.delete(hashes[index])
+                pipe.execute()
+                finished_count = finished_count + count
+            sys.stderr.write(f"{timestamp()} {finished_count}/{domain_count}\n")
+            sleep(POLL_INTERVAL)
+        queue.delete(delete_jobs=True)
+        sys.exit(0)
 
     except KeyboardInterrupt:
         created_count = queue.count
