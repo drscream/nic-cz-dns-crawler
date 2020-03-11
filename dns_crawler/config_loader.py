@@ -19,6 +19,7 @@
 import pickle
 import sys
 from os import getcwd, path
+from shutil import copy2
 
 import yaml
 
@@ -84,9 +85,12 @@ def load_config_from_file(filename=default_config_filename):
     try:
         with open(path.join(pwd, filename), "r") as conf_file:
             config_from_file = yaml.safe_load(conf_file)
-            if "http_timeout" in config_from_file or \
-               "dns_timeout" in config_from_file or \
-               "save_web_content" in config_from_file:
+            if not config_from_file:
+                sys.stderr.write(f"{timestamp()} Didn't find anything in the config file. Using defaults.\n")
+                config = defaults
+            elif "http_timeout" in config_from_file or \
+                 "dns_timeout" in config_from_file or \
+                 "save_web_content" in config_from_file:
                 sys.stderr.write(f"{timestamp()} Incompatible config file loaded (the format" +
                                  " changed with v1.2, see README). Using defaults instead.\n")
                 config = defaults
@@ -101,10 +105,9 @@ def load_config_from_file(filename=default_config_filename):
                 })
                 config = merge_dicts(with_resolvers, defaults)
                 del config["resolvers"]
-                noalias_dumper = yaml.dumper.SafeDumper
-                noalias_dumper.ignore_aliases = lambda self, data: True
+                copy2(path.join(pwd, filename), path.join(pwd, f"{filename}.bak"))
                 with open(path.join(pwd, filename), "w") as file_w:
-                    yaml.safe_dump(config, file_w, default_flow_style=False, Dumper=noalias_dumper)
+                    yaml.safe_dump(config, file_w, default_flow_style=False)
             else:
                 config = merge_dicts(config_from_file, defaults)
     except FileNotFoundError:

@@ -9,3 +9,4 @@ GeoIP2*
 .eggs
 /build
 /dist
+config.yml.bak
