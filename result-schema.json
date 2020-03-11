@@ -78,6 +78,27 @@
         "additionalProperties": true
       }
     },
+    "tlsa_record_array": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "usage": {
+            "type": "integer"
+          },
+          "selector": {
+            "type": "integer"
+          },
+          "matchingtype": {
+            "type": "integer"
+          },
+          "data": {
+            "type": "string"
+          }
+        },
+        "required": ["usage", "selector", "matchingtype", "data"]
+      }
+    },
     "ip_record_array": {
       "type": "array",
       "items": { "$ref": "#/definitions/ip_record_with_geoip" }
@@ -454,7 +475,7 @@
                 {
                   "type": "null"
                 },
-                { "$ref": "#/definitions/dns_record_array" }
+                { "$ref": "#/definitions/tlsa_record_array" }
               ]
             },
             "WEB_TLSA_www": {
@@ -463,7 +484,7 @@
                 {
                   "type": "null"
                 },
-                { "$ref": "#/definitions/dns_record_array" }
+                { "$ref": "#/definitions/tlsa_record_array" }
               ]
             },
             "TXT": {
@@ -666,7 +687,7 @@
                     "type": "string"
                   },
                   "TLSA": {
-                    "$ref": "#/definitions/dns_record_array"
+                    "$ref": "#/definitions/tlsa_record_array"
                   }
                 },
                 "required": ["host"],
