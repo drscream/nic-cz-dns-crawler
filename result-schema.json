@@ -574,7 +574,7 @@
             "WEB_TLSA",
             "WEB_TLSA_www"
           ],
-          "additionalProperties": false
+          "additionalProperties": true
         },
         "DNS_AUTH": {
           "description": "Authoritative DNS servers, with GeoIP info and (hostname|version).bind (if available).",
