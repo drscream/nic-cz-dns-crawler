@@ -99,6 +99,29 @@
         "required": ["usage", "selector", "matchingtype", "data"]
       }
     },
+    "ns_ip_array": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "geoip": {
+            "$ref": "#/definitions/ip_record_with_geoip"
+          },
+          "hostnamebind": {
+            "$ref": "#/definitions/value_null_error"
+          },
+          "versionbind": {
+            "$ref": "#/definitions/value_null_error"
+          },
+          "authorsbind": {
+            "$ref": "#/definitions/value_null_error"
+          },
+          "fortune": {
+            "$ref": "#/definitions/value_null_error"
+          }
+        }
+      }
+    },
     "ip_record_array": {
       "type": "array",
       "items": { "$ref": "#/definitions/ip_record_with_geoip" }
@@ -577,7 +600,7 @@
           "additionalProperties": true
         },
         "DNS_AUTH": {
-          "description": "Authoritative DNS servers, with GeoIP info and (hostname|version).bind (if available).",
+          "description": "Authoritative DNS servers, with GeoIP info and some CH TXT records (if available).",
           "anyOf": [
             {
               "type": "null"
@@ -590,80 +613,14 @@
                   "ns": {
                     "type": "string"
                   },
-                  "ns_ipv4": {
-                    "anyOf": [
-                      {
-                        "type": "null"
-                      },
-                      { "$ref": "#/definitions/ip_record_with_geoip" }
-                    ]
+                  "ipv4": {
+                    "$ref": "#/definitions/ns_ip_array"
                   },
-                  "ns_ipv6": {
-                    "anyOf": [
-                      {
-                        "type": "null"
-                      },
-                      { "$ref": "#/definitions/ip_record_with_geoip" }
-                    ]
-                  },
-                  "HOSTNAMEBIND4": {
-                    "anyOf": [
-                      {
-                        "type": "null"
-                      },
-                      { "$ref": "#/definitions/value_null_error" }
-                    ]
-                  },
-                  "HOSTNAMEBIND6": {
-                    "anyOf": [
-                      {
-                        "type": "null"
-                      },
-                      { "$ref": "#/definitions/value_null_error" }
-                    ]
-                  },
-                  "VERSIONBIND4": {
-                    "anyOf": [
-                      {
-                        "type": "null"
-                      },
-                      { "$ref": "#/definitions/value_null_error" }
-                    ]
-                  },
-                  "VERSIONBIND6": {
-                    "anyOf": [
-                      {
-                        "type": "null"
-                      },
-                      { "$ref": "#/definitions/value_null_error" }
-                    ]
-                  },
-                  "AUTHORSBIND4": {
-                    "anyOf": [
-                      {
-                        "type": "null"
-                      },
-                      { "$ref": "#/definitions/value_null_error" }
-                    ]
-                  },
-                  "AUTHORSBIND6": {
-                    "anyOf": [
-                      {
-                        "type": "null"
-                      },
-                      { "$ref": "#/definitions/value_null_error" }
-                    ]
+                  "ipv6": {
+                    "$ref": "#/definitions/ns_ip_array"
                   }
                 },
-                "required": [
-                  "HOSTNAMEBIND4",
-                  "HOSTNAMEBIND6",
-                  "VERSIONBIND4",
-                  "VERSIONBIND6",
-                  "ns",
-                  "ns_ipv4",
-                  "ns_ipv6"
-                ],
+                "required": ["ns"],
                 "additionalProperties": false
               }
             }
