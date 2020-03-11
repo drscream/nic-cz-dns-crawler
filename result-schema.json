@@ -25,8 +25,9 @@
         "required": ["value"]
       }
     },
-    "txt_spf_record_array": {
+    "spf_record_array": {
       "type": "array",
+      "description": "SPF records parsed into JSON objects",
       "items": {
         "type": "object",
         "properties": {
@@ -67,6 +68,7 @@
     },
     "txt_dmarc_record_array": {
       "type": "array",
+      "description": "DMARC records parsed into JSON objects",
       "items": {
         "type": "object",
         "properties": {
@@ -80,6 +82,7 @@
     },
     "tlsa_record_array": {
       "type": "array",
+      "description": "TLSA records parsed into JSON objects",
       "items": {
         "type": "object",
         "properties": {
@@ -101,6 +104,7 @@
     },
     "ns_ip_array": {
       "type": "array",
+      "description": "GeoIP annotation and CH TXT records for each nameserver IP",
       "items": {
         "type": "object",
         "properties": {
@@ -108,15 +112,19 @@
             "$ref": "#/definitions/ip_record_with_geoip"
           },
           "hostnamebind": {
+            "description": "hostname.bind chaos txt",
             "$ref": "#/definitions/value_null_error"
           },
           "versionbind": {
+            "description": "version.bind chaos txt",
             "$ref": "#/definitions/value_null_error"
           },
           "authorsbind": {
+            "description": "authors.bind chaos txt (used by BIND)",
             "$ref": "#/definitions/value_null_error"
           },
           "fortune": {
+            "description": "fortune chaos txt (used by Knot)",
             "$ref": "#/definitions/value_null_error"
           }
         }
@@ -124,6 +132,7 @@
     },
     "ip_record_array": {
       "type": "array",
+      "description": "Array of A/AAAA record values annotated with GeoIP",
       "items": { "$ref": "#/definitions/ip_record_with_geoip" }
     },
     "ip_record_with_geoip": {
@@ -170,7 +179,7 @@
       },
       "required": ["value"]
     },
-    "webserver_info_80": {
+    "webserver_info": {
       "oneOf": [
         {
           "type": "null"
@@ -180,100 +189,70 @@
           "items": {
             "type": "object",
             "properties": {
-              "ip": { "$ref": "#/definitions/webserver_ip" },
-              "status": { "$ref": "#/definitions/http_status" },
-              "headers": { "$ref": "#/definitions/http_headers" },
-              "content": {
-                "type": "string"
+              "ip": {
+                "$ref": "#/definitions/webserver_ip",
+                "description": "IP of the webserver from A/AAAA record. GeoIP info can be found in DNS_LOCAL.WEB_*."
               },
-              "error": {
-                "type": "string"
+              "steps": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "ip": {
+                      "$ref": "#/definitions/webserver_ip",
+                      "description": "IP of the webserver the crawler connected to"
+                    },
+                    "cert": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/certificate"
+                      },
+                      "description": "Certificate used for HTTPS connection"
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "ULR, either implied (eg. http://<domain>.cz) or got from the Location header when redirected"
+                    },
+                    "status": {
+                      "$ref": "#/definitions/http_status"
+                    },
+                    "is_redirect": {
+                      "type": "boolean"
+                    },
+                    "headers": {
+                      "type": "object"
+                    },
+                    "tls": {
+                      "$ref": "#/definitions/tls_info"
+                    },
+                    "content": { "type": "string" },
+                    "error": { "type": "string" }
+                  },
+                  "required": ["ip", "url", "status", "headers"],
+                  "additionalProperties": false
+                }
               }
             },
-            "required": ["ip"]
+            "required": ["ip", "steps"]
           }
         }
       ]
-    },
-    "webserver_info_443": {
-      "oneOf": [
-        {
-          "type": "null"
-        },
-        {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "ip": { "$ref": "#/definitions/webserver_ip" },
-              "tls": { "$ref": "#/definitions/tls_info" },
-              "status": { "$ref": "#/definitions/http_status" },
-              "headers": { "$ref": "#/definitions/http_headers" },
-              "content": {
-                "type": "string"
-              },
-              "error": {
-                "type": "string"
-              }
-            },
-            "required": ["tls", "ip"]
-          }
-        }
-      ]
-    },
-    "http_headers": {
-      "description": "Headers received from the webserver.",
-      "type": "object",
-      "properties": {
-        "location": {
-          "type": "string"
-        },
-        "server": {
-          "type": "string"
-        },
-        "content-security-policy": {
-          "type": "string"
-        },
-        "strict-transport-security": {
-          "type": "string"
-        },
-        "x-powered-by": {
-          "type": "string"
-        },
-        "x-xss-protection": {
-          "type": "string"
-        },
-        "x-content-type-options": {
-          "type": "string"
-        },
-        "x-frame-options": {
-          "type": "string"
-        },
-        "access-control-allow-origin": {
-          "type": "string"
-        }
-      }
     },
     "tls_info": {
       "type": "object",
       "properties": {
-        "alpn_protocol": {
-          "description": "Protocol negotiated via ALPN.",
-          "type": "string"
-        },
-        "tls_version": {
+        "version": {
           "description": "TLS version used for connection.",
           "type": "string"
         },
-        "tls_cipher_name": {
+        "cipher_name": {
           "description": "TLS cipher used for connection.",
           "type": "string"
         },
-        "tls_cipher_bits": {
+        "cipher_bits": {
           "description": "TLS cipher's nominal strength",
           "type": "integer"
-        },
-        "cert": { "$ref": "#/definitions/certificate" }
+        }
       }
     },
     "certificate": {
@@ -300,6 +279,31 @@
         "not_after": {
           "description": "End of certificate validity period.",
           "$ref": "#/definitions/datetime"
+        },
+        "validity_period": {
+          "description": "Length of certificate validity period (days).",
+          "type": "integer",
+          "minimum": 0
+        },
+        "fingerprint": {
+          "type": "object",
+          "description": "Cetificate and pubkey fingerprints.",
+          "properties": {
+            "cert": {
+              "$ref": "#/definitions/certificate_fingerprint"
+            },
+            "pubkey": {
+              "$ref": "#/definitions/certificate_fingerprint"
+            }
+          }
+        },
+        "expired": {
+          "type": "boolean"
+        },
+        "expired_for": {
+          "type": "integer",
+          "description": "Period for which the certificate is expired (days).",
+          "minimum": 0
         },
         "alt_names": {
           "description": "Alternative names/domains contained in the certificate.",
@@ -341,6 +345,19 @@
         }
       },
       "additionalProperties": false
+    },
+    "certificate_fingerprint": {
+      "type": "object",
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "[0-9a-f]{64}"
+        },
+        "sha512": {
+          "type": "string",
+          "pattern": "[0-9a-f]{128}"
+        }
+      }
     },
     "certificate_name": {
       "oneOf": [
@@ -384,7 +401,6 @@
       "type": "integer"
     },
     "webserver_ip": {
-      "description": "Webserver's IP. GeoIP info can be found in DNS_LOCAL.WEB_*.",
       "type": "string"
     },
     "datetime": {
@@ -525,7 +541,7 @@
                 {
                   "type": "null"
                 },
-                { "$ref": "#/definitions/txt_spf_record_array" }
+                { "$ref": "#/definitions/spf_record_array" }
               ]
             },
             "TXT_DMARC": {
@@ -659,28 +675,28 @@
           "type": "object",
           "properties": {
             "WEB4_80": {
-              "$ref": "#/definitions/webserver_info_80"
+              "$ref": "#/definitions/webserver_info"
             },
             "WEB4_80_www": {
-              "$ref": "#/definitions/webserver_info_80"
+              "$ref": "#/definitions/webserver_info"
             },
             "WEB4_443": {
-              "$ref": "#/definitions/webserver_info_443"
+              "$ref": "#/definitions/webserver_info"
             },
             "WEB4_443_www": {
-              "$ref": "#/definitions/webserver_info_443"
+              "$ref": "#/definitions/webserver_info"
             },
             "WEB6_80": {
-              "$ref": "#/definitions/webserver_info_80"
+              "$ref": "#/definitions/webserver_info"
             },
             "WEB6_80_www": {
-              "$ref": "#/definitions/webserver_info_80"
+              "$ref": "#/definitions/webserver_info"
             },
             "WEB6_443": {
-              "$ref": "#/definitions/webserver_info_443"
+              "$ref": "#/definitions/webserver_info"
             },
             "WEB6_443_www": {
-              "$ref": "#/definitions/webserver_info_443"
+              "$ref": "#/definitions/webserver_info"
             }
           },
           "required": [
