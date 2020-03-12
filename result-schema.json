@@ -228,12 +228,12 @@
                     "content": { "type": "string" },
                     "error": { "type": "string" }
                   },
-                  "required": ["ip", "url", "status", "headers"],
+                  "required": ["url", "status", "headers"],
                   "additionalProperties": false
                 }
               }
             },
-            "required": ["ip", "steps"]
+            "required": ["ip"]
           }
         }
       ]
