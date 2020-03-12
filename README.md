@@ -227,7 +227,7 @@ If you're using the multi-threaded crawler (`dns-crawler-controller` & `dns-craw
 
 You can override it on the worker machines if needed – just create a `config.yml` in their working dir (eg. to set different resolver IP(s) or GeoIP paths on each machine). The config is then merged – directives not defined in the worker config are loaded from the controller one (and defaults are used if the're not defined there either).
 
-### Using commercial GeoIP DNSs
+### Using commercial GeoIP DBs
 
 Tell the crawler to use (GeoIP2 Country and ISP) DBs instead of free (GeoLite2 Country and ASN) ones:
 
@@ -368,7 +368,7 @@ $ dns-crawler-workers 24 192.168.0.2:6379
 
 Make sure to run the workers with ~same Python version on these machines, otherwise you'll get `unsupported pickle protocol` errors. See the [pickle protocol versions in Python docs](https://docs.python.org/3.8/library/pickle.html#data-stream-format).
 
-The DNS resolver doesn't have to be on a same machine as the `dns-crawler-controller`, of course – just set it's IP in `config.yml`. The crawler is tested primarily with CZ.NIC's [Knot Resolver](https://www.knot-resolver.cz/), but should work with any sane resolver supporting DNSSEC.
+The DNS resolver doesn't have to be on a same machine as the `dns-crawler-controller`, of course – just set it's IP in `config.yml`. The crawler is tested primarily with CZ.NIC's [Knot Resolver](https://www.knot-resolver.cz/), but should work with any sane resolver supporting DNSSEC. Systemd's `systemd-resolved` seems to be really slow though.
 
 Same goes for Redis, you can point both controller and workers to a separate machine running Redis (don't forget to point them to an empty DB if you're using Redis for other things than the dns-crawler, it uses `0` by default).
 

@@ -260,12 +260,20 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                         step["cert"] = [parse_cert(h["r"].raw.peer_cert.to_cryptography())]
             if save_content:
                 try:
-                    if not config["web"]["strip_html"]:
-                        step["content"] = h["r"].text
-                    else:
-                        step["content"] = strip_newlines(strip_tags(h["r"].text))
-                except (requests.exceptions.ConnectionError, requests.exceptions.ContentDecodingError):
-                    step["content"] = None
+                    content = h["r"].text
+                except requests.exceptions.ConnectionError:
+                    content = None
+                except requests.exceptions.ChunkedEncodingError:
+                    content = step["content"] = h["r"].content.decode(h["r"].encoding)
+                except requests.exceptions.ContentDecodingError:
+                    try:
+                        content = step["content"] = h["r"].content.decode("latin1")
+                    except requests.exceptions.ContentDecodingError:
+                        content = None
+                if content and config["web"]["strip_html"]:
+                    step["content"] = strip_newlines(strip_tags(h["r"].text))
+                else:
+                    step["content"] = content
             h["r"].close()
             steps.append(step)
 
