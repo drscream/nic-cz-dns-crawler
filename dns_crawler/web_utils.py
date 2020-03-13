@@ -174,7 +174,8 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                 url = f"{protocol}://{host}{path}"
                 r = s2.get(url,
                            allow_redirects=False, stream=True, timeout=http_timeout, headers=headers)
-        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
+        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout,
+                ValueError, UnicodeDecodeError) as e:
             if isinstance(e, AttributeError):
                 pass
             else:
