@@ -155,6 +155,8 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
     results = []
     for entry in ips:
         ip = entry["value"]
+        if ip is None:
+            continue
         s1 = requests.session()
         s2 = requests.session()
         s1.mount(f'https://', CrawlerAdapter(dest_ip=ip, source_address=source_ip))
