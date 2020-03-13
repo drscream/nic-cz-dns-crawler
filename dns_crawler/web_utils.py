@@ -269,7 +269,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                 except requests.exceptions.ConnectionError:
                     content = None
                 except requests.exceptions.ChunkedEncodingError:
-                    content = step["content"] = h["r"].content.decode(h["r"].encoding)
+                    content = h["r"].content.decode(h["r"].encoding or "latin1")
                 except requests.exceptions.ContentDecodingError:
                     try:
                         content = step["content"] = h["r"].content.decode("latin1")
