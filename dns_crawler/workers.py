@@ -96,7 +96,11 @@ def main():
     except ControllerNotRunning:
         sys.stderr.write(f"{timestamp()} Can't load the shared config. Is dns-crawler-controller running?\n")
         exit(1)
-    source_ipv4, source_ipv6 = get_source_addresses(redis, hostname)
+    try:
+        source_ipv4, source_ipv6 = get_source_addresses(redis, hostname)
+    except OSError:
+        sys.stderr.write(f"{timestamp()} Can't connect to the internet\n")
+        exit(1)
     sys.stderr.write(
         f"{timestamp()} We will use these source IPs for HTTP(S) connections: '{source_ipv4}' and '{source_ipv6}'.\n")
 
