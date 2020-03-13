@@ -124,6 +124,8 @@ def check_dnssec(domain, resolver):
 def annotate_dns_algorithm(items, index, key="value"):
     if items:
         for item in items:
+            if not item[key]:
+                continue
             try:
                 alg_number = item[key].split()[index]
             except IndexError:
