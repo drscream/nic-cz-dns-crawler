@@ -135,7 +135,7 @@ def annotate_dns_algorithm(items, index, key="value"):
 def parse_dmarc(items, key="value"):
     if not items:
         return None
-    items = [item for item in items if item[key].startswith("\"v=DMARC")]
+    items = [item for item in items if item[key] and item[key].startswith("\"v=DMARC")]
     if len(items) == 0:
         return None
     parsed = []
@@ -184,7 +184,7 @@ def get_spf_all(record):
 def parse_spf(items, key="value"):
     if not items:
         return None
-    items = [item for item in items if item[key].startswith("\"v=spf")]
+    items = [item for item in items if item and item[key].startswith("\"v=spf")]
     if len(items) == 0:
         return None
     parsed = []
@@ -212,6 +212,8 @@ def parse_tlsa(items, key="value"):
         return None
     parsed = []
     for item in items:
+        if not item[key]:
+            continue
         output = {}
         fields = item[key].split(" ")
         output["usage"] = int(fields[0])
