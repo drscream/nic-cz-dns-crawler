@@ -184,7 +184,7 @@ def get_spf_all(record):
 def parse_spf(items, key="value"):
     if not items:
         return None
-    items = [item for item in items if item and item[key].startswith("\"v=spf")]
+    items = [item for item in items if item[key] and item[key].startswith("\"v=spf")]
     if len(items) == 0:
         return None
     parsed = []
@@ -232,7 +232,7 @@ def get_txt(regex, items, key="value"):
         return items
     filtered = []
     for item in items:
-        if re.match(regex, item[key]):
+        if item[key] and re.match(regex, item[key]):
             filtered.append(item)
     if len(filtered) == 0:
         return None
