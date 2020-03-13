@@ -274,8 +274,6 @@ def get_ns_info(ip, geoip_dbs, timeout, redis):
 
 
 def value_from_record(record, data):
-    if "CNAME" in data:
-        record = "CNAME"
     return re.sub(r".*" + re.escape(record) + " ", "", data)
 
 
@@ -307,6 +305,11 @@ def get_record(domain_name, record, resolver, protocol="udp"):
         if item.rdtype == dns.rdatatype.from_text(record) and item.name == domain:
             for line in str(item).split("\n"):
                 results.append({"value": value_from_record(record, line)})
+        elif item.rdtype == dns.rdatatype.from_text("CNAME"):
+            for line in str(item).split("\n"):
+                cname_domain = value_from_record("CNAME", line)
+                cname_resolved = get_record(cname_domain, record, resolver)
+                results.append({"cname": cname_domain, "value": cname_resolved[0]["value"] if cname_resolved else None})
     if len(results) > 0:
         return results
     else:

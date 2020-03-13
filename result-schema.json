@@ -141,6 +141,9 @@
         "value": {
           "type": "string"
         },
+        "cname": {
+          "type": "string"
+        },
         "geoip": {
           "type": "object",
           "properties": {
