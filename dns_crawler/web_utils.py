@@ -273,6 +273,8 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                         content = step["content"] = h["r"].content.decode("latin1")
                     except requests.exceptions.ContentDecodingError:
                         content = None
+                if content == "":
+                    content = None
                 if content and config["web"]["strip_html"]:
                     step["content"] = strip_newlines(strip_tags(h["r"].text))
                 else:
