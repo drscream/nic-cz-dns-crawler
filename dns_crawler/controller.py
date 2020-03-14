@@ -125,8 +125,13 @@ def main():
                 for index, result in enumerate(results):
                     if result:
                         count = count + 1
-                        print(pickle.loads(result))
-                        pipe.delete(hashes[index])
+                        try:
+                            print(pickle.loads(result, ))
+                        except pickle.UnpicklingError:
+                            sys.stderr.write(f"{timestamp()} UnpicklingError: {hashes[index]}\n")
+                            continue
+                        else:
+                            pipe.delete(hashes[index])
                 pipe.execute()
                 finished_count = finished_count + count
             sys.stderr.write(f"{timestamp()} {finished_count}/{domain_count}\n")
