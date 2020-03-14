@@ -149,6 +149,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
         return None
     http_timeout = (config["timeouts"]["http"], config["timeouts"]["http_read"])
     save_content = config["web"]["save_content"]
+    content_size_limit = config["web"]["content_size_limit"]
     max_redirects = config["web"]["max_redirects"]
     protocol = "https" if tls else "http"
     path = "/"
@@ -272,14 +273,16 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                     content = h["r"].content.decode(h["r"].encoding or "latin1")
                 except requests.exceptions.ContentDecodingError:
                     try:
-                        content = step["content"] = h["r"].content.decode("latin1")
+                        content = h["r"].content.decode("latin1")
                     except requests.exceptions.ContentDecodingError:
                         content = None
                 if content == "":
                     content = None
-                if content and config["web"]["strip_html"]:
-                    step["content"] = strip_newlines(strip_tags(h["r"].text))
-                else:
+                if content:
+                    if config["web"]["strip_html"]:
+                        content = strip_newlines(strip_tags(content))
+                    if len(content) > content_size_limit:
+                        content = content[:content_size_limit]
                     step["content"] = content
             h["r"].close()
             steps.append(step)
