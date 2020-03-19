@@ -115,7 +115,7 @@ Using the controller also gives you caching of repeating queries (mailserver ban
 
 No special config needed, but increase the memory limit if you have a lot of domains to process (eg. `maxmemory 2G`). You can also disable disk snapshots to save some I/O time (comment out the `save …` lines). If you're not already using Redis for other things, read its log – there are often some recommendations for performance improvements.
 
-## Output formats
+## Results
 
 Results are printed to the main process' (`dns-crawler` or `dns-crawler-controller`) stdout – JSON for every domain, separated by `\n`:
 
@@ -146,24 +146,19 @@ $ npm i -g ajv
 $ ajv validate -s result-schema.json -d result-example.json
 ```
 
-#### Custom output format
+### Storing crawler results
 
-Since the main process (`dns-crawler` or `dns-crawler-controller`) just spits out JSONs to stdout, it's pretty easy to process it with almost anything.
+In production, CZ.NIC uses Hadoop cluster to store the results file after the crawler run is over – see a script in `utils/crawler-hadoop.sh` (pushes the results file to Hadoop and notifies a Mattermost channel).
 
-A simple example for YAML output:
+You can even pipe the output right to hadoop without even storing it on your disk:
 
-```python
-import json
-import yaml
-import sys
-
-for line in sys.stdin:
-    print(yaml.dump(json.loads(line)))
+```
+dns-crawler-controller domain-list.txt | ssh user@hadoop-node "HADOOP_USER_NAME=… hadoop fs -put - /path/to/results.json;"
 ```
 
-(and then just `dns-crawler domains.txt | python yaml.py`)
+### Working with the results
 
-CSV is a different beast, since there's no obvious way to represent arrays…
+- [R package for dns-crawler output processing](https://gitlab.labs.nic.cz/adam/dnscrawler.parser)
 
 ## Usage in Python code
 
