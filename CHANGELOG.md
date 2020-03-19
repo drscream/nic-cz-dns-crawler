@@ -1,3 +1,46 @@
+## 1.4.1 (2020-03-19)
+
+### DNS:
+
+- if the crawler gets a CNAME when asking for a record, it saves the alias in a `cname` field, and adds `from_cname` to the final saved record (so in the end we get an IP for GeoIP lookup and we can fetch the web stuff from it… in case of A/AAAA records)
+- works even for chained CNAMEs (which are generally discouraged, but people use them… some analysis of the longest chains might be interesting):
+    ```
+    "WEB4_www": [
+        {
+            "cname": "www2.helb.cz.",
+            "value": null
+        },
+        {
+            "cname": "www3.helb.cz.",
+            "value": null
+        },
+        {
+            "cname": "storage1.helb.cz.",
+            "value": null
+        },
+        {
+            "value": "5.2.67.53",
+            "from_cname": "storage1.helb.cz.",
+            "geoip": {
+                "country": "NL",
+                "org": "Liteserver Holding B.V.",
+                "asn": 60404
+            }
+        }
+    ]
+    ```
+
+### WEB:
+
+- saved content size can be limited via `content_size_limit` in the config file, this prevents `UnpicklingError`s when reading results from Redis for extremely large websites (most of them was just a ton of comment spam…)
+- various fixes for headers and encodings broken in many many different ways (people are really creative…)
+
+### …other:
+
+- `dns-crawler-controller` logs `UnpicklingError`s, if there are any (shouldn't be now with the limited content length, but…)
+- `dns-crawler-workers` checks if there's a route (both ipv4 and 6) to the internet before starting the actual workers (which did the check anyway, but this is faster)
+
+
 ## 1.4 (2020-03-11)
 
 ### DNS:
