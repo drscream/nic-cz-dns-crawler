@@ -281,7 +281,7 @@ def value_from_record(record, data):
     return re.sub(r".*" + re.escape(record) + " ", "", data)
 
 
-def get_record(domain_name, record, resolver, protocol="udp"):
+def get_record(domain_name, record, resolver, protocol="udp", cname_count=None):
     results = []
     domain = dns.name.from_text(domain_name)
     if not domain.is_absolute():
@@ -312,12 +312,13 @@ def get_record(domain_name, record, resolver, protocol="udp"):
         elif item.rdtype == dns.rdatatype.from_text("CNAME"):
             for line in str(item).split("\n"):
                 cname_domain = value_from_record("CNAME", line)
-                if str(domain) != cname_domain:
-                    cname_resolved = get_record(cname_domain, record, resolver)
-                    results.append({
-                        "cname": cname_domain,
-                        "value": cname_resolved[0]["value"] if cname_resolved else None
-                    })
+                results.append({
+                    "cname": cname_domain,
+                    "value": None
+                })
+        if item.rdtype == dns.rdatatype.from_text(record) and "cname" in results[-1]:
+            for line in str(item).split("\n"):
+                results.append({"value": value_from_record(record, line), "from_cname": str(item.name)})
     if len(results) > 0:
         return results
     else:
