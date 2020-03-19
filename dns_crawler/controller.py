@@ -126,7 +126,7 @@ def main():
                     if result:
                         count = count + 1
                         try:
-                            print(pickle.loads(result, ))
+                            print(pickle.loads(result))
                         except pickle.UnpicklingError:
                             sys.stderr.write(f"{timestamp()} UnpicklingError: {hashes[index]}\n")
                             continue
