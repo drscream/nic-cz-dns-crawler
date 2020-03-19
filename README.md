@@ -36,9 +36,11 @@ See [`result-example.json`](result-example.json) to get an idea what the resulti
 
 ## How fast is it anyway?
 
-A single fairly modern laptop on ~50Mbps connection can crawl the entire *.cz* zone overnight, give or take (with `save_web_content` disabled), using 8 workers per CPU thread.
+A single fairly modern laptop on ~50Mbps connection can crawl the entire *.cz* zone (~1.3M second level domains) overnight, give or take, using 8 workers per CPU thread.
 
 Since the crawler is designed to be parallel, the actual speed depends almost entirely on the worker count. And it can scale accross multiple machines almost infinitely, so should you need a million domains crawled in an hour, you can always just throw more hardware at it (see below).
+
+CZ.NIC uses 4 machines in production (8-core Xeon Bronze 3106, 16 GB RAM, gigabit line) and crawling the entire *.cz* zone takes under 3 hours.
 
 ## Installation
 
