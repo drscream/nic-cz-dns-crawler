@@ -266,7 +266,10 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                         step["cert"] = [parse_cert(h["r"].raw.peer_cert.to_cryptography())]
             if save_content:
                 try:
-                    content = h["r"].text
+                    if step["headers"]["content-type"] == "application/octet-stream":
+                        content = "(binary)"
+                    else:
+                        content = h["r"].text
                 except requests.exceptions.ConnectionError:
                     content = None
                 except requests.exceptions.ChunkedEncodingError:
