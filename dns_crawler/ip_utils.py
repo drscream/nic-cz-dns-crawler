@@ -23,18 +23,18 @@ import socket
 
 def is_valid_ipv6_address(ip):
     try:
-        ipaddress.IPv6Address(ip)
+        addr = ipaddress.IPv6Address(ip)
     except ValueError:
         return False
-    return True
+    return addr.is_global
 
 
 def is_valid_ipv4_address(ip):
     try:
-        ipaddress.IPv4Address(ip)
+        addr = ipaddress.IPv4Address(ip)
     except ValueError:
         return False
-    return True
+    return addr.is_global
 
 
 def is_valid_ip_address(ip):
