@@ -21,6 +21,7 @@ from html.parser import HTMLParser
 from itertools import takewhile
 from urllib.parse import unquote, urljoin, urlparse
 
+import base64
 import cert_human
 import idna
 import requests
@@ -101,6 +102,21 @@ header_parsers = {
 }
 
 
+def headers_look_like_binary(headers):
+    if "content-type" in headers:
+        if ((headers["content-type"].startswith("application/")
+             and (headers["content-type"] != "application/json" or "xml" not in headers["content-type"])
+             )
+                or headers["content-type"].startswith("audio/")
+                or headers["content-type"].startswith("video/")
+                or (headers["content-type"].startswith("image/") and "svg" not in headers["content-type"])
+                or headers["content-type"].startswith("font/")):
+            return True
+    if "accept-range" in headers and headers["accept-range"] == "bytes":
+        return True
+    return False
+
+
 class HTMLStripper(HTMLParser):
     def __init__(self):
         self.reset()
@@ -149,6 +165,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
         return None
     http_timeout = (config["timeouts"]["http"], config["timeouts"]["http_read"])
     save_content = config["web"]["save_content"]
+    save_binary = config["web"]["save_binary"]
     content_size_limit = config["web"]["content_size_limit"]
     max_redirects = config["web"]["max_redirects"]
     protocol = "https" if tls else "http"
@@ -265,9 +282,14 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                     if h["r"].raw.peer_cert:
                         step["cert"] = [parse_cert(h["r"].raw.peer_cert.to_cryptography())]
             if save_content:
+                content = None
+                content_is_binary = headers_look_like_binary(step["headers"])
+
                 try:
-                    if step["headers"]["content-type"] == "application/octet-stream":
-                        content = "(binary)"
+                    if content_is_binary:
+                        if save_binary:
+                            content = f"data:{step['headers']['content-type']};base64,"\
+                                    f"{base64.b64encode(h['r'].content[:content_size_limit]).decode()}"
                     else:
                         content = h["r"].text
                 except requests.exceptions.ConnectionError:
@@ -281,12 +303,12 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                         content = None
                 if content == "":
                     content = None
-                if content:
+                if content and not content_is_binary:
                     if config["web"]["strip_html"]:
                         content = strip_newlines(strip_tags(content))
                     if len(content) > content_size_limit:
                         content = content[:content_size_limit]
-                    step["content"] = content
+                step["content"] = content
             h["r"].close()
             steps.append(step)
 

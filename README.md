@@ -214,11 +214,12 @@ mail:
   get_banners: False  # connect to SMTP servers and save banners they send (you might want to turn it off if your ISP is touchy about higher traffic on port 25, or just to save time)
 web:
   save_content: False  # save website content – beware, setting this to True will output HUGE files for higher domain counts
-  strip_html: True   # when saving web content, save just text (strip HTML tags, scripts, CSS, and abundant whitespace)
+  strip_html: True  # when saving web content, save just text (strip HTML tags, scripts, CSS, and abundant whitespace)
+  save_binary: True  # save even binary content (eg. application/octet-stream) in base64 data uris
   max_redirects: 6  # follow HTTP redirrects (301, 302, …) until this limit
   user_agent: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36  # User-Agent header to use for HTTP(S) requests
   accept_language: en-US;q=0.9,en;q=0.8  # Accept-Language header to use for HTTP(S) requests
-  content_size_limit: 5120000  # Truncate the saved content to this number of chacters. If you choose to use strip_html, the content is truncated _after_ that. Huge values (hunderds of MB, depending on your RAM size and number of workers) can cause UnpicklingError when reading the result from Redis.
+  content_size_limit: 5120000  # Truncate the saved content to this number of chacters (or bytes for binary content). If you choose to use strip_html, the content is truncated _after_ that. Huge values (hunderds of MB, depending on your RAM size and number of workers) can cause UnpicklingError when reading the result from Redis.
 ```
 
 If you're using the multi-threaded crawler (`dns-crawler-controller` & `dns-crawler-workers`), the config is loaded by the controlled and shared with the workers via Redis.

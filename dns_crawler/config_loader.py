@@ -52,6 +52,7 @@ defaults = {
     "web": {
         "save_content": False,
         "strip_html": False,
+        "save_binary": True,
         "max_redirects": 6,
         "save_cert_chain": False,
         "user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
