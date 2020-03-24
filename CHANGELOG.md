@@ -1,3 +1,19 @@
+## 1.4.2 (2020-03-24)
+
+### WEB:
+
+- added an option to save binary content if the webserver returns it for root (or redirects to it)
+    - saved as base64 encoded data-uri
+    - limited by `content_size_limit` (same as the text content, just bytes instead of characters)
+    - a 'content_is_binary: true' field is added to the results for easy filtering
+    - can be turned on/off on config, enabled by default
+- added a `max_ips_per_domain` limit to help with domains that take A/AAAAs to the the extreme (> 20 records) and have broken HTTPS on webservers, so they won't fit into sane job timeouts… (unlimited by default)
+- added a check to see if the IP from DNS records isn't from local range before trying to fetch web stuff from it
+
+### GeoIP
+
+- the local IP check applies to GeoIP, too – it makes no sense to throw addresses like `192.168.X.X` at it
+
 ## 1.4.1 (2020-03-19)
 
 ### DNS:
