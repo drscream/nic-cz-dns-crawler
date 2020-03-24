@@ -200,10 +200,15 @@ The default values are:
 geoip:
   country: /usr/share/GeoIP/GeoLite2-Country.mmdb
   asn: /usr/share/GeoIP/GeoLite2-ASN.mmdb
+  # Using commercial DBs instead:
+  # country: /usr/share/GeoIP/GeoIP2-Country.mmdb
+  # isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb
 dns:
   resolvers:
     - 193.17.47.1  # https://www.nic.cz/odvr/
-  # add 'additional' here to get more DNS records, see below
+  # add 'additional' here to get more DNS records, more about that in a dedicated section
+  # additional:
+  #  - SPF
 timeouts:
   job: 80  # seconds, overall job (one domain crawl) duration when using dns-crawler-controller, jobs will fail after that and you can retry/abort them as needed
   dns: 2  # seconds, timeout for dns queries
@@ -220,6 +225,7 @@ web:
   user_agent: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36  # User-Agent header to use for HTTP(S) requests
   accept_language: en-US;q=0.9,en;q=0.8  # Accept-Language header to use for HTTP(S) requests
   content_size_limit: 5120000  # Truncate the saved content to this number of chacters (or bytes for binary content). If you choose to use strip_html, the content is truncated _after_ that. Huge values (hunderds of MB, depending on your RAM size and number of workers) can cause UnpicklingError when reading the result from Redis.
+  max_ips_per_domain: null  # max A/AAAA records to try to get web content from for each www/nonwww–80/443-ipv4/6 combination, integer or null for unlimited. Some domains take it the extreme (> 20 records) and have broken HTTPS on webservers, so adjust HTTP and job timeouts accordingly…
 ```
 
 If you're using the multi-threaded crawler (`dns-crawler-controller` & `dns-crawler-workers`), the config is loaded by the controlled and shared with the workers via Redis.

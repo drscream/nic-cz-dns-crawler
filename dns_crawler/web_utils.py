@@ -171,7 +171,11 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
     protocol = "https" if tls else "http"
     path = "/"
     results = []
+    ip_index = 0
     for entry in ips:
+        ip_index += 1
+        if config["web"]["max_ips_per_domain"] is not None and ip_index > config["web"]["max_ips_per_domain"]:
+            break
         ip = entry["value"]
         if ip is None:
             continue

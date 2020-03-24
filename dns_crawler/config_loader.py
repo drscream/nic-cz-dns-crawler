@@ -57,7 +57,8 @@ defaults = {
         "save_cert_chain": False,
         "user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
         "accept_language": "en-US;q=0.9,en;q=0.8",
-        "content_size_limit": 5120000
+        "content_size_limit": 5120000,
+        "max_ips_per_domain": None
     }
 }
 
@@ -69,8 +70,8 @@ def merge_dicts(source, destination):
             merge_dicts(value, node)
         else:
             if isinstance(value, str):
-                if value.isdigit():
-                    destination[key] = int(value)
+                if value[0].isdigit():
+                    destination[key] = float(value)
                 elif value == "False":
                     destination[key] = False
                 elif value == "True":
