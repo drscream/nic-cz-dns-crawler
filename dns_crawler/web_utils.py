@@ -309,6 +309,8 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                     if len(content) > content_size_limit:
                         content = content[:content_size_limit]
                 step["content"] = content
+                if content_is_binary:
+                    step["content_is_binary"] = True
             h["r"].close()
             steps.append(step)
 

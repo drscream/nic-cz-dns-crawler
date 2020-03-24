@@ -229,6 +229,7 @@
                       "$ref": "#/definitions/tls_info"
                     },
                     "content": { "type": "string" },
+                    "content_is_binary": { "type": "boolean" },
                     "error": { "type": "string" }
                   },
                   "required": ["url", "status", "headers"],
