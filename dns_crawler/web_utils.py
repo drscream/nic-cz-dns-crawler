@@ -289,7 +289,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                     if content_is_binary:
                         if save_binary:
                             content = f"data:{step['headers']['content-type']};base64,"\
-                                    f"{base64.b64encode(h['r'].content[:content_size_limit]).decode()}"
+                                      f"{base64.b64encode(h['r'].content[:content_size_limit]).decode()}"
                     else:
                         content = h["r"].text
                 except requests.exceptions.ConnectionError:
