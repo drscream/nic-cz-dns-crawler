@@ -321,6 +321,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
         result = {
             "ip": ip,
             "steps": steps,
+            "final_status": steps[-1].status,
             "redirect_count": redirect_count
         }
         results.append(result)
