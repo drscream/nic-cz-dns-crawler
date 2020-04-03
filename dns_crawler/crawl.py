@@ -81,10 +81,14 @@ def get_dns_auth(domain, nameservers, redis, config, local_resolver, geoip_dbs):
         ipv6_results = []
         if a is not None:
             for ipv4 in a:
-                ipv4_results.append(get_ns_info(ipv4, geoip_dbs, timeout, redis))
+                ns_info = get_ns_info(ipv4, geoip_dbs, timeout, redis)
+                if ns_info:
+                    ipv4_results.append(ns_info)
         if aaaa is not None:
             for ipv6 in aaaa:
-                ipv6_results.append(get_ns_info(ipv6, geoip_dbs, timeout, redis))
+                ns_info = get_ns_info(ipv6, geoip_dbs, timeout, redis)
+                if ns_info:
+                    ipv6_results.append(ns_info)
         result = {
             "ns": ns,
             "ipv4": ipv4_results,

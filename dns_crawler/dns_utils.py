@@ -267,6 +267,8 @@ def get_ns_info(ip, geoip_dbs, timeout, redis):
         if cached is not None:
             redis.expire(cache_key, 900)
             return json.loads(cached.decode("utf-8"))
+    if ip["value"] is None:
+        return None
     result = {
         "ip": ip["value"],
         "geoip": annotate_geoip([ip], geoip_dbs)[0]["geoip"],
