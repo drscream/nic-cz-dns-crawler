@@ -69,7 +69,9 @@ def validate_rrset(rrset, rrsigset, keys, origin=None, now=None):
 
 
 def check_dnssec(domain, resolver):
-    sub = (dns.name.from_text(domain).split(depth=3))[1]
+    dnsname = dns.name.from_text(domain)
+    depth = dnsname.__len__()
+    sub = (dnsname.split(depth=depth))[1]
     q = dns.message.make_query(sub, "DNSKEY", want_dnssec=True)
     try:
         response = dns.query.udp(q, resolver.nameservers[0], resolver.timeout, ignore_unexpected=True)
