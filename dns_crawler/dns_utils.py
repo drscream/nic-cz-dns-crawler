@@ -268,7 +268,8 @@ def get_ns_info(ip, geoip_dbs, timeout, redis):
             redis.expire(cache_key, 900)
             return json.loads(cached.decode("utf-8"))
     result = {
-        "geoip": annotate_geoip([ip], geoip_dbs)[0],
+        "ip": ip["value"],
+        "geoip": annotate_geoip([ip], geoip_dbs)[0]["geoip"],
         "hostnamebind": get_chaostxt(ip["value"], "hostname.bind", timeout),
         "versionbind": get_chaostxt(ip["value"], "version.bind", timeout),
         "authorsbind": get_chaostxt(ip["value"], "authors.bind", timeout),
