@@ -4,6 +4,7 @@ geoip:
 dns:
   resolvers:
     - 193.17.47.1
+  check_www: True
 timeouts:
   job: 80
   dns: 2

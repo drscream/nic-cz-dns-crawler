@@ -36,7 +36,8 @@ defaults = {
         "resolvers": [
             "193.17.47.1"
         ],
-        "additional": []
+        "additional": [],
+        "check_www": True
     },
     "timeouts": {
         "job": 80,

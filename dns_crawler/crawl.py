@@ -37,24 +37,26 @@ from .web_utils import get_webserver_info
 
 
 def get_dns_local(domain, config, local_resolver, geoip_dbs):
+    result = {}
     txt = get_record(domain, "TXT", local_resolver)
-    result = {
-        "NS_AUTH": get_record(domain, "NS", local_resolver),
-        "MAIL": get_record(domain, "MX", local_resolver),
-        "WEB4": annotate_geoip(get_record(domain, "A", local_resolver), geoip_dbs),
-        "WEB4_www": annotate_geoip(get_record("www." + domain, "A", local_resolver), geoip_dbs),
-        "WEB6": annotate_geoip(get_record(domain, "AAAA", local_resolver), geoip_dbs),
-        "WEB6_www": annotate_geoip(get_record("www." + domain, "AAAA", local_resolver), geoip_dbs),
-        "WEB_TLSA": get_record("_443._tcp." + domain, "TLSA", local_resolver),
-        "WEB_TLSA_www": parse_tlsa(get_record("_443._tcp.www." + domain, "TLSA", local_resolver)),
-        "TXT": txt,
-        "TXT_SPF": parse_spf(get_txt(re.compile("^\"?v=spf"), deepcopy(txt))),
-        "TXT_DMARC": parse_dmarc(get_record("_dmarc." + domain, "TXT", local_resolver)),
-        "SPF": parse_spf(get_record(domain, "SPF", local_resolver)),
-        "DS": annotate_dns_algorithm(get_record(domain, "DS", local_resolver), 1),
-        "DNSKEY": annotate_dns_algorithm(get_record(domain, "DNSKEY", local_resolver), 2),
-        "DNSSEC": check_dnssec(domain, local_resolver),
-    }
+    result["NS_AUTH"] = get_record(domain, "NS", local_resolver)
+    result["MAIL"] = get_record(domain, "MX", local_resolver)
+    result["WEB4"] = annotate_geoip(get_record(domain, "A", local_resolver), geoip_dbs)
+    if config["dns"]["check_www"]:
+        result["WEB4_www"] = annotate_geoip(get_record("www." + domain, "A", local_resolver), geoip_dbs)
+    result["WEB6"] = annotate_geoip(get_record(domain, "AAAA", local_resolver), geoip_dbs)
+    if config["dns"]["check_www"]:
+        result["WEB6_www"] = annotate_geoip(get_record("www." + domain, "AAAA", local_resolver), geoip_dbs)
+    result["WEB_TLSA"] = get_record("_443._tcp." + domain, "TLSA", local_resolver)
+    if config["dns"]["check_www"]:
+        result["WEB_TLSA_www"] = parse_tlsa(get_record("_443._tcp.www." + domain, "TLSA", local_resolver))
+    result["TXT"] = txt,
+    result["TXT_SPF"] = parse_spf(get_txt(re.compile("^\"?v=spf"), deepcopy(txt)))
+    result["TXT_DMARC"] = parse_dmarc(get_record("_dmarc." + domain, "TXT", local_resolver))
+    result["SPF"] = parse_spf(get_record(domain, "SPF", local_resolver))
+    result["DS"] = annotate_dns_algorithm(get_record(domain, "DS", local_resolver), 1)
+    result["DNSKEY"] = annotate_dns_algorithm(get_record(domain, "DNSKEY", local_resolver), 2)
+    result["DNSSEC"] = check_dnssec(domain, local_resolver)
     additional = {}
     for record in config["dns"]["additional"]:
         values = get_record(domain, record, local_resolver)
@@ -99,16 +101,21 @@ def get_dns_auth(domain, nameservers, redis, config, local_resolver, geoip_dbs):
 
 
 def get_web_status(domain, dns, config, source_ipv4, source_ipv6):
-    return {
-        "WEB4_80": get_webserver_info(domain, dns["WEB4"], config, source_ipv4),
-        "WEB4_80_www": get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4),
-        "WEB4_443": get_webserver_info(domain, dns["WEB4"], config, source_ipv4, tls=True),
-        "WEB4_443_www": get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4, tls=True),
-        "WEB6_80": get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True),
-        "WEB6_80_www": get_webserver_info(f"www.{domain}", dns["WEB6_www"], config, source_ipv6, ipv6=True),
-        "WEB6_443": get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True, tls=True),
-        "WEB6_443_www": get_webserver_info(f"www.{domain}", dns["WEB6_www"], config, source_ipv6, ipv6=True, tls=True)
-    }
+    result = {}
+    result["WEB4_80"] = get_webserver_info(domain, dns["WEB4"], config, source_ipv4)
+    if config["dns"]["check_www"]:
+        result["WEB4_80_www"] = get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4)
+    result["WEB4_443"] = get_webserver_info(domain, dns["WEB4"], config, source_ipv4, tls=True)
+    if config["dns"]["check_www"]:
+        result["WEB4_443_www"] = get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4, tls=True)
+    result["WEB6_80"] = get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True)
+    if config["dns"]["check_www"]:
+        result["WEB6_80_www"] = get_webserver_info(f"www.{domain}", dns["WEB6_www"], config, source_ipv6, ipv6=True)
+    result["WEB6_443"] = get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True, tls=True)
+    if config["dns"]["check_www"]:
+        result["WEB6_443_www"] = get_webserver_info(f"www.{domain}", dns["WEB6_www"],
+                                                    config, source_ipv6, ipv6=True, tls=True)
+    return result
 
 
 def process_domain(domain):
