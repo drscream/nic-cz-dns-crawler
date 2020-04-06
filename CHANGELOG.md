@@ -1,3 +1,16 @@
+## 1.4.3 (2020-04-06)
+
+### DNS:
+
+- support for any domain level (from TLDs to some deep internal subdomains), initially the crawler did just 2nd level domains
+- added config option to disable checking the `www.` subdomain (because it makes little sense with domains other than 2nd level…)
+- fixed JSON format of nested `geoip` fields in authoritative server info (reported by Maciej Andziński‏, thanks!)
+
+### WEB:
+
+- disabling `www.` applies to web too, of course
+- added a `final_status` field with HTTP status from the last redirect step for easier filtering/querying
+
 ## 1.4.2 (2020-03-24)
 
 ### WEB:
@@ -61,7 +74,7 @@
 
 ### DNS:
 
-- stricter checks for answer types and qnames (problem reported by Maciej Andzinsky, thanks!)
+- stricter checks for answer types and qnames (problem reported by Maciej Andziński‏, thanks!)
 - fixed retrying the query via TCP when the response is truncated, it could run into a loop until stopped by the crawler controller when it reached the job timeout hard limit (reported by Peter Hudec… didn't happen to me in .cz, but it could, theoretically)
 - TLSA records are parsed into objects for easier filtering (eg. `… | jq "…| .select(.results.DNS_LOCAL.WEB_TLSA_www.usage == 1)"`)
 - all the nameserver stuff (geoip, chaos txt records) is done for all ips from server's a/aaaa records (with caching in Redis)
@@ -109,4 +122,4 @@
 - the config is loaded by the controller and shared via Redis, so the workers on other machines use the same one (but it's still possible to override anything – useful mostly for setting different resolver IPs and GeoIP paths)
 - the job creation should be much faster now (using Redis pipelines to create jobs in batches of 10k)
 - `dns-crawler-workers` now uses *"soft start"* (kinda like some angle grinders :)) to make the first hit a bit easier on the system when starting a lot of workers
-- the weird JSON format in the DOM dumps (reported by Maciej Andzinsky) was coming from the headless Chromium in the screenshot branch, which is now out of date again… i'll probably drop that anyway because trying to make p**Y**ppeteer (Python+asyncio interface to headless Chromium) work properly is a pain in the ass, and i'll make the screenshots using an one-off script with p**U**ppeteer (same thing in JS/Node, which inspired p**Y**ppeteer… i know JS sounds scary, but the lib actually works pretty well and is actively maintained)
+- the weird JSON format in the DOM dumps (reported by Maciej Andziński‏) was coming from the headless Chromium in the screenshot branch, which is now out of date again… i'll probably drop that anyway because trying to make p**Y**ppeteer (Python+asyncio interface to headless Chromium) work properly is a pain in the ass, and i'll make the screenshots using an one-off script with p**U**ppeteer (same thing in JS/Node, which inspired p**Y**ppeteer… i know JS sounds scary, but the lib actually works pretty well and is actively maintained)
