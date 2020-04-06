@@ -579,6 +579,15 @@
                 { "$ref": "#/definitions/txt_dmarc_record_array" }
               ]
             },
+            "TXT_openid": {
+              "description": "TXT records for _openid subdomain",
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                { "$ref": "#/definitions/dns_record_array" }
+              ]
+            },
             "DS": {
               "description": "Domain's DS record with algorithm annotation.",
               "anyOf": [
