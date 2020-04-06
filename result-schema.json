@@ -1,6 +1,10 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
+    "ip": {
+      "type": "string",
+      "pattern": "((^\\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\\s*$)|(^\\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:)))(%.+)?\\s*$))"
+    },
     "dns_record_array": {
       "type": "array",
       "items": {
@@ -81,26 +85,31 @@
       }
     },
     "tlsa_record_array": {
-      "type": "array",
-      "description": "TLSA records parsed into JSON objects",
-      "items": {
-        "type": "object",
-        "properties": {
-          "usage": {
-            "type": "integer"
-          },
-          "selector": {
-            "type": "integer"
-          },
-          "matchingtype": {
-            "type": "integer"
-          },
-          "data": {
-            "type": "string"
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "array",
+          "description": "TLSA records parsed into JSON objects",
+          "items": {
+            "type": "object",
+            "properties": {
+              "usage": {
+                "type": "integer"
+              },
+              "selector": {
+                "type": "integer"
+              },
+              "matchingtype": {
+                "type": "integer"
+              },
+              "data": {
+                "type": "string"
+              }
+            },
+            "required": ["usage", "selector", "matchingtype", "data"]
           }
-        },
-        "required": ["usage", "selector", "matchingtype", "data"]
-      }
+        }
+      ]
     },
     "ns_ip_array": {
       "type": "array",
@@ -108,8 +117,11 @@
       "items": {
         "type": "object",
         "properties": {
+          "ip": {
+            "$ref": "#/definitions/ip"
+          },
           "geoip": {
-            "$ref": "#/definitions/ip_record_with_geoip"
+            "$ref": "#/definitions/geoip"
           },
           "hostnamebind": {
             "description": "hostname.bind chaos txt",
@@ -135,6 +147,21 @@
       "description": "Array of A/AAAA record values annotated with GeoIP",
       "items": { "$ref": "#/definitions/ip_record_with_geoip" }
     },
+    "geoip": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "org": {
+          "type": "string"
+        },
+        "asn": {
+          "type": "integer"
+        }
+      },
+      "required": ["asn", "country", "org"]
+    },
     "ip_record_with_geoip": {
       "type": "object",
       "properties": {
@@ -145,19 +172,7 @@
           "type": "string"
         },
         "geoip": {
-          "type": "object",
-          "properties": {
-            "country": {
-              "type": "string"
-            },
-            "org": {
-              "type": "string"
-            },
-            "asn": {
-              "type": "integer"
-            }
-          },
-          "required": ["asn", "country", "org"]
+          "$ref": "#/definitions/geoip"
         }
       },
       "required": ["geoip", "value"]
@@ -235,6 +250,13 @@
                   "required": ["url", "status", "headers"],
                   "additionalProperties": false
                 }
+              },
+              "final_status": {
+                "description": "HTTP status from the last step",
+                "oneOf": [
+                  { "type": "null" },
+                  { "$ref": "#/definitions/http_status" }
+                ]
               }
             },
             "required": ["ip"]
@@ -611,11 +633,8 @@
             "TXT_DMARC",
             "NS_AUTH",
             "WEB4",
-            "WEB4_www",
             "WEB6",
-            "WEB6_www",
-            "WEB_TLSA",
-            "WEB_TLSA_www"
+            "WEB_TLSA"
           ],
           "additionalProperties": true
         },
@@ -703,16 +722,7 @@
               "$ref": "#/definitions/webserver_info"
             }
           },
-          "required": [
-            "WEB4_443",
-            "WEB4_443_www",
-            "WEB4_80",
-            "WEB4_80_www",
-            "WEB6_443",
-            "WEB6_443_www",
-            "WEB6_80",
-            "WEB6_80_www"
-          ],
+          "required": ["WEB4_443", "WEB4_80", "WEB6_443", "WEB6_80"],
           "additionalProperties": false
         },
         "HSTS": {

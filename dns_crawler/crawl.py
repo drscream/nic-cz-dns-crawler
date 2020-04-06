@@ -50,7 +50,7 @@ def get_dns_local(domain, config, local_resolver, geoip_dbs):
     result["WEB_TLSA"] = get_record("_443._tcp." + domain, "TLSA", local_resolver)
     if config["dns"]["check_www"]:
         result["WEB_TLSA_www"] = parse_tlsa(get_record("_443._tcp.www." + domain, "TLSA", local_resolver))
-    result["TXT"] = txt,
+    result["TXT"] = txt[0],
     result["TXT_SPF"] = parse_spf(get_txt(re.compile("^\"?v=spf"), deepcopy(txt)))
     result["TXT_DMARC"] = parse_dmarc(get_record("_dmarc." + domain, "TXT", local_resolver))
     result["SPF"] = parse_spf(get_record(domain, "SPF", local_resolver))
