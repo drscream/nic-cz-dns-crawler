@@ -206,6 +206,7 @@ geoip:
 dns:
   resolvers:
     - 193.17.47.1  # https://www.nic.cz/odvr/
+  check_www: True  # get A/AAAA/TLSA records for the `www.` subdomain (and use them for WEB_* stuff later, too)
   # add 'additional' here to get more DNS records, more about that in a dedicated section
   # additional:
   #  - SPF
