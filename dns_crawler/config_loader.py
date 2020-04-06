@@ -37,6 +37,10 @@ defaults = {
             "193.17.47.1"
         ],
         "additional": [],
+        "auth_chaos_txt": [
+            "version.bind",
+            "hostname.bind"
+        ],
         "check_www": True
     },
     "timeouts": {

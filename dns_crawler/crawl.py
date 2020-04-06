@@ -71,6 +71,7 @@ def get_dns_local(domain, config, local_resolver, geoip_dbs):
 
 def get_dns_auth(domain, nameservers, redis, config, local_resolver, geoip_dbs):
     timeout = config["timeouts"]["dns"]
+    chaosrecords = config["dns"]["auth_chaos_txt"]
     if not nameservers or len(nameservers) < 1:
         return None
     results = []
@@ -84,12 +85,12 @@ def get_dns_auth(domain, nameservers, redis, config, local_resolver, geoip_dbs):
         ipv6_results = []
         if a is not None:
             for ipv4 in a:
-                ns_info = get_ns_info(ipv4, geoip_dbs, timeout, redis)
+                ns_info = get_ns_info(ipv4, chaosrecords, geoip_dbs, timeout, redis)
                 if ns_info:
                     ipv4_results.append(ns_info)
         if aaaa is not None:
             for ipv6 in aaaa:
-                ns_info = get_ns_info(ipv6, geoip_dbs, timeout, redis)
+                ns_info = get_ns_info(ipv6, chaosrecords, geoip_dbs, timeout, redis)
                 if ns_info:
                     ipv6_results.append(ns_info)
         result = {
@@ -128,7 +129,7 @@ def process_domain(domain):
     local_resolver = get_local_resolver(config)
     dns_local = get_dns_local(domain, config, local_resolver, geoip_dbs)
     dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"], redis, config, local_resolver, geoip_dbs)
-    if len(dns_local["MAIL"]) > 0:
+    if dns_local["MAIL"]:
         mail = get_mx_info(dns_local["MAIL"], config["mail"]["ports"], config["timeouts"]["mail"],
                            config["mail"]["get_banners"], local_resolver, redis)
     else:

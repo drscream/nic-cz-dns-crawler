@@ -5,6 +5,9 @@ dns:
   resolvers:
     - 193.17.47.1
   check_www: True
+  auth_chaos_txt:
+    - hostname.bind
+    - version.bind
 timeouts:
   job: 80
   dns: 2

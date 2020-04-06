@@ -260,7 +260,7 @@ def get_chaostxt(nameserver, qname, timeout):
     return result
 
 
-def get_ns_info(ip, geoip_dbs, timeout, redis):
+def get_ns_info(ip, chaosrecords, geoip_dbs, timeout, redis):
     cache_key = f"cache-ns-{ip['value']}"
     if redis is not None:
         cached = redis.get(cache_key)
@@ -272,12 +272,10 @@ def get_ns_info(ip, geoip_dbs, timeout, redis):
     geoip = annotate_geoip([ip], geoip_dbs)[0]
     result = {
         "ip": ip["value"],
-        "geoip": geoip["geoip"] if "geoip" in geoip else None,
-        "hostnamebind": get_chaostxt(ip["value"], "hostname.bind", timeout),
-        "versionbind": get_chaostxt(ip["value"], "version.bind", timeout),
-        "authorsbind": get_chaostxt(ip["value"], "authors.bind", timeout),
-        "fortune": get_chaostxt(ip["value"], "fortune", timeout)
+        "geoip": geoip["geoip"] if "geoip" in geoip else None
     }
+    for record in chaosrecords:
+        result[record.replace(".", "")] = get_chaostxt(ip["value"], record, timeout)
     if redis is not None:
         redis.set(cache_key, json.dumps(result), ex=900)
     return result

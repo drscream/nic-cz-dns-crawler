@@ -1,5 +1,9 @@
 ## 1.4.4 (not released yet)
 
+### DNS:
+
+- configurable CH TXTs used for querying the domain's nameservers (`.results.DNS_AUTH`)
+
 ### MAIL:
 
 - configurable ports to use for TLSA records and mailserver banners (it was hardcoded to 25 originally)
