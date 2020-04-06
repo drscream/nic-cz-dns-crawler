@@ -676,17 +676,17 @@
                   "host": {
                     "type": "string"
                   },
-                  "banner": {
-                    "type": "string"
+                  "banners": {
+                    "type": "object"
                   },
-                  "error": {
-                    "type": "string"
+                  "errors": {
+                    "type": "object"
                   },
                   "TLSA": {
-                    "$ref": "#/definitions/tlsa_record_array"
+                    "type": "object"
                   }
                 },
-                "required": ["host"],
+                "required": ["host", "TLSA"],
                 "additionalProperties": false
               }
             },

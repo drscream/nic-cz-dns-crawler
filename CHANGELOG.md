@@ -1,3 +1,9 @@
+## 1.4.4 (not released yet)
+
+### MAIL:
+
+- configurable ports to use for TLSA records and mailserver banners (it was hardcoded to 25 originally)
+
 ## 1.4.3 (2020-04-06)
 
 ### DNS:

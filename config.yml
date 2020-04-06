@@ -14,6 +14,10 @@ timeouts:
   cache: 900
 mail:
   get_banners: False
+  ports:
+    - 25
+    - 465
+    - 587
 web:
   save_content: True
   strip_html: False

@@ -48,7 +48,8 @@ defaults = {
         "cache": 900
     },
     "mail": {
-        "get_banners": False
+        "get_banners": False,
+        "ports": [25, 465, 587]
     },
     "web": {
         "save_content": False,

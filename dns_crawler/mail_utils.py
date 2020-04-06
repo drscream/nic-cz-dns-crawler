@@ -23,7 +23,7 @@ import socket
 from .dns_utils import get_record, parse_tlsa
 
 
-def get_mailserver_info(host, timeout, get_banners, resolver, redis):
+def get_mailserver_info(host, ports, timeout, get_banners, resolver, redis):
     cache_key = f"cache-mail-{host}"
     if redis is not None:
         cached = redis.get(cache_key)
@@ -32,26 +32,31 @@ def get_mailserver_info(host, timeout, get_banners, resolver, redis):
             return json.loads(cached.decode("utf-8"))
     result = {}
     result["host"] = host
-    result["TLSA"] = parse_tlsa(get_record("_25._tcp." + host, "TLSA", resolver))
+    result["TLSA"] = {}
     if get_banners:
-        try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.settimeout(timeout)
-            s.connect((host, 25))
-        except (OSError, socket.timeout, ConnectionRefusedError) as e:
-            result["error"] = str(e)
-        else:
+        result["banners"] = {}
+        result["errors"] = {}
+    for port in ports:
+        result["TLSA"][port] = parse_tlsa(get_record(f"_{port}._tcp." + host, "TLSA", resolver))
+        if get_banners:
             try:
-                result["banner"] = s.recv(1024).decode().replace("\r\n", "")
-            except Exception as e:
-                result["error"] = str(e)
-            s.close()
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.settimeout(timeout)
+                s.connect((host, 25))
+            except (OSError, socket.timeout, ConnectionRefusedError) as e:
+                result["errors"][port] = str(e)
+            else:
+                try:
+                    result["banners"][port] = s.recv(1024).decode().replace("\r\n", "")
+                except Exception as e:
+                    result["errors"][port] = str(e)
+                s.close()
     if redis is not None:
         redis.set(cache_key, json.dumps(result), ex=900)
     return result
 
 
-def get_mx_info(mx_records, timeout, get_banners, resolver, redis):
+def get_mx_info(mx_records, ports, timeout, get_banners, resolver, redis):
     results = []
     if not mx_records:
         return None
@@ -59,5 +64,5 @@ def get_mx_info(mx_records, timeout, get_banners, resolver, redis):
         if mx and mx["value"]:
             host = mx["value"].split(" ")[-1]
             if host and host != ".":
-                results.append(get_mailserver_info(host, timeout, get_banners, resolver, redis))
+                results.append(get_mailserver_info(host, ports, timeout, get_banners, resolver, redis))
     return results
