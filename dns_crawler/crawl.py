@@ -127,8 +127,12 @@ def process_domain(domain):
     local_resolver = get_local_resolver(config)
     dns_local = get_dns_local(domain, config, local_resolver, geoip_dbs)
     dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"], redis, config, local_resolver, geoip_dbs)
-    mail = get_mx_info(dns_local["MAIL"], config["mail"]["ports"], config["timeouts"]["mail"],
-                       config["mail"]["get_banners"], local_resolver, redis)
+    if len(dns_local["MAIL"]) > 0:
+        mail = get_mx_info(dns_local["MAIL"], config["mail"]["ports"], config["timeouts"]["mail"],
+                           config["mail"]["get_banners"], local_resolver, redis)
+    else:
+        mail = get_mx_info([{"value": domain}], config["mail"]["ports"], config["timeouts"]["mail"],
+                           config["mail"]["get_banners"], local_resolver, redis)
     web = get_web_status(domain, dns_local, config, source_ipv4, source_ipv6)
     hsts = get_hsts_status(domain)
 

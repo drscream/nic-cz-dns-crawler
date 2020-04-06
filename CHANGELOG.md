@@ -3,6 +3,7 @@
 ### MAIL:
 
 - configurable ports to use for TLSA records and mailserver banners (it was hardcoded to 25 originally)
+- try to query the domain name as mailserver if there are no MX records
 
 ## 1.4.3 (2020-04-06)
 
