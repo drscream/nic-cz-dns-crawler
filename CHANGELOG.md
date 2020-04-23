@@ -1,13 +1,20 @@
-## 1.4.4 (not released yet)
+## 1.4.4 (2020-04-23)
 
 ### DNS:
 
 - configurable CH TXTs used for querying the domain's nameservers (`.results.DNS_AUTH`)
+- getting TXTs for `_openid.` subdomain
 
 ### MAIL:
 
-- configurable ports to use for TLSA records and mailserver banners (it was hardcoded to 25 originally)
+- configurable ports to use for TLSA records and mailserver banners (it was hardcoded to 25 originally, now defaults to 25, 465, 587)
 - try to query the domain name as mailserver if there are no MX records
+
+## WEB:
+
+- configurable www/nonwww–ipv4/ipv6–http/https combinations to try
+- configurable intermediate redirect step saving & output flattening (useful for sparklyr)
+- configurable output flattening when there's just one IP and one result object (also primarily for sparklyr)
 
 ## 1.4.3 (2020-04-06)
 
