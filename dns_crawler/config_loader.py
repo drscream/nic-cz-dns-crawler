@@ -70,6 +70,7 @@ defaults = {
         "check_ipv4": True,
         "check_ipv6": True,
         "save_intermediate_steps": True,
+        "flatten_output": False,
     }
 }
 

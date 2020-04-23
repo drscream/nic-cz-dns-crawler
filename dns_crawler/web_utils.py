@@ -320,14 +320,21 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
 
         result = {
             "ip": ip,
-            "steps": steps,
-            "final_status": steps[-1]["status"] if "status" in steps[-1] else None,
             "redirect_count": redirect_count
         }
+
+        if config["web"]["save_intermediate_steps"]:
+            result["steps"] = steps
+        else:
+            result["step_count"] = len(steps)
+            result["final_step"] = steps[-1]
+
         results.append(result)
 
         s1.close()
         s2.close()
+    if len(results) == 1 and config["web"]["flatten_output"]:
+        return results[0]
     if len(results) == 0:
         return None
     return results

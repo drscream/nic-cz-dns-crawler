@@ -123,6 +123,8 @@ def get_web_status(domain, dns, config, source_ipv4, source_ipv6):
         if config["dns"]["check_www"] and config["web"]["check_https"]:
             result["WEB6_443_www"] = get_webserver_info(f"www.{domain}", dns["WEB6_www"],
                                                         config, source_ipv6, ipv6=True, tls=True)
+    if config["web"]["flatten_output"] and len(result) == 1:
+        result = result[list(result)[0]]
     return result
 
 

@@ -238,7 +238,8 @@ web:
   check_https: True  # Try to connect via HTTPS (port 443)
   check_ipv4: True  # Try to connect to IP(s) from A records
   check_ipv6: True  # Try to connect to IP(s) from AAAA records
-  save_intermediate_steps: True  # Save intermediate redirect steps (otherwise save just the last one). 
+  save_intermediate_steps: True  # Save intermediate redirect steps (otherwise save just the last one).
+  flatten_output: False  # If only one of www/nonwww–ipv4/ipv6–http/https combinations is left, save it directly into "WEB" field. Also save the per-ip object directly into web results if htere was only one Ip (either from DNS of by setting max_ips_per_domain to 1)
 ```
 
 If you're using the multi-threaded crawler (`dns-crawler-controller` & `dns-crawler-workers`), the config is loaded by the controlled and shared with the workers via Redis.
