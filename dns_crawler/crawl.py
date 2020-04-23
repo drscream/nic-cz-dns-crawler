@@ -104,19 +104,25 @@ def get_dns_auth(domain, nameservers, redis, config, local_resolver, geoip_dbs):
 
 def get_web_status(domain, dns, config, source_ipv4, source_ipv6):
     result = {}
-    result["WEB4_80"] = get_webserver_info(domain, dns["WEB4"], config, source_ipv4)
-    if config["dns"]["check_www"]:
-        result["WEB4_80_www"] = get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4)
-    result["WEB4_443"] = get_webserver_info(domain, dns["WEB4"], config, source_ipv4, tls=True)
-    if config["dns"]["check_www"]:
-        result["WEB4_443_www"] = get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4, tls=True)
-    result["WEB6_80"] = get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True)
-    if config["dns"]["check_www"]:
-        result["WEB6_80_www"] = get_webserver_info(f"www.{domain}", dns["WEB6_www"], config, source_ipv6, ipv6=True)
-    result["WEB6_443"] = get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True, tls=True)
-    if config["dns"]["check_www"]:
-        result["WEB6_443_www"] = get_webserver_info(f"www.{domain}", dns["WEB6_www"],
-                                                    config, source_ipv6, ipv6=True, tls=True)
+    if config["web"]["check_ipv4"]:
+        if config["web"]["check_http"]:
+            result["WEB4_80"] = get_webserver_info(domain, dns["WEB4"], config, source_ipv4)
+        if config["dns"]["check_www"] and config["web"]["check_http"]:
+            result["WEB4_80_www"] = get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4)
+        if config["web"]["check_https"]:
+            result["WEB4_443"] = get_webserver_info(domain, dns["WEB4"], config, source_ipv4, tls=True)
+        if config["dns"]["check_www"] and config["web"]["check_https"]:
+            result["WEB4_443_www"] = get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4, tls=True)
+    if config["web"]["check_ipv6"]:
+        if config["web"]["check_http"]:
+            result["WEB6_80"] = get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True)
+        if config["dns"]["check_www"] and config["web"]["check_http"]:
+            result["WEB6_80_www"] = get_webserver_info(f"www.{domain}", dns["WEB6_www"], config, source_ipv6, ipv6=True)
+        if config["web"]["check_https"]:
+            result["WEB6_443"] = get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True, tls=True)
+        if config["dns"]["check_www"] and config["web"]["check_https"]:
+            result["WEB6_443_www"] = get_webserver_info(f"www.{domain}", dns["WEB6_www"],
+                                                        config, source_ipv6, ipv6=True, tls=True)
     return result
 
 

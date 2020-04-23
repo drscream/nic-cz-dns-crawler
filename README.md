@@ -234,6 +234,11 @@ web:
   accept_language: en-US;q=0.9,en;q=0.8  # Accept-Language header to use for HTTP(S) requests
   content_size_limit: 5120000  # Truncate the saved content to this number of chacters (or bytes for binary content). If you choose to use strip_html, the content is truncated _after_ that. Huge values (hunderds of MB, depending on your RAM size and number of workers) can cause UnpicklingError when reading the result from Redis.
   max_ips_per_domain: null  # max A/AAAA records to try to get web content from for each www/nonwww–80/443-ipv4/6 combination, integer or null for unlimited. Some domains take it the extreme (> 20 records) and have broken HTTPS on webservers, so adjust HTTP and job timeouts accordingly…
+  check_http: True  # Try to connect via HTTP (port 80)
+  check_https: True  # Try to connect via HTTPS (port 443)
+  check_ipv4: True  # Try to connect to IP(s) from A records
+  check_ipv6: True  # Try to connect to IP(s) from AAAA records
+  save_intermediate_steps: True  # Save intermediate redirect steps (otherwise save just the last one). 
 ```
 
 If you're using the multi-threaded crawler (`dns-crawler-controller` & `dns-crawler-workers`), the config is loaded by the controlled and shared with the workers via Redis.

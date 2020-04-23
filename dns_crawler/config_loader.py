@@ -64,7 +64,12 @@ defaults = {
         "user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
         "accept_language": "en-US;q=0.9,en;q=0.8",
         "content_size_limit": 5120000,
-        "max_ips_per_domain": None
+        "max_ips_per_domain": None,
+        "check_http": True,
+        "check_https": True,
+        "check_ipv4": True,
+        "check_ipv6": True,
+        "save_intermediate_steps": True,
     }
 }
 

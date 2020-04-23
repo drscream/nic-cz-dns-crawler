@@ -31,3 +31,9 @@ web:
   accept_language: en-US;q=0.9,en;q=0.8
   max_ips_per_domain: null
   content_size_limit: 5120000
+  check_http: True
+  check_https: True
+  check_ipv4: True
+  check_ipv6: True
+  save_intermediate_steps: True
+  flatten_output: False
