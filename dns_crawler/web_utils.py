@@ -326,7 +326,6 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
         if config["web"]["save_intermediate_steps"]:
             result["steps"] = steps
         else:
-            result["step_count"] = len(steps)
             result["final_step"] = steps[-1]
 
         results.append(result)
