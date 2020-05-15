@@ -1,3 +1,11 @@
+## 1.4.5 (not yet)
+
+### WEB:
+
+- removed the output flattening option from previous version, we don't need it after all
+- better content encoding autodetection without relying on `requests` or server headers (which are sometimes lying or broken)
+- the detected encoding is saved with each step when saving content (`detected_encoding` field)
+
 ## 1.4.4 (2020-04-23)
 
 ### DNS:
