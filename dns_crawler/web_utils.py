@@ -16,13 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import base64
 import re
 from html.parser import HTMLParser
 from itertools import takewhile
 from urllib.parse import unquote, urljoin, urlparse
 
-import base64
 import cert_human
+import icu
 import idna
 import requests
 import urllib3
@@ -160,6 +161,12 @@ def emsg(e):
     return msg
 
 
+def autodetect_encoding(data):
+    encoding = icu.CharsetDetector(data).detect().getName()
+    data = str(data, encoding=encoding)
+    return (data, encoding)
+
+
 def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
     if not ips or len(ips) < 1:
         return None
@@ -295,16 +302,9 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                             content = f"data:{step['headers']['content-type']};base64,"\
                                       f"{base64.b64encode(h['r'].content[:content_size_limit]).decode()}"
                     else:
-                        content = h["r"].text
+                        content, detected_encoding = autodetect_encoding(h["r"].content)
                 except requests.exceptions.ConnectionError:
                     content = None
-                except requests.exceptions.ChunkedEncodingError:
-                    content = h["r"].content.decode(h["r"].encoding or "latin1")
-                except requests.exceptions.ContentDecodingError:
-                    try:
-                        content = h["r"].content.decode("latin1")
-                    except requests.exceptions.ContentDecodingError:
-                        content = None
                 if content == "":
                     content = None
                 if content and not content_is_binary:
@@ -315,6 +315,8 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                 step["content"] = content
                 if content_is_binary:
                     step["content_is_binary"] = True
+                if detected_encoding is not None:
+                    step["detected_encoding"] = detected_encoding
             h["r"].close()
             steps.append(step)
 

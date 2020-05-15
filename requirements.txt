@@ -8,6 +8,7 @@ hstspreload
 idna==2.9
 pyaml==19.12.0
 pycryptodome==3.9.7
+PyICU==2.4.3
 pyopenssl==19.1.0
 redis==3.4.1
 requests_toolbelt==0.9.1
