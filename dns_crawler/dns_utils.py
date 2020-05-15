@@ -94,13 +94,13 @@ def check_dnssec(domain, resolver):
     answer = response.answer
 
     if len(answer) == 0:  # no DNSSEC records
-        return {"valid": None, "message": f"No records"}
+        return {"valid": None, "message": "No records"}
 
     if len(answer) == 1:  # missing DS or DNSKEY
         if "DNSKEY" in repr(answer[0]):
-            return {"valid": None, "message": f"Missing DS"}
+            return {"valid": None, "message": "Missing DS"}
         elif "DS" in repr(answer[0]):
-            return {"valid": None, "message": f"Missing DNSKEY"}
+            return {"valid": None, "message": "Missing DNSKEY"}
         else:
             return {"valid": None, "message": f"Missing DS or DNSKEY, answer contains: '{answer[0]}'."}
 
@@ -139,13 +139,13 @@ def annotate_dns_algorithm(items, index, key="value"):
 def parse_dmarc(items, key="value"):
     if not items:
         return None
-    items = [item for item in items if item[key] and item[key].startswith("\"v=DMARC")]
+    items = [item for item in items if item[key] and item[key].startswith('"v=DMARC')]
     if len(items) == 0:
         return None
     parsed = []
     for item in items:
-        record = item[key].strip("\"").strip(" ")
-        raw_tags = [t.split("=") for t in record.split(';') if t]
+        record = item[key].strip('"').strip(" ")
+        raw_tags = [t.split("=") for t in record.split(";") if t]
         output = {t[0].strip(): t[1].strip() for t in raw_tags if len(t) >= 2}
         item = {k: v for k, v in output.items() if v is not None}
         parsed.append(item)
@@ -188,13 +188,13 @@ def get_spf_all(record):
 def parse_spf(items, key="value"):
     if not items:
         return None
-    items = [item for item in items if item[key] and item[key].startswith("\"v=spf")]
+    items = [item for item in items if item[key] and item[key].startswith('"v=spf')]
     if len(items) == 0:
         return None
     parsed = []
     for item in items.copy():
         output = {}
-        record = re.sub(r" +", " ", item[key].strip("\"")).split(" ")
+        record = re.sub(r" +", " ", item[key].strip('"')).split(" ")
         kvs = [k for k in record if "=" in k]
         for kv in kvs:
             data = kv.split("=")

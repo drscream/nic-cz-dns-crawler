@@ -29,7 +29,7 @@ def print_help():
     sys.stderr.write(
         f"{exe} - a single-threaded crawler to process a small number of domains without a need for Redis\n\n")
     sys.stderr.write(f"Usage: {exe} <file>\n")
-    sys.stderr.write(f"       file - plaintext domain list, one domain per line, empty lines are ignored\n")
+    sys.stderr.write("       file - plaintext domain list, one domain per line, empty lines are ignored\n")
     sys.exit(1)
 
 

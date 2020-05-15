@@ -64,7 +64,7 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent"
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
     long_description=long_description,
     long_description_content_type="text/markdown"
 )

@@ -19,7 +19,7 @@ stages:
 lint:
   stage: lint
   before_script:
-    - pip install flake8
+    - pip install flake8 flake8-quotes
   script:
     - flake8 --config=.flake8
 

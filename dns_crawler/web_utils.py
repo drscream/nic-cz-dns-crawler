@@ -65,7 +65,7 @@ def create_request_headers(domain, user_agent, accept_language):
 
 def parse_alt_svc(header):
     result = {}
-    for pair in [i.split(";")[0].replace("\"", "") for i in re.findall(r'[a-zA-Z0-9-]+=[^,]+', header)]:
+    for pair in [i.split(";")[0].replace('"', "") for i in re.findall(r"[a-zA-Z0-9-]+=[^,]+", header)]:
         list = unquote(pair).split("=")
         result[list[0]] = list[1]
     return result
@@ -78,7 +78,7 @@ def parse_hsts(header):
     result["includeSubdomains"] = "includesubdomains" in items
     result["preload"] = "preload" in items
     try:
-        result["max-age"] = [int(''.join(takewhile(str.isdigit, re.split(r"[=:]", i)[1])))
+        result["max-age"] = [int("".join(takewhile(str.isdigit, re.split(r"[=:]", i)[1])))
                              for i in items if re.sub(r"['\"]", "", i).startswith("max-age")][0]
     except (IndexError, ValueError):
         pass
@@ -92,7 +92,7 @@ def parse_content_length(header):
         return result
     if not str.isdigit(header[0]):
         return result
-    result["value"] = int(''.join(takewhile(str.isdigit, header)))
+    result["value"] = int("".join(takewhile(str.isdigit, header)))
     return result
 
 
@@ -188,9 +188,9 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
             continue
         s1 = requests.session()
         s2 = requests.session()
-        s1.mount(f'https://', CrawlerAdapter(dest_ip=ip, source_address=source_ip))
-        s2.mount(f'https://', SourceAddressAdapter(source_address=source_ip))
-        s2.mount(f'http://', SourceAddressAdapter(source_address=source_ip))
+        s1.mount("https://", CrawlerAdapter(dest_ip=ip, source_address=source_ip))
+        s2.mount("https://", SourceAddressAdapter(source_address=source_ip))
+        s2.mount("http://", SourceAddressAdapter(source_address=source_ip))
         headers = create_request_headers(domain, config["web"]["user_agent"], config["web"]["accept_language"])
         try:
             if protocol == "https":
@@ -262,7 +262,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                     "value": cookie.value,
                     "secure": cookie.secure,
                     "expires": cookie.expires,
-                    **cookie.__dict__['_rest']
+                    **cookie.__dict__["_rest"]
                 })
             headers = {}
             for k, v in h["r"].headers.items():

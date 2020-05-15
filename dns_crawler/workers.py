@@ -37,8 +37,8 @@ def print_help():
     exe = basename(sys.argv[0])
     sys.stderr.write(f"{exe} - a process that spawns crawler workers.\n\n")
     sys.stderr.write(f"Usage: {exe} [count] [redis]\n")
-    sys.stderr.write(f"       count - worker count, 8 workers per CPU core by default\n")
-    sys.stderr.write(f"       redis - redis host:port:db, localhost:6379:0 by default\n\n")
+    sys.stderr.write("       count - worker count, 8 workers per CPU core by default\n")
+    sys.stderr.write("       redis - redis host:port:db, localhost:6379:0 by default\n\n")
     sys.stderr.write(f"Examples: {exe} 8\n")
     sys.stderr.write(f"          {exe} 24 192.168.0.22:4444:0\n")
     sys.stderr.write(f"          {exe} 16 redis.foo.bar:7777:2\n")
@@ -61,7 +61,7 @@ def main():
     except IndexError:
         pass
     if worker_count <= 0:
-        sys.stderr.write(f"At least one worker is needed.\n\n")
+        sys.stderr.write("At least one worker is needed.\n\n")
         print_help()
     if worker_count > 24 * cpus:
         sys.stderr.write((

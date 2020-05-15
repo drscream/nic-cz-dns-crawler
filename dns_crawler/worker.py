@@ -30,7 +30,7 @@ logger = logging.getLogger("rq.worker")
 def print_help():
     exe = basename(sys.argv[0])
     sys.stderr.write(f"{exe} - a single worker process\n\n")
-    sys.stderr.write(f"While it's possible to run it directly, it's meant to be used by dns-crawler-workers.\n")
+    sys.stderr.write("While it's possible to run it directly, it's meant to be used by dns-crawler-workers.\n")
     sys.stderr.write(f"Usage: {exe} <redis_host> <redis_port> <redis_db> <worker_name>\n")
     sys.exit(1)
 
