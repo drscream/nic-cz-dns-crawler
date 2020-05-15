@@ -69,8 +69,7 @@ defaults = {
         "check_https": True,
         "check_ipv4": True,
         "check_ipv6": True,
-        "save_intermediate_steps": True,
-        "flatten_output": False,
+        "save_intermediate_steps": True
     }
 }
 

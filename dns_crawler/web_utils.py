@@ -334,8 +334,6 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
 
         s1.close()
         s2.close()
-    if len(results) == 1 and config["web"]["flatten_output"]:
-        return results[0]
     if len(results) == 0:
         return None
     return results
