@@ -38,7 +38,7 @@ download_geoip:
     GEOIP_KEY: $GEOIP_KEY
   script:
     - apt-get -yqq update
-    - apt-get install -yqq geoipupdate
+    - apt-get install -yqq geoipupdate ca-certificates
     - echo "AccountID $GEOIP_ACCOUNTID" > /etc/GeoIP.conf
     - echo "LicenseKey $GEOIP_KEY" >> /etc/GeoIP.conf
     - echo "EditionIDs GeoLite2-ASN GeoLite2-Country" >> /etc/GeoIP.conf
