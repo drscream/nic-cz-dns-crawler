@@ -49,6 +49,7 @@ setup(
         "hstspreload",
         "idna==2.9",
         "pyaml==19.12.0",
+        "PyICU==2.4.3",
         "pycryptodome==3.9.7",
         "pyopenssl==19.1.0",
         "redis==3.4.1",
