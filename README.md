@@ -32,7 +32,7 @@ Answers from name and mail servers are cached, so the crawler shouldn't flood ho
  
 If you need to configure a firewall, the crawler connects to ports `53` (both UDP and TCP), `25` (TCP), `80` (TCP), and `443` (TCP for now, but we might add UDP with HTTP3…).
 
-See [`result-example.json`](result-example.json) to get an idea what the resulting JSON looks like.
+See [`result-example.json`](https://gitlab.labs.nic.cz/adam/dns-crawler/-/blob/master/result-example.json) to get an idea what the resulting JSON looks like.
 
 ## How fast is it anyway?
 
@@ -130,7 +130,7 @@ Results are printed to the main process' (`dns-crawler` or `dns-crawler-controll
 
 The progress info with timestamp is printed to stderr, so you can save just the output easily – `dns-crawler list.txt > results`.
 
-A JSON schema for the output JSON is included in this repository: [`result-schema.json`](result-schema.json), and also an example for nic.cz: [`result-example.json`](result-example.json).
+A JSON schema for the output JSON is included in the repository: [`result-schema.json`](https://gitlab.labs.nic.cz/adam/dns-crawler/-/blob/master/result-schema.json), and also an example for nic.cz: [`result-example.json`](https://gitlab.labs.nic.cz/adam/dns-crawler/-/blob/master/result-example.json).
 
 There are several tools for schema validation, viewing, and even code generation.
 
