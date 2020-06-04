@@ -36,6 +36,8 @@ from .ip_utils import is_valid_ipv6_address
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 cert_human.enable_urllib3_patch()
 
+fallback_encodings = ["windows-1250", "iso-8859-2", "windows-1252"]
+
 
 class CrawlerAdapter(SourceAddressAdapter, ForcedIPHTTPSAdapter):
     pass
@@ -161,9 +163,21 @@ def emsg(e):
     return msg
 
 
-def autodetect_encoding(data):
-    encoding = icu.CharsetDetector(data).detect().getName()
-    data = str(data, encoding=encoding)
+def autodetect_encoding(data, forced_encoding=None):
+    if forced_encoding:
+        encoding = forced_encoding
+    else:
+        encoding = icu.CharsetDetector(data).detect().getName()
+    try:
+        data = str(data, encoding=encoding)
+    except UnicodeDecodeError:
+        if not forced_encoding:
+            return autodetect_encoding(data, fallback_encodings[1])
+        else:
+            if fallback_encodings[-1] == forced_encoding:
+                return (None, None)
+            else:
+                return autodetect_encoding(data, fallback_encodings[fallback_encodings.index(forced_encoding) + 1])
     return (data, encoding)
 
 
@@ -302,6 +316,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                             content = f"data:{step['headers']['content-type']};base64,"\
                                       f"{base64.b64encode(h['r'].content[:content_size_limit]).decode()}"
                     else:
+                        detected_encoding = None
                         content, detected_encoding = autodetect_encoding(h["r"].content)
                 except requests.exceptions.ConnectionError:
                     content = None
