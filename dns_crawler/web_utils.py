@@ -163,21 +163,27 @@ def emsg(e):
     return msg
 
 
-def autodetect_encoding(data, forced_encoding=None):
+def autodetect_encoding(data, content_type=None, forced_encoding=None):
     if forced_encoding:
         encoding = forced_encoding
     else:
         encoding = icu.CharsetDetector(data).detect().getName()
+        # if encoding == "IBM420_ltr":
+        #     encoding = "utf-8"
     try:
         data = str(data, encoding=encoding)
-    except UnicodeDecodeError:
+    except (UnicodeDecodeError, LookupError):
+        if content_type and "charset" in content_type.lower():
+            content_encoding = re.sub(r".*charset=", "", content_type, flags=re.IGNORECASE)
+            return autodetect_encoding(data, forced_encoding=content_encoding)
         if not forced_encoding:
-            return autodetect_encoding(data, fallback_encodings[1])
+            return autodetect_encoding(data, forced_encoding=fallback_encodings[1])
         else:
             if fallback_encodings[-1] == forced_encoding:
                 return (None, None)
             else:
-                return autodetect_encoding(data, fallback_encodings[fallback_encodings.index(forced_encoding) + 1])
+                next_encoding = fallback_encodings[fallback_encodings.index(forced_encoding) + 1]
+                return autodetect_encoding(data, forced_encoding=next_encoding)
     return (data, encoding)
 
 
@@ -307,6 +313,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                     if h["r"].raw.peer_cert:
                         step["cert"] = [parse_cert(h["r"].raw.peer_cert.to_cryptography())]
             if save_content:
+                detected_encoding = None
                 content = None
                 content_is_binary = headers_look_like_binary(step["headers"])
 
@@ -316,7 +323,6 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                             content = f"data:{step['headers']['content-type']};base64,"\
                                       f"{base64.b64encode(h['r'].content[:content_size_limit]).decode()}"
                     else:
-                        detected_encoding = None
                         content, detected_encoding = autodetect_encoding(h["r"].content)
                 except requests.exceptions.ConnectionError:
                     content = None
@@ -331,7 +337,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                 if content_is_binary:
                     step["content_is_binary"] = True
                 if detected_encoding is not None:
-                    step["detected_encoding"] = detected_encoding
+                    step["detected_encoding"] = detected_encoding.lower()
             h["r"].close()
             steps.append(step)
 
