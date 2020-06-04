@@ -1,3 +1,9 @@
+## 1.4.6 (not released yet)
+
+### WEB:
+
+- better encoding autodetection
+
 ## 1.4.5 (2020-05-20)
 
 ### WEB:
