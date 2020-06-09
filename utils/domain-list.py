@@ -11,8 +11,7 @@ if len(argv) < 3:
         if row["domainname"].endswith("cz"):
             print(row["domainname"])
 else:
-    now = datetime.now()
-    start = datetime.now() - timedelta(days=int(argv[2]))
+    start = datetime.utcnow().replace(hour=0, minute=0, second=0) - timedelta(days=int(argv[2]), seconds=1)
     for row in csv.DictReader(open(argv[1])):
         regdate = datetime.strptime(row["current_registration_date"], "%Y-%m-%dT%H:%M:%SZ")
         if row["domainname"].endswith("cz") and regdate >= start:
