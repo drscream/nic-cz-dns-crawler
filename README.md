@@ -26,7 +26,6 @@ Despite the name, the crawler gets info for more services than just DNS:
   - certificate info for HTTPS (optionally with an entire cert chain)
   - webpage content (optional)
   - everything of the above is saved for each _step_ in the redirect history – the crawler follows redirects until it gets a non-redirecting status or hits a configurable limit
-  - HSTS preload list status for a domain
 
 Answers from name and mail servers are cached, so the crawler shouldn't flood hosting providers with repeating queries.
  
@@ -395,15 +394,7 @@ Same goes for Redis, you can point both controller and workers to a separate mac
 
 MaxMind updates GeoIP DBs on Tuesdays, so it may be a good idea to set a cron job to keep them fresh. More about that on [maxmind.com: Automatic Updates for GeoIP2](https://dev.maxmind.com/geoip/geoipupdate/).
 
-If you want reliable results for HSTS (= whether the given domain was included in the preload list at the time it was crawled), update the list regularly:
-
-```bash
-pip install -U hstspreload
-```
-
-The `utils/run-crawler.sh` example script does it for you on each run, feel free to adapt it to your environment.
-
-If you use multiple machines to run the workers, don't forget to update GeoIP and hstspreload on all of them.
+If you use multiple machines to run the workers, don't forget to update GeoIP on all of them (or set up a shared location, eg. via sshfs or nfs).
 
 ## Monitoring
 
