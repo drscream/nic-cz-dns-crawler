@@ -66,6 +66,7 @@ def get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolv
         host_ip6s = get_record(host, "AAAA", resolver)
         host_ips = host_ip4s or [] + host_ip6s or []
         for host_ip in host_ips:
+            host_ip = host_ip["value"]
             cache_key_ip = f"cache-mail-ip-{host_ip}"
             if redis is not None:
                 cached_ip = redis.get(cache_key_ip)
@@ -73,7 +74,6 @@ def get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolv
                     redis.expire(cache_key_ip, cache_timeout)
                     result["banners"].append(json.loads(cached_ip.decode("utf-8")))
                     continue
-            host_ip = host_ip["value"]
             ip_banners = {"ip": host_ip, "banners": []}
             for port in ports:
                 ip_banners["banners"].append(get_smtp_banner(host_ip, port, timeout))
