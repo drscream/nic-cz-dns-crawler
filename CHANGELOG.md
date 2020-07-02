@@ -1,3 +1,13 @@
+## 1.4.7 (2020-07-02)
+
+### WEB:
+
+- handle broken `<[[CDATA` and similar sections when stripping HTML
+
+### MAIL:
+
+- cache the server responses by IPs, too (not just hostnames), so we make less connections overall
+
 ## 1.4.6 (2020-07-02)
 
 ### DNS and MAIL:
