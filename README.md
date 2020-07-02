@@ -7,7 +7,7 @@
 [![PyPI version shields.io](https://img.shields.io/pypi/v/dns-crawler.svg)](https://pypi.python.org/pypi/dns-crawler/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/dns-crawler.svg)](https://pypi.python.org/pypi/dns-crawler/)
 [![PyPI license](https://img.shields.io/pypi/l/dns-crawler.svg)](https://pypi.python.org/pypi/dns-crawler/)
-[![PyPI download week](https://img.shields.io/pypi/dm/dns-crawler.svg)](https://pypi.python.org/pypi/dns-crawler/)
+[![PyPI downloads per week](https://img.shields.io/pypi/dm/dns-crawler.svg)](https://pypi.python.org/pypi/dns-crawler/)
 
 # What does it do?
 
@@ -24,7 +24,7 @@ Despite the name, the crawler gets info for more services than just DNS:
     - HOSTNAME.BIND, VERSION.BIND, AUTHORS.BIND and fortune (also for all IPs)
   - users can add custom additional RRs in the config file
 - E-mail (for every server from MX):
-  - SMTP server banners
+  - SMTP server banners (optional, ports are configurable)
   - TLSA records
 - Web:
   - HTTP status & headers (inc. parsed cookies) for ports 80 & 443 on each IP from A/AAAA records
