@@ -4,6 +4,11 @@
 
 > A crawler for getting info about *(possibly a huge number of)* DNS domains
 
+[![PyPI version shields.io](https://img.shields.io/pypi/v/dns-crawler.svg)](https://pypi.python.org/pypi/dns-crawler/)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/dns-crawler.svg)](https://pypi.python.org/pypi/dns-crawler/)
+[![PyPI license](https://img.shields.io/pypi/l/dns-crawler.svg)](https://pypi.python.org/pypi/dns-crawler/)
+[![PyPI download week](https://img.shields.io/pypi/dm/dns-crawler.svg)](https://pypi.python.org/pypi/dns-crawler/)
+
 # What does it do?
 
 Despite the name, the crawler gets info for more services than just DNS:
