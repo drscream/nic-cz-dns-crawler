@@ -1,4 +1,8 @@
-## 1.4.6 (not released yet)
+## 1.4.6 (2020-07-02)
+
+### DNS and MAIL:
+
+- use cache timeout from the config file (or a default value which got increased to an hour)
 
 ### WEB:
 

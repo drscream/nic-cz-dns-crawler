@@ -49,7 +49,7 @@ defaults = {
         "http": 2,
         "http_read": 5,
         "mail": 2,
-        "cache": 900
+        "cache": 3600
     },
     "mail": {
         "get_banners": False,

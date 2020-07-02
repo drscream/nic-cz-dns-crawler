@@ -218,7 +218,7 @@ timeouts:
   dns: 2  # seconds, timeout for dns queries
   http: 2  # seconds, connection timeout for HTTP(S)/TLS requests
   http_read: 5  # seconds, read timeout when saving web content
-  cache: 900  # TTL for cached responses (used for mail and name servers), they will expire after this much seconds since their last use
+  cache: 3600  # TTL for cached responses (used for mail and name servers), they will expire after this much seconds since their last use
 mail:
   get_banners: False  # connect to SMTP servers and save banners they send (you might want to turn it off if your ISP is touchy about higher traffic on port 25, or just to save time)
   ports: # ports to use for TLSA records (_PORT._tcp.…) and mailserver banners

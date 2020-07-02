@@ -23,12 +23,12 @@ import socket
 from .dns_utils import get_record, parse_tlsa
 
 
-def get_mailserver_info(host, ports, timeout, get_banners, resolver, redis):
+def get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolver, redis):
     cache_key = f"cache-mail-{host}"
     if redis is not None:
         cached = redis.get(cache_key)
         if cached is not None:
-            redis.expire(cache_key, 900)
+            redis.expire(cache_key, cache_timeout)
             return json.loads(cached.decode("utf-8"))
     result = {}
     result["host"] = host
@@ -52,11 +52,11 @@ def get_mailserver_info(host, ports, timeout, get_banners, resolver, redis):
                     result["errors"][port] = str(e)
                 s.close()
     if redis is not None:
-        redis.set(cache_key, json.dumps(result), ex=900)
+        redis.set(cache_key, json.dumps(result), ex=cache_timeout)
     return result
 
 
-def get_mx_info(mx_records, ports, timeout, get_banners, resolver, redis):
+def get_mx_info(mx_records, ports, timeout, get_banners, cache_timeout, resolver, redis):
     results = []
     if not mx_records:
         return None
@@ -64,5 +64,5 @@ def get_mx_info(mx_records, ports, timeout, get_banners, resolver, redis):
         if mx and mx["value"]:
             host = mx["value"].split(" ")[-1]
             if host and host != ".":
-                results.append(get_mailserver_info(host, ports, timeout, get_banners, resolver, redis))
+                results.append(get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolver, redis))
     return results
