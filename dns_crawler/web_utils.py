@@ -120,6 +120,11 @@ def headers_look_like_binary(headers):
     return False
 
 
+_markedsectionclose = re.compile(r"]\s*]\s*>")
+_msmarkedsectionclose = re.compile(r"]\s*>")
+_markedsectionclose2 = re.compile(r">")
+
+
 class HTMLStripper(HTMLParser):
     def __init__(self):
         self.reset()
@@ -140,6 +145,29 @@ class HTMLStripper(HTMLParser):
                 pass
             else:
                 self.fed.append(d)
+
+    def parse_marked_section(self, i, report=1):
+        match = None
+        rawdata = self.rawdata
+        assert rawdata[i:i+3] == "<![", "unexpected call to parse_marked_section()"
+        sectName, j = self._scan_name(i+3, i)
+        if j < 0:
+            return j
+        if sectName in ["temp", "cdata", "ignore", "include", "rcdata"]:
+            # look for standard ]]> ending
+            match = _markedsectionclose.search(rawdata, i+3)
+        elif sectName in ["if", "else", "endif"]:
+            # look for MS Office ]> ending
+            match = _msmarkedsectionclose.search(rawdata, i+3)
+        else:
+            # probably some broken tag, just skip to closing ">"
+            match = _markedsectionclose2.search(rawdata, i+1)
+        if not match:
+            return -1
+        if report:
+            j = match.start(0)
+            self.unknown_decl(rawdata[i+3: j])
+        return match.end(0)
 
     def get_data(self):
         return " ".join(self.fed)
