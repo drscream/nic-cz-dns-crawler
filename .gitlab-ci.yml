@@ -53,7 +53,7 @@ test_odvr:
   dependencies:
     - download_geoip
   before_script:
-    - pip install -q -r requirements.txt
+    - pip install .
     - pip install -q jsonschema
   script: 
     - export PYTHONPATH="$(pwd)"
@@ -70,7 +70,7 @@ test_system_dns:
   dependencies:
     - download_geoip
   before_script:
-    - pip install -q -r requirements.txt
+    - pip install .
     - pip install -q jsonschema
   script: 
     - export PYTHONPATH="$(pwd)"
