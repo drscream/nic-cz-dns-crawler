@@ -687,10 +687,18 @@
                     "type": "string"
                   },
                   "banners": {
-                    "type": "object"
-                  },
-                  "errors": {
-                    "type": "object"
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "ip": {
+                          "$ref": "#/definitions/ip"
+                        },
+                        "banners": {
+                          "type": "array"
+                        }
+                      }
+                    }
                   },
                   "TLSA": {
                     "type": "object"
