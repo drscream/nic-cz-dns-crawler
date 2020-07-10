@@ -1,3 +1,7 @@
+## 1.4.8 (2020-07-10)
+
+- just a fix in the e-mail banners part
+
 ## 1.4.7 (2020-07-02)
 
 ### WEB:
