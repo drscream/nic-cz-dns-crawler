@@ -62,9 +62,9 @@ def get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolv
         result["TLSA"][port] = parse_tlsa(get_record(f"_{port}._tcp." + host, "TLSA", resolver))
     if get_banners:
         result["banners"] = []
-        host_ip4s = get_record(host, "A", resolver)
-        host_ip6s = get_record(host, "AAAA", resolver)
-        host_ips = host_ip4s or [] + host_ip6s or []
+        host_ip4s = get_record(host, "A", resolver) or []
+        host_ip6s = get_record(host, "AAAA", resolver) or []
+        host_ips = host_ip4s + host_ip6s
         for host_ip in host_ips:
             host_ip = host_ip["value"]
             cache_key_ip = f"cache-mail-ip-{host_ip}"
@@ -80,6 +80,8 @@ def get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolv
             if redis is not None:
                 redis.set(cache_key_ip, json.dumps(ip_banners), ex=cache_timeout)
             result["banners"].append(ip_banners)
+        if len(result["banners"]) == 0:
+            result["banners"] = None
     if redis is not None:
         redis.set(cache_key_host, json.dumps(result), ex=cache_timeout)
     return result
