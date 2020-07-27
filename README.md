@@ -63,6 +63,8 @@ Install `dns-crawler`:
 pip install dns-crawler
 ```
 
+Depending on your OS/distro, you might need to install some system packages. On Debian/Ubuntu, `apt install ibicu-dev pkg-config build-essential` should do the trick (assumung you already have python3 installed of course).
+
 This is enough to make the crawler work, but you will probably get `AttributeError: module 'dns.message' has no attribute 'Truncated'` for a lot of domains. This is because the crawler uses current `dnspython`, but the last release on PyPI is ages behind the current code. It can be fixed easily just by installing `dnspython` from git:
 
 ```bash
@@ -99,9 +101,11 @@ If you want formatted JSONs, just pipe the output through [jq](https://stedolan.
 
 ## Multithreaded crawling
 
+First, you need a Redis server running & listening.
+
 The crawler can run with multiple threads to speed things up when you have a lot of domains to go through. Communication betweeen the controller and workers is done through Redis (this makes it easy to run workers on multiple machines if needed, see below).
 
-Start Redis. The exact command depends on your system.
+Start Redis. The exact command depends on your system. If you want to use a different machine for Redis & the crawler controller, see [CLI parameters for dns-crawler-controller](#dns-crawler-controller).
 
 Feed domains into queue and wait for results:
 
