@@ -1,3 +1,15 @@
+## 1.4.9 (2020-07-28)
+
+- add a config option to specify custom IPs used for an initial connectivity check and getting a source addresses for HTTP(S) connections (or disable them to make the crawler IPv4- or v6-only, applies to nameservers and mailservers as well)
+
+### WEB:
+
+- handle more messed up headers, content enconding, and broken webservers
+
+### MAIL:
+
+- change the structure of saved mailserver banners to match the one of saved TLSA records (ports as object keys)
+
 ## 1.4.8 (2020-07-10)
 
 - just a fix in the e-mail banners part
