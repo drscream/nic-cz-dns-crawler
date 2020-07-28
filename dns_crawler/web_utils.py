@@ -362,8 +362,6 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                                 "error": emsg(e)
                             })
                             continue
-                        else:
-                            print(f"CONTENT: {content}")
                 except requests.exceptions.ConnectionError:
                     content = None
                 if content == "":
