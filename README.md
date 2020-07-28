@@ -202,7 +202,7 @@ This function just calls `crawl_domain` and converts the `dict` to JSON string. 
 
 GeoIP DB paths, DNS resolver IP(s), and timeouts are read from `config.yml` in the working directory, if present.
 
-The default values are listen in (`config.yml`)[https://gitlab.nic.cz/adam/dns-crawler/-/blob/master/config.yml] with explanatory comments.
+The default values are listed in [`config.yml`](https://gitlab.nic.cz/adam/dns-crawler/-/blob/master/config.yml) with explanatory comments.
 
 If you're using the multi-threaded crawler (`dns-crawler-controller` & `dns-crawler-workers`), the config is loaded by the controlled and shared with the workers via Redis.
 
