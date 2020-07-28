@@ -195,9 +195,10 @@ def autodetect_encoding(data, content_type=None, forced_encoding=None):
     if forced_encoding:
         encoding = forced_encoding
     else:
-        encoding = icu.CharsetDetector(data).detect().getName()
-        # if encoding == "IBM420_ltr":
-        #     encoding = "utf-8"
+        try:
+            encoding = icu.CharsetDetector(data).detect().getName()
+        except AttributeError:
+            encoding = "utf-8"
     try:
         data = str(data, encoding=encoding)
     except (UnicodeDecodeError, LookupError):
@@ -326,11 +327,12 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                 step["ip"] = ip
             if step_tls:
                 if h["r"].raw._fp.fp:
-                    step["tls"] = {
-                        "version": h["r"].raw._fp.fp.raw._sock.connection.get_protocol_version_name(),
-                        "cipher_bits": h["r"].raw._fp.fp.raw._sock.connection.get_cipher_bits(),
-                        "cipher_name": h["r"].raw._fp.fp.raw._sock.connection.get_cipher_name()
-                    }
+                    if  hasattr(h["r"].raw._fp.fp.raw._sock, "connection"):
+                        step["tls"] = {
+                            "version": h["r"].raw._fp.fp.raw._sock.connection.get_protocol_version_name(),
+                            "cipher_bits": h["r"].raw._fp.fp.raw._sock.connection.get_cipher_bits(),
+                            "cipher_name": h["r"].raw._fp.fp.raw._sock.connection.get_cipher_name()
+                        }
                 if config["web"]["save_cert_chain"]:
                     if h["r"].raw.peer_cert_chain:
                         cert_chain = []
@@ -353,12 +355,15 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                     else:
                         try:
                             content, detected_encoding = autodetect_encoding(h["r"].content)
-                        except requests.exceptions.ChunkedEncodingError as e:
+                        except (requests.exceptions.ChunkedEncodingError,
+                                requests.exceptions.ContentDecodingError) as e:
                             results.append({
                                 "ip": ip,
                                 "error": emsg(e)
                             })
                             continue
+                        else:
+                            print(f"CONTENT: {content}")
                 except requests.exceptions.ConnectionError:
                     content = None
                 if content == "":
