@@ -100,7 +100,7 @@ def main():
     if source_ipv4 is None and source_ipv6 is None:
         sys.stderr.write(f"{timestamp()} Can't connect to the internet\n")
         exit(1)
-    sys.stderr.write(f"{timestamp()} We will use these source IPs for HTTP(S)" +
+    sys.stderr.write(f"{timestamp()} We will use these source IPs for HTTP(S) " +
                      f"connections – IPv4: {source_ipv4}, IPv6: {source_ipv6}.\n")
 
     commands = []
