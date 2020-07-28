@@ -152,7 +152,7 @@ $ jsonschema -i result-example.json result-schema.json # if it prints nothing, i
 Or, if you don't loathe JS, `ajv` has a much better output:
 
 ```bash
-$ npm i -g ajv
+$ npm i -g ajv-cli
 $ ajv validate -s result-schema.json -d result-example.json
 ```
 
