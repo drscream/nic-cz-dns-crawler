@@ -16,7 +16,7 @@ timeouts:
   mail: 5
   cache: 3600
 mail:
-  get_banners: True
+  get_banners: False
   ports:
     - 25
     - 465
