@@ -327,7 +327,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                 step["ip"] = ip
             if step_tls:
                 if h["r"].raw._fp.fp:
-                    if  hasattr(h["r"].raw._fp.fp.raw._sock, "connection"):
+                    if hasattr(h["r"].raw._fp.fp.raw._sock, "connection"):
                         step["tls"] = {
                             "version": h["r"].raw._fp.fp.raw._sock.connection.get_protocol_version_name(),
                             "cipher_bits": h["r"].raw._fp.fp.raw._sock.connection.get_cipher_bits(),
