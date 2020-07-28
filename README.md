@@ -202,57 +202,11 @@ This function just calls `crawl_domain` and converts the `dict` to JSON string. 
 
 GeoIP DB paths, DNS resolver IP(s), and timeouts are read from `config.yml` in the working directory, if present.
 
-The default values are:
-
-```yaml
-geoip:
-  country: /usr/share/GeoIP/GeoLite2-Country.mmdb
-  asn: /usr/share/GeoIP/GeoLite2-ASN.mmdb
-  # Using commercial DBs instead:
-  # country: /usr/share/GeoIP/GeoIP2-Country.mmdb
-  # isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb
-dns:
-  resolvers:
-    - 193.17.47.1  # https://www.nic.cz/odvr/
-  check_www: True  # get A/AAAA/TLSA records for the `www.` subdomain (and use them for WEB_* stuff later, too)
-  auth_chaos_txt:  # CH TXT to query the domain's auth server for (eg. `authors.bind` or `fortune`)
-    - hostname.bind
-    - version.bind
-  # add 'additional' here to get more DNS records, more about that in a dedicated section
-  # additional:
-  #  - SPF
-timeouts:
-  job: 80  # seconds, overall job (one domain crawl) duration when using dns-crawler-controller, jobs will fail after that and you can retry/abort them as needed
-  dns: 2  # seconds, timeout for dns queries
-  http: 2  # seconds, connection timeout for HTTP(S)/TLS requests
-  http_read: 5  # seconds, read timeout when saving web content
-  cache: 3600  # TTL for cached responses (used for mail and name servers), they will expire after this much seconds since their last use
-mail:
-  get_banners: False  # connect to SMTP servers and save banners they send (you might want to turn it off if your ISP is touchy about higher traffic on port 25, or just to save time)
-  ports: # ports to use for TLSA records (_PORT._tcp.…) and mailserver banners
-    - 25
-    - 465
-    - 587
-web:
-  save_content: False  # save website content – beware, setting this to True will output HUGE files for higher domain counts
-  strip_html: True  # when saving web content, save just text (strip HTML tags, scripts, CSS, and abundant whitespace)
-  save_binary: True  # save even binary content (eg. application/octet-stream) in base64 data uris
-  max_redirects: 6  # follow HTTP redirrects (301, 302, …) until this limit
-  user_agent: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36  # User-Agent header to use for HTTP(S) requests
-  accept_language: en-US;q=0.9,en;q=0.8  # Accept-Language header to use for HTTP(S) requests
-  content_size_limit: 5120000  # Truncate the saved content to this number of chacters (or bytes for binary content). If you choose to use strip_html, the content is truncated _after_ that. Huge values (hunderds of MB, depending on your RAM size and number of workers) can cause UnpicklingError when reading the result from Redis.
-  max_ips_per_domain: null  # max A/AAAA records to try to get web content from for each www/nonwww–80/443-ipv4/6 combination, integer or null for unlimited. Some domains take it the extreme (> 20 records) and have broken HTTPS on webservers, so adjust HTTP and job timeouts accordingly…
-  check_http: True  # Try to connect via HTTP (port 80)
-  check_https: True  # Try to connect via HTTPS (port 443)
-  check_ipv4: True  # Try to connect to IP(s) from A records
-  check_ipv6: True  # Try to connect to IP(s) from AAAA records
-  save_intermediate_steps: True  # Save intermediate redirect steps (otherwise save just the last one).
-  flatten_output: False  # If only one of www/nonwww–ipv4/ipv6–http/https combinations is left, save it directly into "WEB" field. Also save the per-ip object directly into web results if htere was only one Ip (either from DNS of by setting max_ips_per_domain to 1)
-```
+The default values are listen in (`config.yml`)[https://gitlab.nic.cz/adam/dns-crawler/-/blob/master/config.yml] with explanatory comments.
 
 If you're using the multi-threaded crawler (`dns-crawler-controller` & `dns-crawler-workers`), the config is loaded by the controlled and shared with the workers via Redis.
 
-You can override it on the worker machines if needed – just create a `config.yml` in their working dir (eg. to set different resolver IP(s) or GeoIP paths on each machine). The config is then merged – directives not defined in the worker config are loaded from the controller one (and defaults are used if the're not defined there either).
+You can override it on the worker machines if needed – just create a `config.yml` in their working dir (eg. to set different resolver IP(s) or GeoIP paths on each machine). The config is then merged – directives not defined in the worker config are loaded from the controller one (and defaults are used if the're not defined there either). But – depending on values you change – you might then get a different results from each worker machine of course.
 
 ### Using commercial GeoIP DBs
 
