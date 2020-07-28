@@ -351,7 +351,14 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                             content = f"data:{step['headers']['content-type']};base64,"\
                                       f"{base64.b64encode(h['r'].content[:content_size_limit]).decode()}"
                     else:
-                        content, detected_encoding = autodetect_encoding(h["r"].content)
+                        try:
+                            content, detected_encoding = autodetect_encoding(h["r"].content)
+                        except requests.exceptions.ChunkedEncodingError as e:
+                            results.append({
+                                "ip": ip,
+                                "error": emsg(e)
+                            })
+                            continue
                 except requests.exceptions.ConnectionError:
                     content = None
                 if content == "":
