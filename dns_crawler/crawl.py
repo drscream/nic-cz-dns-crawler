@@ -97,7 +97,7 @@ def get_dns_auth(domain, nameservers, redis, config, local_resolver, geoip_dbs):
                     ipv6_results.append(ns_info)
         result = {
             "ns": ns,
-        }        
+        }
         if len(ipv4_results) > 0:
             result["ipv4"] = ipv4_results
         if len(ipv6_results) > 0:
