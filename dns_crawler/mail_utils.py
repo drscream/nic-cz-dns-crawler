@@ -25,7 +25,7 @@ from .ip_utils import is_valid_ipv4_address, is_valid_ipv6_address
 
 
 def get_smtp_banner(host_ip, port, timeout):
-    result = {"port": port}
+    result = {}
     if is_valid_ipv4_address(host_ip):
         inet = socket.AF_INET
     elif is_valid_ipv6_address(host_ip):
@@ -74,9 +74,9 @@ def get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolv
                     redis.expire(cache_key_ip, cache_timeout)
                     result["banners"].append(json.loads(cached_ip.decode("utf-8")))
                     continue
-            ip_banners = {"ip": host_ip, "banners": []}
+            ip_banners = {"ip": host_ip, "banners": {}}
             for port in ports:
-                ip_banners["banners"].append(get_smtp_banner(host_ip, port, timeout))
+                ip_banners["banners"][port] = get_smtp_banner(host_ip, port, timeout)
             if redis is not None:
                 redis.set(cache_key_ip, json.dumps(ip_banners), ex=cache_timeout)
             result["banners"].append(ip_banners)
