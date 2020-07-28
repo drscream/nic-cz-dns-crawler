@@ -23,6 +23,7 @@ from shutil import copy2
 
 import yaml
 
+from .ip_utils import is_valid_ip_address
 from .timestamp import timestamp
 
 default_config_filename = "config.yml"
@@ -34,7 +35,8 @@ defaults = {
     },
     "dns": {
         "resolvers": [
-            "193.17.47.1"
+            "193.17.47.1",
+            "2001:148f:ffff::1"
         ],
         "additional": [],
         "auth_chaos_txt": [
@@ -70,6 +72,10 @@ defaults = {
         "check_ipv4": True,
         "check_ipv6": True,
         "save_intermediate_steps": True
+    },
+    "connectivity_check_ips": {
+        "ipv4": "193.17.47.1",
+        "ipv6": "2001:148f:ffff::1"
     }
 }
 
@@ -81,7 +87,9 @@ def merge_dicts(source, destination):
             merge_dicts(value, node)
         else:
             if isinstance(value, str):
-                if value[0].isdigit():
+                if is_valid_ip_address(value):
+                    destination[key] = value
+                elif value[0].isdigit():
                     destination[key] = float(value)
                 elif value == "False":
                     destination[key] = False

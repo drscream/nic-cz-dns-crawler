@@ -48,7 +48,7 @@ def get_smtp_banner(host_ip, port, timeout):
         return result
 
 
-def get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolver, redis):
+def get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolver, redis, source_ipv4, source_ipv6):
     cache_key_host = f"cache-mail-host-{host}"
     if redis is not None:
         cached_host = redis.get(cache_key_host)
@@ -62,9 +62,14 @@ def get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolv
         result["TLSA"][port] = parse_tlsa(get_record(f"_{port}._tcp." + host, "TLSA", resolver))
     if get_banners:
         result["banners"] = []
-        host_ip4s = get_record(host, "A", resolver) or []
-        host_ip6s = get_record(host, "AAAA", resolver) or []
-        host_ips = host_ip4s + host_ip6s
+        if source_ipv4 and source_ipv6:
+            host_ip4s = get_record(host, "A", resolver) or []
+            host_ip6s = get_record(host, "AAAA", resolver) or []
+            host_ips = host_ip4s + host_ip6s
+        if source_ipv4 and not source_ipv6:
+            host_ips = get_record(host, "A", resolver) or []
+        if source_ipv6 and not source_ipv4:
+            host_ips = get_record(host, "AAAA", resolver) or []
         for host_ip in host_ips:
             host_ip = host_ip["value"]
             cache_key_ip = f"cache-mail-ip-{host_ip}"
@@ -87,7 +92,7 @@ def get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolv
     return result
 
 
-def get_mx_info(mx_records, ports, timeout, get_banners, cache_timeout, resolver, redis):
+def get_mx_info(mx_records, ports, timeout, get_banners, cache_timeout, resolver, redis, source_ipv4, source_ipv6):
     results = []
     if not mx_records:
         return None
@@ -95,5 +100,6 @@ def get_mx_info(mx_records, ports, timeout, get_banners, cache_timeout, resolver
         if mx and mx["value"]:
             host = mx["value"].split(" ")[-1]
             if host and host != ".":
-                results.append(get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolver, redis))
+                results.append(get_mailserver_info(host, ports, timeout, get_banners, cache_timeout,
+                                                   resolver, redis, source_ipv4, source_ipv6))
     return results

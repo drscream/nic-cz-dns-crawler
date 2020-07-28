@@ -89,20 +89,19 @@ def main():
     redis = Redis(host=redis_host[0], port=redis_host[1], db=redis_host[2])
 
     try:
-        load_config(default_config_filename, redis, hostname=hostname, save=True)
+        config = load_config(default_config_filename, redis, hostname=hostname, save=True)
         sys.stderr.write(f"{timestamp()} Shared config loaded from the controller.\n")
         if path.isfile(path.join(getcwd(), default_config_filename)):
             sys.stderr.write(f"{timestamp()} Local config merged with the shared one.\n")
     except ControllerNotRunning:
         sys.stderr.write(f"{timestamp()} Can't load the shared config. Is dns-crawler-controller running?\n")
         exit(1)
-    try:
-        source_ipv4, source_ipv6 = get_source_addresses(redis, hostname)
-    except OSError:
+    source_ipv4, source_ipv6 = get_source_addresses(redis=redis, hostname=hostname, config=config)
+    if source_ipv4 is None and source_ipv6 is None:
         sys.stderr.write(f"{timestamp()} Can't connect to the internet\n")
         exit(1)
-    sys.stderr.write(
-        f"{timestamp()} We will use these source IPs for HTTP(S) connections: '{source_ipv4}' and '{source_ipv6}'.\n")
+    sys.stderr.write(f"{timestamp()} We will use these source IPs for HTTP(S)" +
+                     f"connections – IPv4: {source_ipv4}, IPv6: {source_ipv6}.\n")
 
     commands = []
 

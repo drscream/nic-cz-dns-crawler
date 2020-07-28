@@ -70,6 +70,7 @@ def get_dns_local(domain, config, local_resolver, geoip_dbs):
 
 
 def get_dns_auth(domain, nameservers, redis, config, local_resolver, geoip_dbs):
+    source_ipv4, source_ipv6 = get_source_addresses(redis=redis, config=config)
     timeout = config["timeouts"]["dns"]
     cache_timeout = config["timeouts"]["cache"]
     chaosrecords = config["dns"]["auth_chaos_txt"]
@@ -84,28 +85,30 @@ def get_dns_auth(domain, nameservers, redis, config, local_resolver, geoip_dbs):
         aaaa = get_record(ns, "AAAA", local_resolver)
         ipv4_results = []
         ipv6_results = []
-        if a is not None:
+        if a is not None and source_ipv4 is not None:
             for ipv4 in a:
                 ns_info = get_ns_info(ipv4, chaosrecords, geoip_dbs, timeout, cache_timeout, redis)
                 if ns_info:
                     ipv4_results.append(ns_info)
-        if aaaa is not None:
+        if aaaa is not None and source_ipv6 is not None:
             for ipv6 in aaaa:
                 ns_info = get_ns_info(ipv6, chaosrecords, geoip_dbs, timeout, cache_timeout, redis)
                 if ns_info:
                     ipv6_results.append(ns_info)
         result = {
             "ns": ns,
-            "ipv4": ipv4_results,
-            "ipv6": ipv6_results
-        }
+        }        
+        if len(ipv4_results) > 0:
+            result["ipv4"] = ipv4_results
+        if len(ipv6_results) > 0:
+            result["ipv6"] = ipv6_results
         results.append(result)
     return results
 
 
 def get_web_status(domain, dns, config, source_ipv4, source_ipv6):
     result = {}
-    if config["web"]["check_ipv4"]:
+    if config["web"]["check_ipv4"] and source_ipv4:
         if config["web"]["check_http"]:
             result["WEB4_80"] = get_webserver_info(domain, dns["WEB4"], config, source_ipv4)
         if config["dns"]["check_www"] and config["web"]["check_http"]:
@@ -114,7 +117,7 @@ def get_web_status(domain, dns, config, source_ipv4, source_ipv6):
             result["WEB4_443"] = get_webserver_info(domain, dns["WEB4"], config, source_ipv4, tls=True)
         if config["dns"]["check_www"] and config["web"]["check_https"]:
             result["WEB4_443_www"] = get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4, tls=True)
-    if config["web"]["check_ipv6"]:
+    if config["web"]["check_ipv6"] and source_ipv6:
         if config["web"]["check_http"]:
             result["WEB6_80"] = get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True)
         if config["dns"]["check_www"] and config["web"]["check_http"]:
@@ -129,19 +132,20 @@ def get_web_status(domain, dns, config, source_ipv4, source_ipv6):
 
 def process_domain(domain):
     redis = get_current_connection()
-    source_ipv4, source_ipv6 = get_source_addresses(redis)
     config = load_config(default_config_filename, redis, hostname=gethostname())
-
+    source_ipv4, source_ipv6 = get_source_addresses(redis=redis, config=config)
     geoip_dbs = init_geoip(config)
     local_resolver = get_local_resolver(config)
     dns_local = get_dns_local(domain, config, local_resolver, geoip_dbs)
     dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"], redis, config, local_resolver, geoip_dbs)
     if dns_local["MAIL"]:
         mail = get_mx_info(dns_local["MAIL"], config["mail"]["ports"], config["timeouts"]["mail"],
-                           config["mail"]["get_banners"], config["timeouts"]["cache"], local_resolver, redis)
+                           config["mail"]["get_banners"], config["timeouts"]["cache"],
+                           local_resolver, redis, source_ipv4, source_ipv6)
     else:
         mail = get_mx_info([{"value": domain}], config["mail"]["ports"], config["timeouts"]["mail"],
-                           config["mail"]["get_banners"], config["timeouts"]["cache"], local_resolver, redis)
+                           config["mail"]["get_banners"], config["timeouts"]["cache"],
+                           local_resolver, redis, source_ipv4, source_ipv6)
     web = get_web_status(domain, dns_local, config, source_ipv4, source_ipv6)
     hsts = get_hsts_status(domain)
 
