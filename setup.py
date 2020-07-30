@@ -21,6 +21,24 @@ from setuptools import setup
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+
+def read_requirements(filename="requirements.txt"):
+    def valid_line(line):
+        line = line.strip()
+        return line and not any(line.startswith(p) for p in ("#", "-"))
+
+    def extract_requirement(line):
+        egg_eq = "#egg="
+        if egg_eq in line:
+            _, requirement = line.split(egg_eq, 1)
+            return requirement
+        return line
+
+    with open(filename) as f:
+        lines = f.readlines()
+        return list(map(extract_requirement, filter(valid_line, lines)))
+
+
 setup(
     name="dns-crawler",
     use_scm_version=True,
@@ -38,25 +56,7 @@ setup(
             "dns-crawler=dns_crawler.single:main"
         ]
     },
-    install_requires=[
-        "asn1crypto==1.3.0",
-        "cert_human==1.0.7",
-        "cryptography==2.8",
-        "dnspython",
-        "ecdsa==0.15",
-        "forcediphttpsadapter==1.0.1",
-        "geoip2==3.0.0",
-        "hstspreload",
-        "idna==2.9",
-        "pyaml==19.12.0",
-        "PyICU==2.4.3",
-        "pycryptodome==3.9.7",
-        "pyopenssl==19.1.0",
-        "redis==3.4.1",
-        "requests_toolbelt==0.9.1",
-        "requests==2.23.0",
-        "rq==1.2.2",
-    ],
+    install_requires=read_requirements(),
     keywords=["crawler", "dns", "http", "https"],
     classifiers=[
         "Development Status :: 4 - Beta",
