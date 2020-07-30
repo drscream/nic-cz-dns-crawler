@@ -18,7 +18,6 @@
 
 import base64
 import re
-from html.parser import HTMLParser
 from itertools import takewhile
 from urllib.parse import unquote, urljoin, urlparse
 
