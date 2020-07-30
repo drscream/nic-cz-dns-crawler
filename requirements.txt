@@ -15,4 +15,4 @@ requests_toolbelt==0.9.1
 requests==2.23.0
 rq==1.2.2
 html_stripper==0.2.1
-git+https://github.com/rthalley/dnspython.git
+dnspython @ git+https://github.com/rthalley/dnspython
