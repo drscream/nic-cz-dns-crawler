@@ -132,7 +132,8 @@ def get_web_status(domain, dns, config, source_ipv4, source_ipv6):
 
 def process_domain(domain):
     redis = get_current_connection()
-    config = load_config(default_config_filename, redis, hostname=gethostname())
+    hostname = gethostname()
+    config = load_config(default_config_filename, redis=redis, hostname=hostname)
     source_ipv4, source_ipv6 = get_source_addresses(redis=redis, config=config)
     geoip_dbs = init_geoip(config)
     local_resolver = get_local_resolver(config)
@@ -149,7 +150,7 @@ def process_domain(domain):
     web = get_web_status(domain, dns_local, config, source_ipv4, source_ipv6)
     hsts = get_hsts_status(domain)
 
-    return {
+    result = {
         "domain": domain,
         "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
         "results": {
@@ -160,6 +161,11 @@ def process_domain(domain):
             "HSTS": hsts
         }
     }
+
+    if config["save_worker_hostname"]:
+        result["worker_hostname"] = hostname
+
+    return result
 
 
 def get_json_result(domain):

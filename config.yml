@@ -45,3 +45,4 @@ web:
 connectivity_check_ips: # IPs used for an initial connectivity check and getting a source addresses for HTTP(S) connections, you can set these to any public DNS (or anything that listens on port 53 UDP…) or `null` to disable the 4/6 protocol. These default ones are just CZ.NIC's public resolvers (CZ.NIC ODVR, https://www.nic.cz/odvr/).
   ipv4: 193.17.47.1
   ipv6: 2001:148f:ffff::1
+save_worker_hostname: False # Include the worker hostname in JSON output, might be useful for debugging or determining if you ended up on some blacklist etc. 

@@ -76,7 +76,8 @@ defaults = {
     "connectivity_check_ips": {
         "ipv4": "193.17.47.1",
         "ipv6": "2001:148f:ffff::1"
-    }
+    },
+    "save_worker_hostname": False
 }
 
 
