@@ -59,7 +59,6 @@ defaults = {
     },
     "web": {
         "save_content": False,
-        "strip_html": False,
         "save_binary": True,
         "max_redirects": 6,
         "save_cert_chain": False,

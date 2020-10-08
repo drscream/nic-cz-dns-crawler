@@ -28,8 +28,7 @@ mail:
     - 465
     - 587
 web:
-  save_content: False  # save website content – beware, turning this on will output HUGE files for higher domain counts, especially when save_intermediate_steps is enabled as well
-  strip_html: True  # when saving web content, save just text (strip HTML tags, scripts, CSS, and abundant whitespace)
+  save_content: True  # save website content – beware, turning this on will output HUGE files for higher domain counts, especially when save_intermediate_steps is enabled as well
   save_binary: True  # save even binary content (eg. application/octet-stream) in base64 data uris
   max_redirects: 6  # follow HTTP redirrects (301, 302, …) until this limit
   user_agent: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36  # User-Agent header to use for HTTP(S) requests

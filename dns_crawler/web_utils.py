@@ -28,7 +28,6 @@ import urllib3
 import cert_human
 import icu
 from forcediphttpsadapter.adapters import ForcedIPHTTPSAdapter
-from html_stripper import strip_multiple_newlines, strip_tags
 from requests_toolbelt.adapters.source import SourceAddressAdapter
 
 from .certificate import parse_cert
@@ -305,8 +304,6 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                 if content == "":
                     content = None
                 if content and not content_is_binary:
-                    if config["web"]["strip_html"]:
-                        content = strip_multiple_newlines(strip_tags(content))
                     if len(content) > content_size_limit:
                         content = content[:content_size_limit]
                 step["content"] = content
