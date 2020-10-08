@@ -10,3 +10,6 @@ GeoIP2*
 /build
 /dist
 config.yml.bak
+/*.json
+!/result-example.json
+!/result-schema.json
