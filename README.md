@@ -2,7 +2,7 @@
 
 > A crawler for getting info about *(possibly a huge number of)* DNS domains
 
-[<img alt="CZ.NIC" src="https://adam.nic.cz/media/filer_public/5f/27/5f274de4-7c39-40b2-9942-ef5e7cb66d12/logo-cznic.svg" height="35">](https://www.nic.cz/)
+[<img alt="CZ.NIC" src="https://adam.nic.cz/media/filer_public/5f/27/5f274de4-7c39-40b2-9942-ef5e7cb66d12/logo-cznic.svg" height="35">](https://www.nic.cz/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [<img alt="ADAM" src="https://adam.nic.cz/static/img/logo-adam.svg" height="50">](https://adam.nic.cz/)
 
 [![PyPI version shields.io](https://img.shields.io/pypi/v/dns-crawler.svg)](https://pypi.python.org/pypi/dns-crawler/)
