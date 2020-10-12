@@ -1,8 +1,9 @@
-<div style="display: flex; justify-content: flex-end; align-items: center;"><a href="https://www.nic.cz/"><img alt="CZ.NIC" src="https://www.nic.cz/static/www.nic.cz/images/logo_en.png" align="right" style="height: 90px;" /></a><a href="https://adam.nic.cz/"><img alt="ADAM" src="https://adam.nic.cz/static/img/logo-adam.svg" align="right" style="height: 50px;"/></a></div><br>
-
 # `dns-crawler`
 
 > A crawler for getting info about *(possibly a huge number of)* DNS domains
+
+[<img alt="CZ.NIC" src="https://adam.nic.cz/media/filer_public/5f/27/5f274de4-7c39-40b2-9942-ef5e7cb66d12/logo-cznic.svg" height="35">](https://www.nic.cz/)
+[<img alt="ADAM" src="https://adam.nic.cz/static/img/logo-adam.svg" height="50">](https://adam.nic.cz/)
 
 [![PyPI version shields.io](https://img.shields.io/pypi/v/dns-crawler.svg)](https://pypi.python.org/pypi/dns-crawler/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/dns-crawler.svg)](https://pypi.python.org/pypi/dns-crawler/)
