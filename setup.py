@@ -47,7 +47,7 @@ setup(
     description="A crawler for getting info about DNS domains and services attached to them.",
     author="Jiri Helebrant",
     author_email="jiri.helebrant@nic.cz",
-    url="https://gitlab.labs.nic.cz/adam/dns-crawler",
+    url="https://gitlab.nic.cz/adam/dns-crawler",
     entry_points={
         "console_scripts": [
             "dns-crawler-controller=dns_crawler.controller:main",
