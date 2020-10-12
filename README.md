@@ -1,4 +1,4 @@
-<img alt="CZ.NIC" src="https://www.nic.cz/static/www.nic.cz/images/logo_en.png" align="right" /><br/><br/>
+<div style="display: flex; justify-content: flex-end; align-items: center;"><a href="https://www.nic.cz/"><img alt="CZ.NIC" src="https://www.nic.cz/static/www.nic.cz/images/logo_en.png" align="right" style="height: 90px;" /></a><a href="https://adam.nic.cz/"><img alt="ADAM" src="https://adam.nic.cz/static/img/logo-adam.svg" align="right" style="height: 50px;"/></a></div><br>
 
 # `dns-crawler`
 
