@@ -1,3 +1,13 @@
+## 1.5.0 (2020-10-12)
+
+- improvements in communication with Redis, should be more reliable now even with remote hosts 
+- added a config option to include a worker name (`<hostname>-<number>`) in the output JSON
+
+### WEB:
+
+- remove unused HTML stripping option (moved to output processing in our pipeline)
+- fixed error with extracting the `final_step` when there were no steps in some IPv4/6 80/443 combinations
+
 ## 1.4.9 (2020-07-28)
 
 - add a config option to specify custom IPs used for an initial connectivity check and getting a source addresses for HTTP(S) connections (or disable them to make the crawler IPv4- or v6-only, applies to nameservers and mailservers as well)
