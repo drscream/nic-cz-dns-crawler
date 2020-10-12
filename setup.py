@@ -66,7 +66,8 @@ setup(
         "Operating System :: OS Independent"
     ],
     project_urls={
-        'Operation in .CZ': 'https://www.csirt.cz/en/dns-crawler/'
+        "Operation in .CZ": "https://www.csirt.cz/en/dns-crawler/",
+        "Project ADAM": "https://adam.nic.cz/"
     },
     python_requires=">=3.6",
     long_description=long_description,
