@@ -204,14 +204,7 @@ You can override it on the worker machines if needed – just create a `config.y
 
 ### GeoIP annotation
 
-Enable GeoIP in the config file:
-
-```yaml
-geoip:
-  enabled: True
-```
-
-Next, you need to get GeoIP databases for the crawler to use. It supports both paid and free ones ([can be downloaded here after registration](https://dev.maxmind.com/geoip/geoip2/geolite2/)).
+For this to work, you need to get GeoIP databases for the crawler to use. It supports both paid and free ones ([can be downloaded here after registration](https://dev.maxmind.com/geoip/geoip2/geolite2/)).
 
 The crawler expects them in `/usr/share/GeoIP` (Maxmind's [geoipupdate](https://github.com/maxmind/geoipupdate) places them there by default), but that can be easily changed in a config file:
 

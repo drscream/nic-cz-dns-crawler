@@ -1,5 +1,4 @@
 geoip:
-  enabled: False # set to True to enable GeoIP annotation and set path to DBs:
   country: /usr/share/GeoIP/GeoLite2-Country.mmdb
   asn: /usr/share/GeoIP/GeoLite2-ASN.mmdb
   # Using commercial DBs instead:

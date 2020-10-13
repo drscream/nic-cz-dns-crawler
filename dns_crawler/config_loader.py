@@ -30,7 +30,6 @@ default_config_filename = "config.yml"
 
 defaults = {
     "geoip": {
-        "enabled": False,
         "country": "/usr/share/GeoIP/GeoLite2-Country.mmdb",
         "asn": "/usr/share/GeoIP/GeoLite2-ASN.mmdb"
     },
