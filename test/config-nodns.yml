@@ -1,3 +1,4 @@
 geoip:
+  enabled: True
   country: GeoLite2-Country.mmdb
   asn: GeoLite2-ASN.mmdb

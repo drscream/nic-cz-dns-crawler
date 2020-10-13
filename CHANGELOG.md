@@ -1,5 +1,17 @@
 ## 1.5.1 (2020-10-13)
 
+GeoIP annotaion disabled by default, set the config option to re-enable:
+
+```yaml
+geoip:
+  enabled: True
+  …
+```
+
+Better error messages (especially for the single-threaded crawler) and GeoIP DB handling.
+
+## 1.5.1 (2020-10-13)
+
 No functionality changes, just updated dependencies – DNSPython from git is no longer needed, installation should be a bit easier now. And it now works even with pip's new resolver (`--use-feature=2020-resolver`).
 
 ## 1.5.0 (2020-10-12)

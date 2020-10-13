@@ -15,13 +15,13 @@
 Despite the name, the crawler gets info for more services than just DNS:
 
 - DNS:
-  - all A/AAAA records (for the 2nd level domain and `www.` subdomain), annotated with GeoIP
+  - all A/AAAA records (for the 2nd level domain and `www.` subdomain), optionally annotated with GeoIP
   - TXT records (with SPF and DMARC parsed for easier filtering)
   - TLSA (for the 2nd level domain and `www.` subdomain)
   - MX
   - DNSSEC validation
   - nameservers:
-    - each server IP annotated with GeoIP
+    - each server IP optionally annotated with GeoIP
     - HOSTNAME.BIND, VERSION.BIND, AUTHORS.BIND and fortune (also for all IPs)
   - users can add custom additional RRs in the config file
 - E-mail (for every server from MX):
@@ -64,7 +64,7 @@ Install `dns-crawler`:
 pip install dns-crawler
 ```
 
-Depending on your OS/distro, you might need to install some system packages. On Debian/Ubuntu, `apt install ibicu-dev pkg-config build-essential` should do the trick (assumung you already have python3 installed of course).
+Depending on your OS/distro, you might need to install some system packages. On Debian/Ubuntu, `apt install libicu-dev pkg-config build-essential` should do the trick (assumung you already have python3 installed of course).
 
 ## Basic usage
 
@@ -193,7 +193,7 @@ This function just calls `crawl_domain` and converts the `dict` to JSON string. 
 
 ## Config file
 
-GeoIP DB paths, DNS resolver IP(s), and timeouts are read from `config.yml` in the working directory, if present.
+GeoIP DB paths, DNS resolver IP(s), timeouts, and bunch of other things are read from `config.yml` in the working directory, if present.
 
 The default values are listed in [`config.yml`](https://gitlab.nic.cz/adam/dns-crawler/-/blob/master/config.yml) with explanatory comments.
 
@@ -201,12 +201,32 @@ If you're using the multi-threaded crawler (`dns-crawler-controller` & `dns-craw
 
 You can override it on the worker machines if needed – just create a `config.yml` in their working dir (eg. to set different resolver IP(s) or GeoIP paths on each machine). The config is then merged – directives not defined in the worker config are loaded from the controller one (and defaults are used if the're not defined there either). But – depending on values you change – you might then get a different results from each worker machine of course.
 
-### Using commercial GeoIP DBs
 
-Tell the crawler to use (GeoIP2 Country and ISP) DBs instead of free (GeoLite2 Country and ASN) ones:
+### GeoIP annotation
+
+Enable GeoIP in the config file:
 
 ```yaml
 geoip:
+  enabled: True
+```
+
+Next, you need to get GeoIP databases for the crawler to use. It supports both paid and free ones ([can be downloaded here after registration](https://dev.maxmind.com/geoip/geoip2/geolite2/)).
+
+The crawler expects them in `/usr/share/GeoIP` (Maxmind's [geoipupdate](https://github.com/maxmind/geoipupdate) places them there by default), but that can be easily changed in a config file:
+
+```yaml
+geoip:
+  enabled: True
+  country: /path/to/GeoLite2-Country.mmdb
+  asn: /path/to/GeoLite2-ASN.mmdb
+```
+
+Using commercial (GeoIP2 Country and ISP) DBs instead of free (GeoLite2 Country and ASN) ones:
+
+```yaml
+geoip:
+  enabled: True
   country: /usr/share/GeoIP/GeoLite2-Country.mmdb
   #  asn: /usr/share/GeoIP/GeoLite2-ASN.mmdb  # 'asn' is the free DB
   isp: /usr/share/GeoIP/GeoIP2-ISP.mmdb  # 'isp' is the commercial one
