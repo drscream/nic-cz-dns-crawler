@@ -66,14 +66,6 @@ pip install dns-crawler
 
 Depending on your OS/distro, you might need to install some system packages. On Debian/Ubuntu, `apt install ibicu-dev pkg-config build-essential` should do the trick (assumung you already have python3 installed of course).
 
-This is enough to make the crawler work, but you will probably get `AttributeError: module 'dns.message' has no attribute 'Truncated'` for a lot of domains. This is because the crawler uses current `dnspython`, but the last release on PyPI is ages behind the current code. It can be fixed easily just by installing `dnspython` from git:
-
-```bash
-pip install -U git+https://github.com/rthalley/dnspython.git
-```
-
-(PyPI [doesn't allow us](https://github.com/pypa/pip/issues/6301) to specify the git url it in dependencies unfortunately)
-
 ## Basic usage
 
 To run a single-threaded crawler (suitable for small domain counts), just pass a domain list:
