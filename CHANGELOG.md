@@ -1,3 +1,7 @@
+## 1.5.0 (2020-10-13)
+
+Updated dependencies – DNSPython from git is no longer needed, installation should be a bit easier now.
+
 ## 1.5.0 (2020-10-12)
 
 - improvements in communication with Redis, should be more reliable now even with remote hosts 
