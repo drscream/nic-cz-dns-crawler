@@ -20,7 +20,7 @@ import json
 import sys
 from os.path import basename
 
-from .crawl import process_domain
+from .crawl import get_json_result
 from .timestamp import timestamp
 
 
@@ -40,17 +40,18 @@ def main():
     filename = sys.argv[1]
 
     try:
-        with open(filename, "r") as file:
-            sys.stderr.write(f"{timestamp()} Reading domains from {filename}.\n")
-            domains = [line for line in file.read().splitlines() if line.strip()]
-            domain_count = len(domains)
-            sys.stderr.write(f"{timestamp()} Read {domain_count} domain{('s' if domain_count > 1 else '')}.\n")
-            for num, domain in enumerate(domains, start=1):
-                print(json.dumps(process_domain(domain)))
-                sys.stderr.write(f"{timestamp()} {num}/{domain_count}\n")
-            sys.stderr.write(f"{timestamp()} Finished.\n")
-    except FileNotFoundError:
-        sys.stderr.write(f"File '{filename}' does not exist.\n\n")
-        print_help()
+        try:
+            file = open(filename, "r"):
+        except FileNotFoundError:
+            sys.stderr.write(f"File '{filename}' does not exist.\n\n")
+            print_help()
+        sys.stderr.write(f"{timestamp()} Reading domains from {filename}.\n")
+        domains = [line for line in file.read().splitlines() if line.strip()]
+        domain_count = len(domains)
+        sys.stderr.write(f"{timestamp()} Read {domain_count} domain{('s' if domain_count > 1 else '')}.\n")
+        for num, domain in enumerate(domains, start=1):
+            print(get_json_result(domain), flush=True)
+            sys.stderr.write(f"{timestamp()} {num}/{domain_count}\n")
+        sys.stderr.write(f"{timestamp()} Finished.\n")
     except KeyboardInterrupt:
         sys.exit(0)
