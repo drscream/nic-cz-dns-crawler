@@ -26,7 +26,7 @@ from .ip_utils import is_valid_ip_address
 
 
 def init_geoip(config):
-    if config["geoip"]["enabled"] == False:
+    if not config["geoip"]["enabled"]:
         return (None, None, None)
     pwd = getcwd()
     geoip_country = None
