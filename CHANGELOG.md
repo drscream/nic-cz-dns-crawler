@@ -1,6 +1,6 @@
 ## 1.5.2 (2020-10-13)
 
-Less confusing error messages (especially for the single-threaded crawler) and GeoIP DB handling.
+Less confusing error messages (especially for the single-threaded crawler) and GeoIP DB handling. Thanks to Hani Weiss for the [bugreport](https://gitlab.nic.cz/adam/dns-crawler/-/issues/9)!
 
 ## 1.5.1 (2020-10-13)
 

@@ -31,21 +31,21 @@ def init_geoip(config):
     geoip_isp = None
     geoip_asn = None
 
-    if config["geoip"]["enabled"] and "country" in config["geoip"]:
+    if "country" in config["geoip"]:
         try:
             db_path = path.join(pwd, config["geoip"]["country"])
             geoip_country = geoip2.database.Reader(db_path)
         except FileNotFoundError:
             stderr.write(f"GeoIP Country DB cannot be found in '{db_path}'. Disabling.\n")
 
-    if config["geoip"]["enabled"] and "isp" in config["geoip"]:
+    if "isp" in config["geoip"]:
         try:
             db_path = path.join(pwd, config["geoip"]["isp"])
             geoip_isp = geoip2.database.Reader(db_path)
         except FileNotFoundError:
             stderr.write(f"GeoIP ISP DB cannot be found in '{db_path}'. Disabling.\n")
 
-    if config["geoip"]["enabled"] and "asn" in config["geoip"] and not ("isp" in config["geoip"]):
+    if "asn" in config["geoip"] and not ("isp" in config["geoip"]):
         try:
             db_path = path.join(pwd, config["geoip"]["asn"])
             geoip_asn = geoip2.database.Reader(db_path)
