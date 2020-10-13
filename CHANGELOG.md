@@ -1,6 +1,6 @@
-## 1.5.0 (2020-10-13)
+## 1.5.1 (2020-10-13)
 
-Updated dependencies – DNSPython from git is no longer needed, installation should be a bit easier now.
+No functionality changes, just updated dependencies – DNSPython from git is no longer needed, installation should be a bit easier now. And it now works even with pip's new resolver (`--use-feature=2020-resolver`).
 
 ## 1.5.0 (2020-10-12)
 
