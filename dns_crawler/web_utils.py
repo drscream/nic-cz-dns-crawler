@@ -262,6 +262,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
             step["headers"] = headers
             if i == 0:
                 step["ip"] = ip
+            step["url"] = step["url"].replace(f"//{ip}/", f"//{domain}/").replace(f"//[{ip}]/", f"//{domain}/")
             if step_tls:
                 if h["r"].raw._fp.fp:
                     if hasattr(h["r"].raw._fp.fp.raw._sock, "connection"):
