@@ -143,7 +143,7 @@ def process_domain(domain):
         mail = get_mx_info(dns_local["MAIL"], config["mail"]["ports"], config["timeouts"]["mail"],
                            config["mail"]["get_banners"], config["timeouts"]["cache"],
                            local_resolver, redis, source_ipv4, source_ipv6)
-    else:
+    else if len(dns_local["WEB4"] > 0) or len(dns_local["WEB6"] > 0):
         mail = get_mx_info([{"value": domain}], config["mail"]["ports"], config["timeouts"]["mail"],
                            config["mail"]["get_banners"], config["timeouts"]["cache"],
                            local_resolver, redis, source_ipv4, source_ipv6)
