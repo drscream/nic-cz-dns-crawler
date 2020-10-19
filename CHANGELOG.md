@@ -1,3 +1,10 @@
+## 1.5.3 (2020-10-19)
+
+### MAIL:
+
+- fixed exception handling so more errors occuring when getting banners are recorded
+- when there are no MX records, the 2nd level domain name is used as a mail host only if it has at least one A or AAAA record
+
 ## 1.5.2 (2020-10-13)
 
 Less confusing error messages (especially for the single-threaded crawler) and GeoIP DB handling. Thanks to Hani Weiss for the [bugreport](https://gitlab.nic.cz/adam/dns-crawler/-/issues/9)!
