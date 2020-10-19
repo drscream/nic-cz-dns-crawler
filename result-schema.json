@@ -639,7 +639,6 @@
             "DS",
             "MAIL",
             "TXT",
-            "TXT_SPF",
             "TXT_DMARC",
             "NS_AUTH",
             "WEB4",
