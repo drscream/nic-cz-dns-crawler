@@ -36,16 +36,12 @@ def get_smtp_banner(host_ip, port, timeout):
         s = socket.socket(inet, socket.SOCK_STREAM)
         s.settimeout(timeout)
         s.connect((host_ip, port))
-    except (OSError, socket.timeout, ConnectionRefusedError) as e:
+        banner = s.recv(1024).decode().replace("\r\n", "")
+        result["banner"] = banner
+    except Exception as e:
         result["error"] = str(e)
-    else:
-        try:
-            banner = s.recv(1024).decode().replace("\r\n", "")
-            result["banner"] = banner
-        except Exception as e:
-            result["error"] = str(e)
-        s.close()
-        return result
+    s.close()
+    return result
 
 
 def get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolver, redis, source_ipv4, source_ipv6):
