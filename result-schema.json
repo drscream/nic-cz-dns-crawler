@@ -695,6 +695,9 @@
                         },
                         "banners": {
                           "type": "object"
+                        },
+                        "geoip": {
+                          "$ref": "#/definitions/geoip"
                         }
                       }
                     }
