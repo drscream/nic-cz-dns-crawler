@@ -1,3 +1,11 @@
+## 1.5.4 (2021-01-14)
+
+Updated most Python deps to latest compatible versions.
+
+### MAIL:
+
+- added GeoIP info for each IP from MX records
+
 ## 1.5.3 (2020-10-19)
 
 ### MAIL:

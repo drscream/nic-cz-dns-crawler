@@ -140,11 +140,11 @@ def process_domain(domain):
     dns_local = get_dns_local(domain, config, local_resolver, geoip_dbs)
     dns_auth = get_dns_auth(domain, dns_local["NS_AUTH"], redis, config, local_resolver, geoip_dbs)
     if dns_local["MAIL"]:
-        mail = get_mx_info(dns_local["MAIL"], config["mail"]["ports"], config["timeouts"]["mail"],
+        mail = get_mx_info(dns_local["MAIL"], config["mail"]["ports"], geoip_dbs, config["timeouts"]["mail"],
                            config["mail"]["get_banners"], config["timeouts"]["cache"],
                            local_resolver, redis, source_ipv4, source_ipv6)
     elif dns_local["WEB4"] or dns_local["WEB6"]:
-        mail = get_mx_info([{"value": domain}], config["mail"]["ports"], config["timeouts"]["mail"],
+        mail = get_mx_info([{"value": domain}], config["mail"]["ports"], geoip_dbs, config["timeouts"]["mail"],
                            config["mail"]["get_banners"], config["timeouts"]["cache"],
                            local_resolver, redis, source_ipv4, source_ipv6)
     else:

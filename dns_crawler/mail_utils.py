@@ -22,6 +22,7 @@ import socket
 
 from .dns_utils import get_record, parse_tlsa
 from .ip_utils import is_valid_ipv4_address, is_valid_ipv6_address
+from .geoip_utils import annotate_geoip
 
 
 def get_smtp_banner(host_ip, port, timeout):
@@ -44,7 +45,8 @@ def get_smtp_banner(host_ip, port, timeout):
     return result
 
 
-def get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolver, redis, source_ipv4, source_ipv6):
+def get_mailserver_info(host, ports, geoip_dbs, timeout, get_banners, cache_timeout,
+                        resolver, redis, source_ipv4, source_ipv6):
     cache_key_host = f"cache-mail-host-{host}"
     if redis is not None:
         cached_host = redis.get(cache_key_host)
@@ -83,12 +85,15 @@ def get_mailserver_info(host, ports, timeout, get_banners, cache_timeout, resolv
             result["banners"].append(ip_banners)
         if len(result["banners"]) == 0:
             result["banners"] = None
+    if result["banners"]:
+        annotate_geoip(result["banners"], geoip_dbs, "ip")
     if redis is not None:
         redis.set(cache_key_host, json.dumps(result), ex=cache_timeout)
     return result
 
 
-def get_mx_info(mx_records, ports, timeout, get_banners, cache_timeout, resolver, redis, source_ipv4, source_ipv6):
+def get_mx_info(mx_records, ports, geoip_dbs, timeout, get_banners, cache_timeout,
+                resolver, redis, source_ipv4, source_ipv6):
     results = []
     if not mx_records:
         return None
@@ -96,6 +101,6 @@ def get_mx_info(mx_records, ports, timeout, get_banners, cache_timeout, resolver
         if mx and mx["value"]:
             host = mx["value"].split(" ")[-1]
             if host and host != ".":
-                results.append(get_mailserver_info(host, ports, timeout, get_banners, cache_timeout,
-                                                   resolver, redis, source_ipv4, source_ipv6))
+                results.append(get_mailserver_info(host, ports, geoip_dbs, timeout, get_banners,
+                                                   cache_timeout, resolver, redis, source_ipv4, source_ipv6))
     return results
