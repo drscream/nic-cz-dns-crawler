@@ -85,7 +85,7 @@ def get_mailserver_info(host, ports, geoip_dbs, timeout, get_banners, cache_time
             result["banners"].append(ip_banners)
         if len(result["banners"]) == 0:
             result["banners"] = None
-    if result["banners"]:
+    if "banners" in result and result["banners"] is not None:
         annotate_geoip(result["banners"], geoip_dbs, "ip")
     if redis is not None:
         redis.set(cache_key_host, json.dumps(result), ex=cache_timeout)
