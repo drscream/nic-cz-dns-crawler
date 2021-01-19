@@ -1,4 +1,4 @@
-## 1.5.4 (2021-01-14)
+## 1.5.4 (2021-01-19)
 
 Updated most Python deps to latest compatible versions.
 
