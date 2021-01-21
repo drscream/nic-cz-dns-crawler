@@ -18,7 +18,7 @@
 
 from setuptools import setup
 
-with open("README.md", "r") as fh:
+with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 
@@ -34,7 +34,7 @@ def read_requirements(filename="requirements.txt"):
             return requirement
         return line
 
-    with open(filename) as f:
+    with open(filename, encoding="utf-8") as f:
         lines = f.readlines()
         return list(map(extract_requirement, filter(valid_line, lines)))
 

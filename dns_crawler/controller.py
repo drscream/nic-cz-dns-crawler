@@ -86,7 +86,7 @@ def main():
 
     try:
         sys.stderr.write(f"{timestamp()} Reading domains from {filename}.\n")
-        input_file = open(filename, "r")
+        input_file = open(filename, "r", encoding="utf-8")
         sys.stderr.write(
             f"{timestamp()} Creating job queue…\n")
         redis.set("locked", 1)

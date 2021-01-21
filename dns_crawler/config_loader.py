@@ -105,7 +105,7 @@ def merge_dicts(source, destination):
 def load_config_from_file(filename=default_config_filename):
     pwd = getcwd()
     try:
-        with open(path.join(pwd, filename), "r") as conf_file:
+        with open(path.join(pwd, filename), "r", encoding="utf-8") as conf_file:
             config_from_file = yaml.safe_load(conf_file)
             if not config_from_file:
                 sys.stderr.write(f"{timestamp()} Didn't find anything in the config file. Using defaults.\n")
@@ -128,7 +128,7 @@ def load_config_from_file(filename=default_config_filename):
                 config = merge_dicts(with_resolvers, defaults)
                 del config["resolvers"]
                 copy2(path.join(pwd, filename), path.join(pwd, f"{filename}.bak"))
-                with open(path.join(pwd, filename), "w") as file_w:
+                with open(path.join(pwd, filename), "w", encoding="utf-8") as file_w:
                     yaml.safe_dump(config, file_w, default_flow_style=False)
             else:
                 config = merge_dicts(config_from_file, defaults)

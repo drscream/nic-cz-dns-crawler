@@ -40,7 +40,7 @@ def main():
 
     try:
         try:
-            file = open(filename, "r")
+            file = open(filename, "r", encoding="utf-8")
         except FileNotFoundError:
             sys.stderr.write(f"File '{filename}' does not exist.\n\n")
             print_help()
