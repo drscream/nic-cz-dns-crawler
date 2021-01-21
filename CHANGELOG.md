@@ -1,3 +1,7 @@
+## 1.5.5 (2021-01-21)
+
+Fixed installation issues on MS Windows. See issue #10 for details: https://gitlab.nic.cz/adam/dns-crawler/-/issues/10.
+
 ## 1.5.4 (2021-01-19)
 
 Updated most Python deps to latest compatible versions.
