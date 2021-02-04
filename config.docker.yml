@@ -1,0 +1,10 @@
+dns:
+  resolvers:
+    - 193.17.47.1
+web:
+  check_ipv6: False
+connectivity_check_ips:
+  ipv6: null
+geoip:
+  country: /geoip/GeoLite2-Country.mmdb
+  asn: /geoip/GeoLite2-ASN.mmdb
