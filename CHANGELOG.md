@@ -1,3 +1,8 @@
+## 1.5.6 (2021-02-04)
+
+- Workaround for domains causing `dns.exception.FormError: value too large` (DNSPython exception)
+- Docker image improvements
+
 ## 1.5.5 (2021-01-21)
 
 Fixed installation issues on MS Windows. See issue #10 for details: https://gitlab.nic.cz/adam/dns-crawler/-/issues/10.
