@@ -77,6 +77,8 @@ def check_dnssec(domain, resolver):
         response = dns.query.udp(q, resolver.nameservers[0], resolver.timeout, ignore_unexpected=True)
     except dns.exception.Timeout:
         return {"valid": None, "error": "timeout"}
+    except dns.exception.FormError as e:
+        return {"valid": None, "error": str(e)}
     except dns.message.Truncated:
         try:
             response = dns.query.tcp(q, resolver.nameservers[0], resolver.timeout)
@@ -305,6 +307,7 @@ def get_record(domain_name, record, resolver, protocol="udp", cname_count=None):
         dns.resolver.NoNameservers,
         dns.resolver.NXDOMAIN,
         dns.exception.Timeout,
+        dns.exception.FormError
     ):
         return None
     except dns.message.Truncated:
