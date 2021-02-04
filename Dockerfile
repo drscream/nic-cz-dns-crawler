@@ -14,3 +14,4 @@ CMD bash
 # Usage:
 # echo -e "nic.cz\nnetmetr.cz\nroot.cz" > domain-list.txt
 # docker run --rm -v /usr/share/GeoIP/:/geoip -v $(pwd):/crawler helb/dns-crawler dns-crawler /crawler/domain-list.txt > results.json
+# or connect to Redis (either a remote one, or added via docker-compose) and run the controller or workers
