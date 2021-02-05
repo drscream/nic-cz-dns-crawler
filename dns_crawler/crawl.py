@@ -47,7 +47,7 @@ def get_dns_local(domain, config, local_resolver, geoip_dbs):
     result["WEB6"] = annotate_geoip(get_record(domain, "AAAA", local_resolver), geoip_dbs)
     if config["dns"]["check_www"]:
         result["WEB6_www"] = annotate_geoip(get_record("www." + domain, "AAAA", local_resolver), geoip_dbs)
-    result["WEB_TLSA"] = get_record("_443._tcp." + domain, "TLSA", local_resolver)
+    result["WEB_TLSA"] = parse_tlsa(get_record("_443._tcp." + domain, "TLSA", local_resolver))
     if config["dns"]["check_www"]:
         result["WEB_TLSA_www"] = parse_tlsa(get_record("_443._tcp.www." + domain, "TLSA", local_resolver))
     result["TXT"] = txt
