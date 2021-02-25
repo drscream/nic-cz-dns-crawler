@@ -288,7 +288,7 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
                 try:
                     if content_is_binary:
                         if save_binary:
-                            for chunk in h['r'].iter_content(content_size_limit):
+                            for chunk in h["r"].iter_content(content_size_limit):
                                 content = f"data:{step['headers']['content-type']};base64,"\
                                         f"{base64.b64encode(chunk).decode()}"
                                 break
