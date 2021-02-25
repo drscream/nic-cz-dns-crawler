@@ -1,3 +1,9 @@
+## 1.5.7 (2021-02-25)
+
+### WEB:
+
+- fix for websites returning an endless binary (audio/video/whatever) stream on the website root or redirecting to it, `content_size_limit` config option applies here now
+
 ## 1.5.6 (2021-02-04)
 
 - Workaround for domains causing `dns.exception.FormError: value too large` (DNSPython exception)
