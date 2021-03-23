@@ -1,3 +1,9 @@
+## 1.5.8
+
+### DNS:
+
+- Fix response truncation detection (used for retries over TCP)
+
 ## 1.5.7 (2021-02-25)
 
 ### WEB:

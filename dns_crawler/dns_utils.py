@@ -134,7 +134,8 @@ def annotate_dns_algorithm(items, index, key="value"):
                 alg_number = item[key].split()[index]
             except IndexError:
                 continue
-            item["algorithm"] = dns.dnssec.algorithm_to_text(int(alg_number))
+            else:
+                item["algorithm"] = dns.dnssec.algorithm_to_text(int(alg_number))
     return items
 
 
@@ -286,7 +287,6 @@ def get_ns_info(ip, chaosrecords, geoip_dbs, timeout, cache_timeout, redis):
 def value_from_record(record, data):
     return re.sub(r".*" + re.escape(record) + " ", "", data)
 
-
 def get_record(domain_name, record, resolver, protocol="udp", cname_count=None):
     results = []
     domain = dns.name.from_text(domain_name)
@@ -295,7 +295,10 @@ def get_record(domain_name, record, resolver, protocol="udp", cname_count=None):
     request = dns.message.make_query(domain, record)
     request.flags |= dns.flags.CD
     try:
-        response = getattr(dns.query, protocol)(request, resolver.nameservers[0], resolver.timeout)
+        if protocol == "udp":
+            response = getattr(dns.query, protocol)(request, resolver.nameservers[0], resolver.timeout, raise_on_truncation=True)
+        else:
+            response = getattr(dns.query, protocol)(request, resolver.nameservers[0], resolver.timeout)
     except (
         dns.query.UnexpectedSource,
         dns.query.BadResponse
