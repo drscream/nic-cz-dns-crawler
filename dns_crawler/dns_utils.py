@@ -287,6 +287,7 @@ def get_ns_info(ip, chaosrecords, geoip_dbs, timeout, cache_timeout, redis):
 def value_from_record(record, data):
     return re.sub(r".*" + re.escape(record) + " ", "", data)
 
+
 def get_record(domain_name, record, resolver, protocol="udp", cname_count=None):
     results = []
     domain = dns.name.from_text(domain_name)
@@ -296,7 +297,8 @@ def get_record(domain_name, record, resolver, protocol="udp", cname_count=None):
     request.flags |= dns.flags.CD
     try:
         if protocol == "udp":
-            response = getattr(dns.query, protocol)(request, resolver.nameservers[0], resolver.timeout, raise_on_truncation=True)
+            response = getattr(dns.query, protocol)(request, resolver.nameservers[0],
+                                                    resolver.timeout, raise_on_truncation=True)
         else:
             response = getattr(dns.query, protocol)(request, resolver.nameservers[0], resolver.timeout)
     except (
