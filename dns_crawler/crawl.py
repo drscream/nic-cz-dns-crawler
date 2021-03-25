@@ -142,11 +142,11 @@ def process_domain(domain):
     if dns_local["MAIL"]:
         mail = get_mx_info(dns_local["MAIL"], config["mail"]["ports"], geoip_dbs, config["timeouts"]["mail"],
                            config["mail"]["get_banners"], config["timeouts"]["cache"],
-                           local_resolver, redis, source_ipv4, source_ipv6)
+                           local_resolver, redis, source_ipv4, source_ipv6, config["mail"]["max_ips_per_host"])
     elif dns_local["WEB4"] or dns_local["WEB6"]:
         mail = get_mx_info([{"value": domain}], config["mail"]["ports"], geoip_dbs, config["timeouts"]["mail"],
                            config["mail"]["get_banners"], config["timeouts"]["cache"],
-                           local_resolver, redis, source_ipv4, source_ipv6)
+                           local_resolver, redis, source_ipv4, source_ipv6, config["mail"]["max_ips_per_host"])
     else:
         mail = None
     web = get_web_status(domain, dns_local, config, source_ipv4, source_ipv6)

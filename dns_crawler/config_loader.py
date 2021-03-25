@@ -55,7 +55,8 @@ defaults = {
     },
     "mail": {
         "get_banners": False,
-        "ports": [25, 465, 587]
+        "ports": [25, 465, 587],
+        "max_ips_per_host": 4
     },
     "web": {
         "save_content": False,

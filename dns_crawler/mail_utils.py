@@ -39,14 +39,14 @@ def get_smtp_banner(host_ip, port, timeout):
         s.connect((host_ip, port))
         banner = s.recv(1024).decode().replace("\r\n", "")
         result["banner"] = banner
+        s.close()
     except Exception as e:
         result["error"] = str(e)
-    s.close()
     return result
 
 
 def get_mailserver_info(host, ports, geoip_dbs, timeout, get_banners, cache_timeout,
-                        resolver, redis, source_ipv4, source_ipv6):
+                        resolver, redis, source_ipv4, source_ipv6, max_ips_per_host):
     cache_key_host = f"cache-mail-host-{host}"
     if redis is not None:
         cached_host = redis.get(cache_key_host)
@@ -68,7 +68,7 @@ def get_mailserver_info(host, ports, geoip_dbs, timeout, get_banners, cache_time
             host_ips = get_record(host, "A", resolver) or []
         if source_ipv6 and not source_ipv4:
             host_ips = get_record(host, "AAAA", resolver) or []
-        for host_ip in host_ips:
+        for host_ip in host_ips[:max_ips_per_host]:
             host_ip = host_ip["value"]
             cache_key_ip = f"cache-mail-ip-{host_ip}"
             if redis is not None:
@@ -93,7 +93,7 @@ def get_mailserver_info(host, ports, geoip_dbs, timeout, get_banners, cache_time
 
 
 def get_mx_info(mx_records, ports, geoip_dbs, timeout, get_banners, cache_timeout,
-                resolver, redis, source_ipv4, source_ipv6):
+                resolver, redis, source_ipv4, source_ipv6, max_ips_per_host):
     results = []
     if not mx_records:
         return None
@@ -102,5 +102,6 @@ def get_mx_info(mx_records, ports, geoip_dbs, timeout, get_banners, cache_timeou
             host = mx["value"].split(" ")[-1]
             if host and host != ".":
                 results.append(get_mailserver_info(host, ports, geoip_dbs, timeout, get_banners,
-                                                   cache_timeout, resolver, redis, source_ipv4, source_ipv6))
+                                                   cache_timeout, resolver, redis, source_ipv4, source_ipv6,
+                                                   max_ips_per_host))
     return results

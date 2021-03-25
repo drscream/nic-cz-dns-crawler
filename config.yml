@@ -27,6 +27,7 @@ mail:
     - 25
     - 465
     - 587
+  max_ips_per_host: 4
 web:
   save_content: True  # save website content – beware, turning this on will output HUGE files for higher domain counts, especially when save_intermediate_steps is enabled as well
   save_binary: True  # save even binary content (eg. application/octet-stream) in base64 data uris
