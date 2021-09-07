@@ -19,6 +19,7 @@
 import logging
 import sys
 from os.path import basename
+
 from redis import Redis
 from rq import Connection, Worker
 

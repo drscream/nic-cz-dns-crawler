@@ -21,8 +21,8 @@ import json
 import socket
 
 from .dns_utils import get_record, parse_tlsa
-from .ip_utils import is_valid_ipv4_address, is_valid_ipv6_address
 from .geoip_utils import annotate_geoip
+from .ip_utils import is_valid_ipv4_address, is_valid_ipv6_address
 
 
 def get_smtp_banner(host_ip, port, timeout):

@@ -20,6 +20,7 @@ import pickle
 import sys
 from os.path import basename
 from time import sleep
+
 from redis import Redis
 from redis.exceptions import ConnectionError as RedisConnectionError
 from rq import Queue

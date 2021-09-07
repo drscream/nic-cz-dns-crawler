@@ -116,14 +116,17 @@ def get_web_status(domain, dns, config, source_ipv4, source_ipv6, path="/"):
         if config["web"]["check_https"]:
             result["WEB4_443"] = get_webserver_info(domain, dns["WEB4"], config, source_ipv4, tls=True, path=path)
         if config["dns"]["check_www"] and config["web"]["check_https"]:
-            result["WEB4_443_www"] = get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4, tls=True, path=path)
+            result["WEB4_443_www"] = get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4, tls=True,
+                                                        path=path)
     if config["web"]["check_ipv6"] and source_ipv6:
         if config["web"]["check_http"]:
             result["WEB6_80"] = get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True, path=path)
         if config["dns"]["check_www"] and config["web"]["check_http"]:
-            result["WEB6_80_www"] = get_webserver_info(f"www.{domain}", dns["WEB6_www"], config, source_ipv6, ipv6=True, path=path)
+            result["WEB6_80_www"] = get_webserver_info(f"www.{domain}", dns["WEB6_www"], config, source_ipv6, ipv6=True,
+                                                       path=path)
         if config["web"]["check_https"]:
-            result["WEB6_443"] = get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True, tls=True, path=path)
+            result["WEB6_443"] = get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True, tls=True,
+                                                    path=path)
         if config["dns"]["check_www"] and config["web"]["check_https"]:
             result["WEB6_443_www"] = get_webserver_info(f"www.{domain}", dns["WEB6_www"],
                                                         config, source_ipv6, ipv6=True, tls=True, path=path)

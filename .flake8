@@ -8,3 +8,4 @@ exclude =
   *.pyc,
   .venv,
   __pycache__
+import-order-style = pep8

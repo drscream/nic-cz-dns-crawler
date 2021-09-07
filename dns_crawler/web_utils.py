@@ -21,12 +21,11 @@ import re
 from itertools import takewhile
 from urllib.parse import unquote, urljoin, urlparse
 
+import cert_human
+import icu
 import idna
 import requests
 import urllib3
-
-import cert_human
-import icu
 from forcediphttpsadapter.adapters import ForcedIPHTTPSAdapter
 from requests_toolbelt.adapters.source import SourceAddressAdapter
 
