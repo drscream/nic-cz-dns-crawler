@@ -106,27 +106,27 @@ def get_dns_auth(domain, nameservers, redis, config, local_resolver, geoip_dbs):
     return results
 
 
-def get_web_status(domain, dns, config, source_ipv4, source_ipv6):
+def get_web_status(domain, dns, config, source_ipv4, source_ipv6, path="/"):
     result = {}
     if config["web"]["check_ipv4"] and source_ipv4:
         if config["web"]["check_http"]:
-            result["WEB4_80"] = get_webserver_info(domain, dns["WEB4"], config, source_ipv4)
+            result["WEB4_80"] = get_webserver_info(domain, dns["WEB4"], config, source_ipv4, path=path)
         if config["dns"]["check_www"] and config["web"]["check_http"]:
-            result["WEB4_80_www"] = get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4)
+            result["WEB4_80_www"] = get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4, path=path)
         if config["web"]["check_https"]:
-            result["WEB4_443"] = get_webserver_info(domain, dns["WEB4"], config, source_ipv4, tls=True)
+            result["WEB4_443"] = get_webserver_info(domain, dns["WEB4"], config, source_ipv4, tls=True, path=path)
         if config["dns"]["check_www"] and config["web"]["check_https"]:
-            result["WEB4_443_www"] = get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4, tls=True)
+            result["WEB4_443_www"] = get_webserver_info(f"www.{domain}", dns["WEB4_www"], config, source_ipv4, tls=True, path=path)
     if config["web"]["check_ipv6"] and source_ipv6:
         if config["web"]["check_http"]:
-            result["WEB6_80"] = get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True)
+            result["WEB6_80"] = get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True, path=path)
         if config["dns"]["check_www"] and config["web"]["check_http"]:
-            result["WEB6_80_www"] = get_webserver_info(f"www.{domain}", dns["WEB6_www"], config, source_ipv6, ipv6=True)
+            result["WEB6_80_www"] = get_webserver_info(f"www.{domain}", dns["WEB6_www"], config, source_ipv6, ipv6=True, path=path)
         if config["web"]["check_https"]:
-            result["WEB6_443"] = get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True, tls=True)
+            result["WEB6_443"] = get_webserver_info(domain, dns["WEB6"], config, source_ipv6, ipv6=True, tls=True, path=path)
         if config["dns"]["check_www"] and config["web"]["check_https"]:
             result["WEB6_443_www"] = get_webserver_info(f"www.{domain}", dns["WEB6_www"],
-                                                        config, source_ipv6, ipv6=True, tls=True)
+                                                        config, source_ipv6, ipv6=True, tls=True, path=path)
     return result
 
 
@@ -152,6 +152,13 @@ def process_domain(domain):
     web = get_web_status(domain, dns_local, config, source_ipv4, source_ipv6)
     hsts = get_hsts_status(domain)
 
+    fetch_web_paths = len(config["web"]["paths"]) > 0
+
+    if fetch_web_paths:
+        web_paths = {}
+        for path in config["web"]["paths"]:
+            web_paths[path] = get_web_status(domain, dns_local, config, source_ipv4, source_ipv6, path=path)
+
     result = {
         "domain": domain,
         "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
@@ -163,6 +170,9 @@ def process_domain(domain):
             "HSTS": hsts
         }
     }
+
+    if fetch_web_paths:
+        result["results"]["WEB_paths"] = web_paths
 
     if config["save_worker_hostname"]:
         result["worker_hostname"] = hostname

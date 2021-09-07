@@ -153,7 +153,7 @@ def autodetect_encoding(data, content_type=None, forced_encoding=None):
     return (data, encoding)
 
 
-def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
+def get_webserver_info(domain, ips, config, source_ip, path="/", ipv6=False, tls=False):
     if not ips or len(ips) < 1:
         return None
     http_timeout = (config["timeouts"]["http"], config["timeouts"]["http_read"])
@@ -162,7 +162,6 @@ def get_webserver_info(domain, ips, config, source_ip, ipv6=False, tls=False):
     content_size_limit = config["web"]["content_size_limit"]
     max_redirects = config["web"]["max_redirects"]
     protocol = "https" if tls else "http"
-    path = "/"
     results = []
     ip_index = 0
     for entry in ips:
