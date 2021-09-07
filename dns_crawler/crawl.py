@@ -155,7 +155,7 @@ def process_domain(domain):
     web = get_web_status(domain, dns_local, config, source_ipv4, source_ipv6)
     hsts = get_hsts_status(domain)
 
-    fetch_web_paths = len(config["web"]["paths"]) > 0
+    fetch_web_paths = "paths" in config["web"] and len(config["web"]["paths"]) > 0
 
     if fetch_web_paths:
         web_paths = {}
