@@ -1,3 +1,11 @@
+## 1.5.9 (not released yet)
+
+- updated `PyICU` dependency so it installs smoothly on distros with new sw versions (eg. Gentoo & Arch)
+
+### WEB:
+
+- New config option `web.paths` for fetch other URLs than just website root.
+
 ## 1.5.8 (2021-03-23)
 
 ### DNS:
@@ -204,7 +212,7 @@ No functionality changes, just updated dependencies – DNSPython from git is no
             - CAA
             - LOC
         ```
-    - currently using this to get the legacy/deprecated SPF records, requested by Eda Rejthar from CSIRT (we were getting SPF just from TXTs until now, now it's doing both)
+    - currently using this to get the legacy/deprecated SPF records, requested by CSIRT (we were getting SPF just from TXTs until now, now it's doing both)
     - it's also pretty easy to plug in your own parsers for these records (we're using it for SPF, since we already got TXT SPFs with the same format)
     - it works with just the IN class records and just for the 2nd level domain, not any subdomains… at least for now
 - added `authors.bind` and `fortune` chaos txts, we'll see if it's just taking up space or if we can use it for some version fingerprinting…
