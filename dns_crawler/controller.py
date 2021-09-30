@@ -56,7 +56,7 @@ def create_jobs(domains, function, redis, queue, timeout):
     pipe = redis.pipeline()
     jobs = []
     for domain in domains:
-        jobs.append(Queue.prepare_data(function, domain, job_id=domain,
+        jobs.append(Queue.prepare_data(function, (domain,), job_id=domain,
                                        description=domain, timeout=timeout, result_ttl=-1))
     queue.enqueue_many(jobs, pipeline=pipe)
     pipe.execute()

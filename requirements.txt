@@ -13,6 +13,6 @@ pyOpenSSL==21.0.0
 redis==3.5.3
 requests_toolbelt==0.9.1
 requests==2.23.0
-rq==1.7.0
+rq==1.10.0
 dnspython==2.1.0
 urllib3==1.25.11
