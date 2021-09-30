@@ -33,7 +33,7 @@ assert sort_by_value(r["results"]["DNS_LOCAL"]["NS_AUTH"]) == sort_by_value(
     [{"value": "a.ns.nic.cz."}, {"value": "b.ns.nic.cz."}, {"value": "d.ns.nic.cz."}]
 )
 assert r["results"]["WEB"]["WEB4_80"][0]["steps"][0]["status"] == 301
-assert r["results"]["WEB"]["WEB4_80"][0]["steps"][0]["headers"]["server"] == "nginx"
+assert r["results"]["WEB"]["WEB4_80"][0]["steps"][-1]["headers"]["server"] == "nginx"
 
 assert r["results"]["WEB"]["WEB4_443"][0]["steps"][-1]["cert"][0]["subject"]["CN"] == "nic.cz"
 assert r["results"]["WEB"]["WEB4_443"][0]["steps"][-1]["cert"][0]["version"] == 3
