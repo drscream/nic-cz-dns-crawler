@@ -24,7 +24,6 @@ from time import sleep
 from redis import Redis
 from redis.exceptions import ConnectionError as RedisConnectionError
 from rq import Queue
-from rq.job import Job
 from rq.registry import FinishedJobRegistry
 
 from .config_loader import default_config_filename, load_config
@@ -54,15 +53,14 @@ def print_help():
 
 
 def create_jobs(domains, function, redis, queue, timeout):
-    job_count = 0
     pipe = redis.pipeline()
+    jobs = []
     for domain in domains:
-        job = Job.create(function, args=(domain,), id=domain, timeout=timeout,
-                         result_ttl=-1, connection=redis, description=domain)
-        queue.enqueue_job(job, pipeline=pipe)
-        job_count += 1
+        jobs.append(Queue.prepare_data(function, domain, job_id=domain,
+                                       description=domain, timeout=timeout, result_ttl=-1))
+    queue.enqueue_many(jobs, pipeline=pipe)
     pipe.execute()
-    return job_count
+    return len(jobs)
 
 
 def main():
