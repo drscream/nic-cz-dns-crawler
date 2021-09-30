@@ -22,7 +22,7 @@ from os.path import basename
 from time import sleep
 
 from redis import Redis
-from redis.exceptions import ConnectionError as RedisConnectionError
+from redis.exceptions import ConnectionError, ExecAbortError, ResponseError
 from rq import Queue
 from rq.registry import FinishedJobRegistry
 
@@ -59,7 +59,19 @@ def create_jobs(domains, function, redis, queue, timeout):
         jobs.append(Queue.prepare_data(function, (domain,), job_id=domain,
                                        description=domain, timeout=timeout, result_ttl=-1))
     queue.enqueue_many(jobs, pipeline=pipe)
-    pipe.execute()
+    try:
+        pipe.execute()
+    except (ExecAbortError, ResponseError):
+        sys.stderr.write("Redis reports a reponse error. ")
+        maxmemory = int(redis.config_get("maxmemory")["maxmemory"])
+        used_memory = int(redis.info()["used_memory"])
+        if maxmemory / used_memory < 1.5:
+            sys.stderr.write("Looks like it might be running out of memory:\n")
+            sys.stderr.write(f"  used:  {used_memory}\n")
+            sys.stderr.write(f"  limit: {maxmemory}\n")
+            sys.stderr.write("Try increasing the `maxmemory` config option in redis.conf.\n")
+        redis.flushdb()
+        sys.exit(1)
     return len(jobs)
 
 
@@ -145,7 +157,7 @@ def main():
         sys.stderr.write(f"{timestamp()} All jobs deleted, exiting.\n")
         sys.exit(1)
 
-    except RedisConnectionError:
+    except ConnectionError:
         sys.stderr.write(f"{timestamp()} Connection to Redis lost. :(\n")
         sys.exit(1)
 

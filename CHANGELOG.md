@@ -3,6 +3,7 @@
 - updated `PyICU` dependency so it installs smoothly on distros with new sw versions (eg. Gentoo & Arch)
 - updated `cryptography` and `pyOpenSSL` to make things work with new OpenSSL
 - updated `RQ`, now we are using the new `enqueue_many` feature instead of the old custom implementation
+- better error messages when Redis runs out of memory during the job queue creation
 
 ### WEB:
 
