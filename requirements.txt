@@ -1,7 +1,7 @@
 asn1crypto==1.4.0
 cert_human==1.0.7
 cryptography==35.0.0
-ecdsa==0.16.1
+ecdsa==0.17.0
 forcediphttpsadapter==1.0.1
 geoip2==3.0.0
 hstspreload
