@@ -1,10 +1,12 @@
 ## 1.5.9 (not released yet)
 
 - updated `PyICU` dependency so it installs smoothly on distros with new sw versions (eg. Gentoo & Arch)
+- updated `cryptography` and `pyOpenSSL`
 
 ### WEB:
 
 - New config option `web.paths` for fetch other URLs than just website root.
+- Workaround for https://github.com/pyca/cryptography/issues/3856
 
 ## 1.5.8 (2021-03-23)
 

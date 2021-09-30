@@ -21,9 +21,31 @@ from datetime import datetime
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.serialization.base import Encoding, PublicFormat
+from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
+from cryptography.x509 import BasicConstraints
 
 from .utils import drop_null_values
+
+
+def patched_cryptography_init(self, ca, path_length):
+    if not isinstance(ca, bool):
+        raise TypeError("ca must be a boolean value")
+
+    # if path_length is not None and not ca:
+        # raise ValueError("path_length must be None when ca is False")
+
+    if path_length is not None and (
+        not isinstance(path_length, int) or path_length < 0
+    ):
+        raise TypeError(
+            "path_length must be a non-negative integer or None"
+        )
+
+    self._ca = ca
+    self._path_length = path_length
+
+
+BasicConstraints.__init__ = patched_cryptography_init
 
 
 def cert_datetime_to_iso(cert_date):
