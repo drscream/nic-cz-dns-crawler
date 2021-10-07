@@ -1,4 +1,4 @@
-# Copyright © 2019-2020 CZ.NIC, z. s. p. o.
+# Copyright © 2019-2021 CZ.NIC, z. s. p. o.
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 # This file is part of dns-crawler.
