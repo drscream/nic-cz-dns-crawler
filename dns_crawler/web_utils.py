@@ -215,6 +215,8 @@ def get_webserver_info(domain, ips, config, source_ip, path="/", ipv6=False, tls
                 h["e"] = emsg(e)
             except requests.exceptions.InvalidHeader as e:
                 h["e"] = f"Invalid Location header: '{url}' - {emsg(e)}"
+            except urllib3.exceptions.LocationParseError as e:
+                h["e"] = emsg(e)
             history.append(h)
             redirect_count = redirect_count + 1
             if redirect_count >= max_redirects:
