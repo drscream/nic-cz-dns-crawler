@@ -35,13 +35,18 @@
       "items": {
         "type": "object",
         "properties": {
-          "v": {
-            "type": "string"
-          },
-          "rules": {
+          "pass": {
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "mechanism": {
+                  "type": "string"
+                }
+              }
             }
           },
           "ip4": {
@@ -56,6 +61,24 @@
               "type": "string"
             }
           },
+          "softfail": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "neutral": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fail": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "include": {
             "type": "array",
             "items": {
@@ -64,9 +87,20 @@
           },
           "all": {
             "type": "string"
+          },
+          "redirect": {
+            "oneOf": [
+              {"type": "null"},
+              {"type": "object"}
+            ]
+          },
+          "exp": {
+            "oneOf": [
+              {"type": "null"},
+              {"type": "string"}
+            ]
           }
         },
-        "required": ["v", "rules"],
         "additionalProperties": false
       }
     },
@@ -77,11 +111,40 @@
         "type": "object",
         "properties": {
           "v": {
-            "type": "string"
+            "type": "object"
+          },
+          "p": {
+            "type": "object"
+          },
+          "sp": {
+            "type": "object"
+          },
+          "adkim": {
+            "type": "object"
+          },
+          "pct": {
+            "type": "object"
+          },
+          "fo": {
+            "type": "object"
+          },
+          "ri": {
+            "type": "object"
+          },
+          "rua": {
+            "type": "object"
+          },
+          "ruf": {
+            "type": "object"
+          },
+          "aspf": {
+            "type": "object"
+          },
+          "rf": {
+            "type": "object"
           }
         },
-        "required": ["v"],
-        "additionalProperties": true
+        "additionalProperties": false
       }
     },
     "tlsa_record_array": {

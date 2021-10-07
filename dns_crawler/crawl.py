@@ -52,8 +52,8 @@ def get_dns_local(domain, config, local_resolver, geoip_dbs):
         result["WEB_TLSA_www"] = parse_tlsa(get_record("_443._tcp.www." + domain, "TLSA", local_resolver))
     result["TXT"] = txt
     if txt:
-        result["TXT_SPF"] = parse_spf(get_txt(re.compile('^"?v=spf'), deepcopy(txt)))
-    result["TXT_DMARC"] = parse_dmarc(get_record("_dmarc." + domain, "TXT", local_resolver))
+        result["TXT_SPF"] = parse_spf(get_txt(re.compile('^"?v=spf'), deepcopy(txt)), domain)
+    result["TXT_DMARC"] = parse_dmarc(get_record("_dmarc." + domain, "TXT", local_resolver), domain)
     result["TXT_openid"] = get_record("_openid." + domain, "TXT", local_resolver)
     result["DS"] = annotate_dns_algorithm(get_record(domain, "DS", local_resolver), 1)
     result["DNSKEY"] = annotate_dns_algorithm(get_record(domain, "DNSKEY", local_resolver), 2)
@@ -63,7 +63,7 @@ def get_dns_local(domain, config, local_resolver, geoip_dbs):
         values = get_record(domain, record, local_resolver)
         parser = get_record_parser(record)
         if parser is not None:
-            additional[record] = parser(values)
+            additional[record] = parser(values, domain)
         else:
             additional[record] = values
     return dict(result, **additional)

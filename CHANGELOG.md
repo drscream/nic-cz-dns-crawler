@@ -6,6 +6,10 @@
 - updated most of other dependencies to latest stable versions
 - better error messages when Redis runs out of memory during the job queue creation
 
+### DNS:
+
+- `DMARC` and `SPF` (both from `TXT` and deprecated `SPF`) records are now parsed with `checkdmarc` instead of the old custom regex/dict-based parsers
+
 ### WEB:
 
 - New config option `web.paths` for fetch other URLs than just website root

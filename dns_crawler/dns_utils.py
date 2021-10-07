@@ -23,6 +23,8 @@ import dns.dnssec
 import dns.name
 import dns.resolver
 
+import checkdmarc
+
 from .geoip_utils import annotate_geoip
 
 
@@ -139,76 +141,39 @@ def annotate_dns_algorithm(items, index, key="value"):
     return items
 
 
-def parse_dmarc(items, key="value"):
-    if not items:
-        return None
-    items = [item for item in items if item[key] and item[key].startswith('"v=DMARC')]
-    if len(items) == 0:
+def parse_dmarc(items, domain, key="value"):
+    if (not items) or len(items) == 0:
         return None
     parsed = []
     for item in items:
-        record = item[key].strip('"').strip(" ")
-        raw_tags = [t.split("=") for t in record.split(";") if t]
-        output = {t[0].strip(): t[1].strip() for t in raw_tags if len(t) >= 2}
-        item = {k: v for k, v in output.items() if v is not None}
-        parsed.append(item)
+        try:
+            r = checkdmarc.parse_dmarc_record(item[key], domain)
+            parsed.append(r["tags"])
+        except checkdmarc.DMARCSyntaxError as e:
+            parsed.append({"error": str(e)})
     if len(parsed) == 0:
         return None
     return parsed
 
 
-def get_spf_ips(record, protocol):
-    key = f"ip{str(protocol)}:"
-    ips = [f.replace(key, "") for f in record if f.startswith(key)]
-    if len(ips) == 0:
-        return None
-    return ips
+def get_spf_pass_ips(parsed_record, ipv):
+    return [item["value"] for item in parsed_record["parsed"]["pass"]
+            if "mechanism" in item and item["mechanism"] == f"ip{ipv}"]
 
 
-def get_spf_includes(record):
-    key = "include:"
-    includes = [f.replace(key, "") for f in record if f.startswith(key)]
-    if len(includes) == 0:
-        return None
-    return includes
-
-
-def get_spf_rules(record):
-    return record[1:]
-
-
-def get_spf_all(record):
-    alls = [k for k in record if "all" in k]
-    if len(alls) == 0:
-        return None
-    else:
-        all = alls[-1]
-        if all == "all":
-            all = "+all"
-        return all.replace("all", "")
-
-
-def parse_spf(items, key="value"):
-    if not items:
-        return None
-    items = [item for item in items if item[key] and item[key].startswith('"v=spf')]
-    if len(items) == 0:
+def parse_spf(items, domain, key="value"):
+    if (not items) or len(items) == 0:
         return None
     parsed = []
-    for item in items.copy():
-        output = {}
-        record = re.sub(r" +", " ", item[key].strip('"')).split(" ")
-        kvs = [k for k in record if "=" in k]
-        for kv in kvs:
-            data = kv.split("=")
-            output[data[0]] = data[1]
-        output["rules"] = get_spf_rules(record)
-        output["ip4"] = get_spf_ips(record, 4)
-        output["ip6"] = get_spf_ips(record, 6)
-        output["include"] = get_spf_includes(record)
-        output["all"] = get_spf_all(record)
-        item = {k: v for k, v in output.items() if v is not None}
-        parsed.append(item)
+    for item in items:
+        try:
+            r = checkdmarc.parse_spf_record(item[key], domain)
+            if "pass" in r["parsed"]:
+                r["parsed"]["ip4"] = get_spf_pass_ips(r, 4)
+                r["parsed"]["ip6"] = get_spf_pass_ips(r, 6)
+            parsed.append(r["parsed"])
+        except checkdmarc.SPFSyntaxError as e:
+            parsed.append({"error": str(e)})
     if len(parsed) == 0:
         return None
     return parsed
