@@ -89,16 +89,10 @@
             "type": "string"
           },
           "redirect": {
-            "oneOf": [
-              {"type": "null"},
-              {"type": "object"}
-            ]
+            "oneOf": [{ "type": "null" }, { "type": "object" }]
           },
           "exp": {
-            "oneOf": [
-              {"type": "null"},
-              {"type": "string"}
-            ]
+            "oneOf": [{ "type": "null" }, { "type": "string" }]
           }
         },
         "additionalProperties": false
@@ -306,8 +300,12 @@
                     "tls": {
                       "$ref": "#/definitions/tls_info"
                     },
-                    "content": { "type": "string" },
-                    "detected_encoding": { "type": "string" },
+                    "content": {
+                      "oneOf": [{ "type": "string" }, { "type": "null" }]
+                    },
+                    "detected_encoding": {
+                      "oneOf": [{ "type": "string" }, { "type": "null" }]
+                    },
                     "content_is_binary": { "type": "boolean" },
                     "error": { "type": "string" }
                   },

@@ -15,6 +15,7 @@
 - New config option `web.paths` for fetch other URLs than just website root
 - Workaround for https://github.com/pyca/cryptography/issues/3856
 - Fix for webservers redirecting to invalid labels (eg. `HTTP 301, Location: https://www..cz/` → `urllib3.exceptions.LocationParseError`)
+- Stop trying to detect encoding for responses with empty content
 
 ## 1.5.8 (2021-03-23)
 

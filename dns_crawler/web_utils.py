@@ -306,6 +306,8 @@ def get_webserver_info(domain, ips, config, source_ip, path="/", ipv6=False, tls
                     content = None
                 if content == "":
                     content = None
+                if content is None:
+                    detected_encoding = None
                 if content and not content_is_binary:
                     if len(content) > content_size_limit:
                         content = content[:content_size_limit]
