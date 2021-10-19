@@ -149,7 +149,7 @@ def parse_dmarc(items, domain, key="value"):
         try:
             r = checkdmarc.parse_dmarc_record(item[key], domain)
             parsed.append(r["tags"])
-        except checkdmarc.DMARCSyntaxError as e:
+        except (checkdmarc.DMARCError) as e:
             parsed.append({"error": str(e)})
         except AttributeError as e:
             parsed.append({"error": f"empty record?"})
@@ -174,7 +174,7 @@ def parse_spf(items, domain, key="value"):
                 r["parsed"]["ip4"] = get_spf_pass_ips(r, 4)
                 r["parsed"]["ip6"] = get_spf_pass_ips(r, 6)
             parsed.append(r["parsed"])
-        except checkdmarc.SPFSyntaxError as e:
+        except checkdmarc.SPFError as e:
             parsed.append({"error": str(e)})
         except AttributeError as e:
             parsed.append({"error": f"empty record?"})
