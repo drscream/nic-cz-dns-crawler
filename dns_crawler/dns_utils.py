@@ -151,6 +151,8 @@ def parse_dmarc(items, domain, key="value"):
             parsed.append(r["tags"])
         except checkdmarc.DMARCSyntaxError as e:
             parsed.append({"error": str(e)})
+        except AttributeError as e:
+            parsed.append({"error": f"empty record?"})
     if len(parsed) == 0:
         return None
     return parsed
@@ -174,6 +176,8 @@ def parse_spf(items, domain, key="value"):
             parsed.append(r["parsed"])
         except checkdmarc.SPFSyntaxError as e:
             parsed.append({"error": str(e)})
+        except AttributeError as e:
+            parsed.append({"error": f"empty record?"})
     if len(parsed) == 0:
         return None
     return parsed
