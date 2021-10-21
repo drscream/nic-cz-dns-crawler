@@ -87,12 +87,12 @@ def get_dns_auth(domain, nameservers, redis, config, local_resolver, geoip_dbs):
         ipv6_results = []
         if a is not None and source_ipv4 is not None:
             for ipv4 in a:
-                ns_info = get_ns_info(ipv4, chaosrecords, geoip_dbs, timeout, cache_timeout, redis)
+                ns_info = get_ns_info(ipv4, domain, chaosrecords, geoip_dbs, timeout, cache_timeout, redis)
                 if ns_info:
                     ipv4_results.append(ns_info)
         if aaaa is not None and source_ipv6 is not None:
             for ipv6 in aaaa:
-                ns_info = get_ns_info(ipv6, chaosrecords, geoip_dbs, timeout, cache_timeout, redis)
+                ns_info = get_ns_info(ipv6, domain, chaosrecords, geoip_dbs, timeout, cache_timeout, redis)
                 if ns_info:
                     ipv6_results.append(ns_info)
         result = {

@@ -152,7 +152,7 @@ def parse_dmarc(items, domain, key="value"):
         except (checkdmarc.DMARCError) as e:
             parsed.append({"error": str(e)})
         except AttributeError as e:
-            parsed.append({"error": f"empty record?"})
+            parsed.append({"error": f"empty record? {str(e)}"})
     if len(parsed) == 0:
         return None
     return parsed
@@ -177,7 +177,7 @@ def parse_spf(items, domain, key="value"):
         except checkdmarc.SPFError as e:
             parsed.append({"error": str(e)})
         except AttributeError as e:
-            parsed.append({"error": f"empty record?"})
+            parsed.append({"error": f"empty record? {str(e)}"})
     if len(parsed) == 0:
         return None
     return parsed
@@ -232,7 +232,38 @@ def get_chaostxt(nameserver, qname, timeout):
     return result
 
 
-def get_ns_info(ip, chaosrecords, geoip_dbs, timeout, cache_timeout, redis):
+def fingerprint_ns(ip, domain):
+    NSECs = [dns.rdatatype.NSEC, dns.rdatatype.NSEC3]
+    r = dns.query.tcp(dns.message.make_query(f"does-not-exist\x00does-not-exist.{domain}",
+                      dns.rdatatype.A, want_dnssec=True), ip)
+    types = []
+    for item in r.authority:
+        types.append(item.rdtype)
+    guess = None
+    if r.rcode() == dns.rcode.SERVFAIL:
+        guess = "PowerDNS"
+    if r.rcode() == dns.rcode.NXDOMAIN and len(types) > 1:
+        if (r.authority[0].rdtype == dns.rdatatype.SOA
+           and r.authority[1].rdtype in NSECs):
+            guess = "Knot DNS"
+        if (r.authority[0].rdtype == dns.rdatatype.SOA
+           and r.authority[1].rdtype == dns.rdatatype.RRSIG
+           and r.authority[1].covers == dns.rdatatype.SOA
+           and r.authority[2].rdtype in NSECs
+           and r.authority[3].covers == r.authority[2].rdtype):
+            guess = "BIND"
+        if (types[0] in NSECs
+           and r.authority[1].covers == r.authority[0].rdtype
+           and r.authority[-2].rdtype == dns.rdatatype.SOA
+           and r.authority[-1].covers == r.authority[-2].rdtype):
+            guess = "NSD"
+    return {
+        "guess": guess,
+        "answer": r.to_text()
+    }
+
+
+def get_ns_info(ip, domain, chaosrecords, geoip_dbs, timeout, cache_timeout, redis):
     cache_key = f"cache-ns-{ip['value']}"
     if redis is not None:
         cached = redis.get(cache_key)
@@ -244,7 +275,8 @@ def get_ns_info(ip, chaosrecords, geoip_dbs, timeout, cache_timeout, redis):
     geoip = annotate_geoip([ip], geoip_dbs)[0]
     result = {
         "ip": ip["value"],
-        "geoip": geoip["geoip"] if "geoip" in geoip else None
+        "geoip": geoip["geoip"] if "geoip" in geoip else None,
+        "fingerprint": fingerprint_ns(ip["value"], domain)
     }
     for record in chaosrecords:
         result[record.replace(".", "")] = get_chaostxt(ip["value"], record, timeout)
