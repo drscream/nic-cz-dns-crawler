@@ -241,7 +241,8 @@ def fingerprint_ns(ip, domain, timeout):
             TimeoutError,
             dns.exception.Timeout,
             dns.query.BadResponse,
-            dns.exception.FormError) as e:
+            dns.exception.FormError,
+            ConnectionRefusedError) as e:
         return {
             "error": str(e)
         }
