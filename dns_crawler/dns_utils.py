@@ -232,10 +232,15 @@ def get_chaostxt(nameserver, qname, timeout):
     return result
 
 
-def fingerprint_ns(ip, domain):
+def fingerprint_ns(ip, domain, timeout):
     NSECs = [dns.rdatatype.NSEC, dns.rdatatype.NSEC3]
-    r = dns.query.tcp(dns.message.make_query(f"does-not-exist\x00does-not-exist.{domain}",
-                      dns.rdatatype.A, want_dnssec=True), ip)
+    try:
+        r = dns.query.tcp(dns.message.make_query(f"does-not-exist\x00does-not-exist.{domain}",
+                        dns.rdatatype.A, want_dnssec=True), ip, timeout=timeout)
+    except EOFError as e:
+        return {
+            "error": str(e)
+        }
     types = []
     for item in r.authority:
         types.append(item.rdtype)
@@ -276,7 +281,7 @@ def get_ns_info(ip, domain, chaosrecords, geoip_dbs, timeout, cache_timeout, red
     result = {
         "ip": ip["value"],
         "geoip": geoip["geoip"] if "geoip" in geoip else None,
-        "fingerprint": fingerprint_ns(ip["value"], domain)
+        "fingerprint": fingerprint_ns(ip["value"], domain, timeout)
     }
     for record in chaosrecords:
         result[record.replace(".", "")] = get_chaostxt(ip["value"], record, timeout)
