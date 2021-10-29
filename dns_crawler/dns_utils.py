@@ -238,6 +238,7 @@ def fingerprint_ns(ip, domain, timeout):
         r = dns.query.tcp(dns.message.make_query(f"does-not-exist\x00does-not-exist.{domain}",
                         dns.rdatatype.A, want_dnssec=True), ip, timeout=timeout)
     except (EOFError,
+            OSError,
             TimeoutError,
             dns.exception.Timeout,
             dns.query.BadResponse,
