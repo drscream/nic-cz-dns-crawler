@@ -55,6 +55,7 @@ def get_dns_local(domain, config, local_resolver, geoip_dbs):
         result["TXT_SPF"] = parse_spf(get_txt(re.compile('^"?v=spf'), deepcopy(txt)), domain)
     result["TXT_DMARC"] = parse_dmarc(get_record("_dmarc." + domain, "TXT", local_resolver), domain)
     result["TXT_openid"] = get_record("_openid." + domain, "TXT", local_resolver)
+    result["TXT_MTA_STS"] = get_record("_mta-sts." + domain, "TXT", local_resolver)
     result["DS"] = annotate_dns_algorithm(get_record(domain, "DS", local_resolver), 1)
     result["DNSKEY"] = annotate_dns_algorithm(get_record(domain, "DNSKEY", local_resolver), 2)
     result["DNSSEC"] = check_dnssec(domain, local_resolver)
