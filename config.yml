@@ -15,6 +15,11 @@ dns:
   # add 'additional' here to get more DNS records, more about that in Readme
   additional:
    - SPF
+  dkim_selectors:
+   - dkim
+   - default
+   - google
+   - sig1
 timeouts:
   job: 80  # seconds, overall job (one domain crawl) duration when using dns-crawler-controller, jobs will fail after that and you can retry/abort them as needed
   dns: 2  # seconds, timeout for dns queries

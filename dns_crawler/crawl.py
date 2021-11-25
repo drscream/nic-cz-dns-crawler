@@ -28,7 +28,7 @@ from .config_loader import default_config_filename, load_config
 from .dns_utils import (annotate_dns_algorithm, check_dnssec,
                         get_local_resolver, get_ns_info, get_record,
                         get_record_parser, get_txt, parse_dmarc, parse_spf,
-                        parse_tlsa)
+                        parse_tlsa, get_dkim)
 from .geoip_utils import annotate_geoip, init_geoip
 from .hsts_utils import get_hsts_status
 from .ip_utils import get_source_addresses
@@ -56,6 +56,7 @@ def get_dns_local(domain, config, local_resolver, geoip_dbs):
     result["TXT_DMARC"] = parse_dmarc(get_record("_dmarc." + domain, "TXT", local_resolver), domain)
     result["TXT_openid"] = get_record("_openid." + domain, "TXT", local_resolver)
     result["TXT_MTA_STS"] = get_record("_mta-sts." + domain, "TXT", local_resolver)
+    result["TXT_DKIM"] = get_dkim(domain, config["dns"]["dkim_selectors"], local_resolver)
     result["DS"] = annotate_dns_algorithm(get_record(domain, "DS", local_resolver), 1)
     result["DNSKEY"] = annotate_dns_algorithm(get_record(domain, "DNSKEY", local_resolver), 2)
     result["DNSSEC"] = check_dnssec(domain, local_resolver)

@@ -296,6 +296,12 @@ def get_ns_info(ip, domain, chaosrecords, geoip_dbs, timeout, cache_timeout, red
     return result
 
 
+def get_dkim(domain, selectors, resolver):
+    result = {}
+    for selector in selectors:
+        result[selector] = get_record(selector + "._domainkey." + domain, "TXT", resolver)
+    return result
+
 def value_from_record(record, data):
     return re.sub(r".*" + re.escape(record) + " ", "", data)
 
