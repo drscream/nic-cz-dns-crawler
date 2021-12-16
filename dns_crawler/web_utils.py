@@ -107,7 +107,7 @@ header_parsers = {
 def headers_look_like_binary(headers):
     if "content-type" in headers:
         if ((headers["content-type"].startswith("application/")
-             and (headers["content-type"] != "application/json" or "xml" not in headers["content-type"])
+             and (headers["content-type"] != "application/json" and "xml" not in headers["content-type"])
              )
                 or headers["content-type"].startswith("audio/")
                 or headers["content-type"].startswith("video/")
